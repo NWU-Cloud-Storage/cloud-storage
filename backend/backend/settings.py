@@ -31,7 +31,12 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'cloud_storage',
+    'user',
+    'group',
+    'storage',
+    'share',
+
+    'mptt',
 
     'django.contrib.admin',
     'django.contrib.auth',
