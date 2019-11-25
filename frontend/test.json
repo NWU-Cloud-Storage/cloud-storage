@@ -1,0 +1,73 @@
+{
+    "data": {
+        "data": [
+            {
+                "name": "田敏",
+                "modifiedDate": "1977-12-25",
+                "shareStatus": false,
+                "size": -6893126107811496
+            },
+            {
+                "name": "谢刚",
+                "modifiedDate": "1992-03-02",
+                "shareStatus": true,
+                "size": 4559572522841060
+            },
+            {
+                "name": "姚艳",
+                "modifiedDate": "2011-04-13",
+                "shareStatus": false,
+                "size": -5242770141145580
+            }
+        ]
+    },
+    "status": 200,
+    "statusText": "OK",
+    "headers": {},
+    "config": {
+        "url": "/api/data",
+        "method": "get",
+        "headers": {
+            "Accept": "application/json, text/plain, */*"
+        },
+        "transformRequest": [
+            null
+        ],
+        "transformResponse": [
+            null
+        ],
+        "timeout": 0,
+        "xsrfCookieName": "XSRF-TOKEN",
+        "xsrfHeaderName": "X-XSRF-TOKEN",
+        "maxContentLength": -1
+    },
+    "request": {
+        "custom": {
+            "events": {},
+            "requestHeaders": {
+                "Accept": "application/json, text/plain, */*",
+                "X-Requested-With": "MockXMLHttpRequest"
+            },
+            "responseHeaders": {},
+            "method": "GET",
+            "url": "/api/data",
+            "async": true,
+            "options": {
+                "url": "/api/data",
+                "type": "GET",
+                "body": null
+            },
+            "timeout": 62,
+            "template": {
+                "rurl": "/api/data"
+            }
+        },
+        "match": true,
+        "readyState": 4,
+        "timeout": 0,
+        "status": 200,
+        "statusText": "OK",
+        "responseText": "{\n \"data\": [\n {\n \"name\": \"田敏\",\n \"modifiedDate\": \"1977-12-25\",\n \"shareStatus\": false,\n \"size\": -6893126107811496\n },\n {\n \"name\": \"谢刚\",\n \"modifiedDate\": \"1992-03-02\",\n \"shareStatus\": true,\n \"size\": 4559572522841060\n },\n {\n \"name\": \"姚艳\",\n \"modifiedDate\": \"2011-04-13\",\n \"shareStatus\": false,\n \"size\": -5242770141145580\n }\n ]\n}",
+        "response": "{\n \"data\": [\n {\n \"name\": \"田敏\",\n \"modifiedDate\": \"1977-12-25\",\n \"shareStatus\": false,\n \"size\": -6893126107811496\n },\n {\n \"name\": \"谢刚\",\n \"modifiedDate\": \"1992-03-02\",\n \"shareStatus\": true,\n \"size\": 4559572522841060\n },\n {\n \"name\": \"姚艳\",\n \"modifiedDate\": \"2011-04-13\",\n \"shareStatus\": false,\n \"size\": -5242770141145580\n }\n ]\n}"
+    }
+}
