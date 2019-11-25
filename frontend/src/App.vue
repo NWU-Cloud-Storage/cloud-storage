@@ -1,19 +1,58 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <el-container style="height: 500px; border: 1px solid #eee">
+    <el-header>
+      <Header></Header>
+    </el-header>
+    <el-container direction="horizontal">
+      <el-aside>
+        <div id="nav">
+          <el-menu>
+            <router-link to="/">
+              <el-menu-item>Home</el-menu-item>
+            </router-link>
+
+            <router-link to="/about">
+              <el-menu-item>About</el-menu-item>
+            </router-link>
+
+            <router-link to="/hello">
+              <el-menu-item>Hello World</el-menu-item>
+            </router-link>
+
+            <router-link to="/file/">
+              <el-menu-item>File</el-menu-item>
+            </router-link>
+          </el-menu>
+        </div>
+      </el-aside>
+      <el-main>
+        <div id="app">
+          <router-view></router-view>
+        </div>
+      </el-main>
+    </el-container>
+
+    <el-footer>All rights reserved</el-footer>
+  </el-container>
 </template>
+
+<script>
+  import Header from '@/components/Header.vue'
+
+  export default {
+    name: 'app',
+    components: {
+      Header
+    }
+  }
+</script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /*text-align: center;*/
   color: #2c3e50;
 }
 
