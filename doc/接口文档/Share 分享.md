@@ -10,7 +10,6 @@
 
 ```json
 {
-    // "code": "401",
     "msg": "success",
     "result":{
         "url": "xbabasdasd",
@@ -28,7 +27,6 @@
 
 ```json
 {
-    // "code": "402",
     "msg": "success",
     "result": {}
 }
@@ -37,12 +35,11 @@
 ### 保存别人的分享到个人仓库
 
 * Url: `/api/share_to_me/xbabasdasd[分享url]/233[个人仓库id，不填为根目录]/`
-* Method: `PUT`
+* Method: `POST`
 * Return: `json`
 
 ```json
 {
-    // "code": "403",
     "msg": "success",
     "result": {}
 }
