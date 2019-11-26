@@ -31,6 +31,7 @@ const routes = [
   //   component: File
   // },
   {
+    name: 'file',
     path: '/file/*',
     component: File
   },
