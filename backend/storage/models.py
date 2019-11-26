@@ -67,6 +67,10 @@ class Catalogue(MPTTModel):
         default=False,
         verbose_name="是否已经分享"
     )
+    modified_date = models.DateTimeField(
+        default=timezone.now,
+        verbose_name="修改日期"
+    )
 
     class Meta:
         verbose_name = verbose_name_plural = '目录'

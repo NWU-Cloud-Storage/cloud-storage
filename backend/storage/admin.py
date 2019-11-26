@@ -13,6 +13,7 @@ class MyFile(admin.ModelAdmin):
         'size',
         'date_joined',
         'reference_count',
+        'modified_date',
         'ban'
     )
 
