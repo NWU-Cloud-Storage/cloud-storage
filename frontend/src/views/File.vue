@@ -1,5 +1,35 @@
  <template>
     <div id="file">
+        <div v-if="checked.length">
+            <el-button>共享</el-button>
+            <el-button>下载</el-button>
+            <el-button>删除</el-button>
+            <el-button>移动到</el-button>
+            <el-button>复制到</el-button>
+            <el-button>重命名</el-button>
+        </div>
+        <div v-else>
+            <el-dropdown trigger="click">
+                <el-button>
+                    新建
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>文件夹</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+            <el-dropdown trigger="click">
+                <el-button>
+                    上传
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>文件</el-dropdown-item>
+                    <el-dropdown-item>文件夹</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+
         <el-breadcrumb separator-class="el-icon-arrow-right" id="fileNav">
             <el-breadcrumb-item
                 v-for="i in breadcrumbs"
@@ -31,7 +61,7 @@
                         <!-- {{ slotProps.row.isDirectory }} -->
                     </template>
                 </el-table-column>
-                <el-table-column prop="fileName" label="名称" width="180" column-key="fileName">
+                <el-table-column prop="fileName" label="名称" width="280" column-key="fileName">
                     <template v-slot="slotProps">
                         <router-link
                             :to="filePath(slotProps.$index)"
@@ -99,6 +129,7 @@ export default {
         },
         toggleSelection(row, column, event) {
             console.log(row, column, event);
+            this.$refs.fileTable.clearSelection();
             this.$refs.fileTable.toggleRowSelection(row);
         },
         handleSelectionChange(val) {
@@ -114,7 +145,7 @@ export default {
             // ["", "file", "文件夹1", "文件夹2", ""]
             // 可能存在效率问题
             this.breadcrumbs.splice(1);
-            let pathArray = this.$route.path.split('/');
+            let pathArray = this.$route.path.split("/");
             for (let i = 2; i < pathArray.length - 1; i++) {
                 let path = "";
                 let name = pathArray[i];
@@ -160,4 +191,18 @@ export default {
 /* .cell:hover {
     text-decoration: underline;
 } */
+
+.el-dropdown {
+    vertical-align: top;
+}
+.el-dropdown + .el-dropdown {
+    margin-left: 15px;
+}
+.el-icon-arrow-down {
+    font-size: 12px;
+}
+
+.el-breadcrumb {
+    margin: 20px 0px
+}
 </style>
