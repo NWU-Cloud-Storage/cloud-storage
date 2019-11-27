@@ -2,7 +2,6 @@
 存储功能app的models
 '''
 from django.db import models
-from django.utils import timezone
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 from django.db.models import F
@@ -54,13 +53,13 @@ class Catalogue(MPTTModel):
     )
     extension = models.CharField(
         max_length=12,
-        null=True, default=None,
+        null=True, blank=True, default=None,
         verbose_name="扩展名"
     )
     my_file = models.ForeignKey(
         MyFile,
         on_delete=models.CASCADE,
-        null=True, default=None,
+        null=True, blank=True, default=None,
         related_name='my_catalogue'
     )
     is_shared = models.BooleanField(
@@ -74,6 +73,20 @@ class Catalogue(MPTTModel):
 
     class Meta:
         verbose_name = verbose_name_plural = '目录'
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    models.Q(is_file__exact=True)
+                    & models.Q(my_file__isnull=False)
+                    & models.Q(extension__isnull=False)
+                ) | (
+                    models.Q(is_file__exact=False)
+                    & models.Q(my_file__isnull=True)
+                    & models.Q(extension__isnull=True)
+                ),
+                name='file_or_directory'
+            )
+        ]
 
     def __str__(self):
         return self.name
