@@ -9,4 +9,7 @@ class User(admin.ModelAdmin):
         'username',
         'nickname',
         'used_size',
+        'max_size',
+        'date_last_opt',
+        'token'
     )

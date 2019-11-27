@@ -19,9 +19,9 @@ class MyFile(models.Model):
     '''
     res_path = models.CharField(max_length=100, verbose_name="静态资源路径")
     size = models.BigIntegerField(verbose_name="文件大小")
-    date_joined = models.DateTimeField(verbose_name="创建时间", default=timezone.now)
+    date_joined = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
     reference_count = models.IntegerField(verbose_name="引用次数", default=0)
-    ban = models.BooleanField(verbose_name='禁用', default=False)
+    is_legal = models.BooleanField(verbose_name='是否合法', default=True)
 
     class Meta:
         verbose_name = verbose_name_plural = '文件'
@@ -54,21 +54,21 @@ class Catalogue(MPTTModel):
     )
     extension = models.CharField(
         max_length=12,
-        null=True, blank=True,
+        null=True, default=None,
         verbose_name="扩展名"
     )
     my_file = models.ForeignKey(
         MyFile,
         on_delete=models.CASCADE,
-        null=True, blank=True,
+        null=True, default=None,
         related_name='my_catalogue'
     )
     is_shared = models.BooleanField(
         default=False,
         verbose_name="是否已经分享"
     )
-    modified_date = models.DateTimeField(
-        default=timezone.now,
+    date_modified = models.DateTimeField(
+        auto_now=True,
         verbose_name="修改日期"
     )
 

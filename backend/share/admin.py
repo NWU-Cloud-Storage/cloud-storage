@@ -7,5 +7,6 @@ from .models import Share
 class Share(admin.ModelAdmin):
     list_display = (
         'url',
+        'is_unlimited',
         'expiration'
     )
