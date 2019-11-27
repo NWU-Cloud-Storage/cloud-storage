@@ -7,6 +7,10 @@ zjb/
 node_modules
 /front/dist
 
+### backend
+
+migrations/
+
 # local env files
 .env.local
 .env.*.local
