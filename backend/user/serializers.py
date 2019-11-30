@@ -18,4 +18,3 @@ class UserSerializer(serializers.Serializer):
         instance.nickname = validated_data.get('nickname', instance.nickname)
         instance.save()
         return instance
-

@@ -2,10 +2,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import User as UserModel
-from .serializers import UserSerializer
 
 from my_utils.utils import sub_dict
+
+from .models import User as UserModel
+from .serializers import UserSerializer
 
 
 # Create your views here.
