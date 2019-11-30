@@ -15,7 +15,7 @@
         "name": "日语学习资料",
         "is_file": false,
         "is_shared": false,
-        "modified_date": "2019-11-24"
+        "modified_date": "2019-11-30T15:34:42.257461+08:00"
     },{
         "id": 103,
         "name": "那个自由♂男人",
@@ -23,7 +23,7 @@
         "size": 10241024,
         "extension": "avi",
         "is_shared": false,
-        "modified_date": "2019-11-24"
+        "modified_date": "2019-11-30T15:34:42.257461+08:00"
     }
 ]
 ```
@@ -43,7 +43,7 @@
         "size": 101234,
         "extension": "mp4",
         "is_shared": false,
-        "modified_date": "2019-11-24"
+        "modified_date": "2019-11-30T15:34:42.257461+08:00"
     },{
         "id": 110,
         "name": "やばい! おフェロ女子",
@@ -51,13 +51,13 @@
         "size": 1021443,
         "extension": "flv",
         "is_shared": false,
-        "modified_date": "2019-11-24"
+        "modified_date": "2019-11-30T15:34:42.257461+08:00"
     },{
         "id": 78,
         "name": "最新写真集",
         "is_file": false,
         "is_shared": false,
-        "modified_date": "2019-11-24"
+        "modified_date": "2019-11-30T15:34:42.257461+08:00"
     }
 ]
 ```
@@ -154,7 +154,7 @@
         "name": "省下发文件",
         "is_file": false,
         "is_shared": false,
-        "modified_date": "2019-11-24"
+        "modified_date": "2019-11-30T15:34:42.257461+08:00"
     },{
         "id": 103,
         "name": "扫黄打飞注意事项",
@@ -162,7 +162,7 @@
         "size": 3150,
         "extension": "doc",
         "is_shared": false,
-        "modified_date": "2019-11-24"
+        "modified_date": "2019-11-30T15:34:42.257461+08:00"
     }
 ]
 ```
@@ -182,13 +182,13 @@
         "size": 51234,
         "extension": "doc",
         "is_shared": false,
-        "modified_date": "2019-11-24"
+        "modified_date": "2019-11-30T15:34:42.257461+08:00"
     },{
         "id": 220,
         "name": "《人民的名义》电视连续剧",
         "is_file": false,
         "is_shared": false,
-        "modified_date": "2019-11-24"
+        "modified_date": "2019-11-30T15:34:42.257461+08:00"
     }
 ]
 ```

@@ -121,11 +121,11 @@
     {
         "username": "2017110048",
         "nickname": "zjb",
-        "date_intented": "2017-12-12 08:12:12" //申请时间
+        "date_intented": "2019-11-30T15:34:42.257461+08:00" //申请时间
     },{
         "username": "9012110048",
         "nickname": "richzjb",
-        "date_intented": "2017-12-12 08:12:12"
+        "date_intented": "2019-11-30T15:34:42.257461+08:00"
     }
 ]
 ```
