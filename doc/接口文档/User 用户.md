@@ -6,15 +6,13 @@
 
 * Url: `/api/user/2017110048/`
 * Method: `GET`
-* Return: `json`
+* Return: `200 OK`
 
 ```json
 {
-    "msg": "success",
-    "result": {
-        "username": "2017110048",
-        "nickname": "zjb",
-    }
+    "username": "2017110048",
+    "nickname": "zjb",
+    "date_last_opt": "2019-11-30T15:34:42.257461+08:00", // 上次操作时间
 }
 ```
 
@@ -22,17 +20,15 @@
 
 * Url: `/api/user/`
 * Method: `GET`
-* Return: `json`
+* Return: `200 OK`
 
 ```json
 {
-    "msg": "success",
-    "result": {
-        "username": "2017110048",
-        "nickname": "zjb",
-        "max_size": 123123123,
-        "used_size": 123123,
-    }
+    "username": "2017110048",
+    "nickname": "zjb",
+    "max_size": 123123123,
+    "used_size": 123123,
+    "date_last_opt": "2019-11-30T15:34:42.257461+08:00"
 }
 ```
 
@@ -48,13 +44,10 @@
 }
 ```
 
-* Return: `json`
+* Return: `200 OK`
 
 ```json
-{
-    "msg": "success",
-    "result": {}
-}
+{}
 ```
 
 ### **登入**

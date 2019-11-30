@@ -6,79 +6,83 @@
 
 * Url: `/api/my_storage/`
 * Method: `GET`
-* Return: `json`
+* Return: `200 OK`
 
 ```json
-{
-    "status": "success",
-    "result":[
-        {
-            "id": 71,
-            "name": "日语学习资料",
-            "is_file": false,
-            "is_shared": false,
-            "modified_date": "2019-11-24"
-        },{
-            "id": 103,
-            "name": "那个自由♂男人",
-            "is_file": true,
-            "size": 10241024,
-            "extension": "avi",
-            "is_shared": false,
-            "modified_date": "2019-11-24"
-        }
-    ]
-}
+[
+    {
+        "id": 71,
+        "name": "日语学习资料",
+        "is_file": false,
+        "is_shared": false,
+        "modified_date": "2019-11-24"
+    },{
+        "id": 103,
+        "name": "那个自由♂男人",
+        "is_file": true,
+        "size": 10241024,
+        "extension": "avi",
+        "is_shared": false,
+        "modified_date": "2019-11-24"
+    }
+]
 ```
 
 ### 获取个人仓库某文件夹内容
 
 * Url: `/api/my_storage/71[目录id]/`
 * Method: `GET`
-* Return: `json`
+* Return: `200 OK`
 
 ```json
-{
-    "status": "success",
-    "result":[
-        {
-            "id": 109,
-            "name": "すごい AV机器",
-            "is_file": true,
-            "size": 101234,
-            "extension": "mp4",
-            "is_shared": false,
-            "modified_date": "2019-11-24"
-        },{
-            "id": 110,
-            "name": "やばい! おフェロ女子",
-            "is_file": true,
-            "size": 1021443,
-            "extension": "flv",
-            "is_shared": false,
-            "modified_date": "2019-11-24"
-        },{
-            "id": 78,
-            "name": "最新写真集",
-            "is_file": false,
-            "is_shared": false,
-            "modified_date": "2019-11-24"
-        }
-    ]
-}
+[
+    {
+        "id": 109,
+        "name": "すごい AV机器",
+        "is_file": true,
+        "size": 101234,
+        "extension": "mp4",
+        "is_shared": false,
+        "modified_date": "2019-11-24"
+    },{
+        "id": 110,
+        "name": "やばい! おフェロ女子",
+        "is_file": true,
+        "size": 1021443,
+        "extension": "flv",
+        "is_shared": false,
+        "modified_date": "2019-11-24"
+    },{
+        "id": 78,
+        "name": "最新写真集",
+        "is_file": false,
+        "is_shared": false,
+        "modified_date": "2019-11-24"
+    }
+]
 ```
 
 ### 删除个人仓库某文件(夹)
 
-* Url: `/api/my_storage/71/`
+* Url: `/api/my_storage/`
 * Method: `DELETE`
-* Return: `json`
+* Body: `json`
 
 ```json
 {
-    "status": "success",
-    "result":{}
+    "id": //[源目录id]
+    [
+        12,
+        13,
+        14
+    ]
 }
+```
+
+* Return: `200 OK`
+
+```json
+{}
 ```
 
 ### 修改个人仓库某文件(夹)
@@ -95,113 +99,121 @@
 }
 ```
 
-* Return: `json`
+* Return: `200 OK`
 
 ```json
-{
-    "status": "success",
-    "result":{}
-}
+{}
 ```
 
 ### 在个人仓库新建文件夹
 
 * Url: `/api/my_storage/71/`
 * Method: `POST`
-* Return: `json`
+* Return: `200 OK`
 
 ```json
 {
-    "status": "success",
-    "result":{
-        "id": 74,
-        "name": "新建文件夹"
-    }
+    "id": 74,
+    "name": "新建文件夹"
 }
 ```
 
 ### 移动个人仓库文件(夹)
 
-* Url: `/api/my_storage/98/99/`
+* Url: `/api/my_storage/99/`
 * Method: `PUT`
-* Return: `json`
+* Body: `json`
 
 ```json
 {
-    "status": "success",
-    "result":{}
+    "id": //[源目录id]
+    [
+        12,
+        13,
+        14
+    ]
 }
+```
+
+* Return: `200 OK`
+
+```json
+{}
 ```
 
 ### 获取某群组仓库根目录
 
 * Url: `/api/group_storage/3[群组id]/`
 * Method: `GET`
-* Return: `json`
+* Return: `200 OK`
 
 ```json
-{
-    "status": "success",
-    "result":[
-        {
-            "id": 98,
-            "name": "省下发文件",
-            "is_file": false,
-            "is_shared": false,
-            "modified_date": "2019-11-24"
-        },{
-            "id": 103,
-            "name": "扫黄打飞注意事项",
-            "is_file": true,
-            "size": 3150,
-            "extension": "doc",
-            "is_shared": false,
-            "modified_date": "2019-11-24"
-        }
-    ]
-}
+[
+    {
+        "id": 98,
+        "name": "省下发文件",
+        "is_file": false,
+        "is_shared": false,
+        "modified_date": "2019-11-24"
+    },{
+        "id": 103,
+        "name": "扫黄打飞注意事项",
+        "is_file": true,
+        "size": 3150,
+        "extension": "doc",
+        "is_shared": false,
+        "modified_date": "2019-11-24"
+    }
+]
 ```
 
 ### 获取某群组仓库某文件夹内容
 
 * Url: `/api/group_storage/3[群组id]/98[目录id]/`
 * Method: `GET`
-* Return: `json`
+* Return: `200 OK`
 
 ```json
-{
-    "status": "success",
-    "result":[
-        {
-            "id": 219,
-            "name": "钓鱼执法的必要性",
-            "is_file": true,
-            "size": 51234,
-            "extension": "doc",
-            "is_shared": false,
-            "modified_date": "2019-11-24"
-        },{
-            "id": 220,
-            "name": "《人民的名义》电视连续剧",
-            "is_file": false,
-            "is_shared": false,
-            "modified_date": "2019-11-24"
-        }
-    ]
-}
+[
+    {
+        "id": 219,
+        "name": "钓鱼执法的必要性",
+        "is_file": true,
+        "size": 51234,
+        "extension": "doc",
+        "is_shared": false,
+        "modified_date": "2019-11-24"
+    },{
+        "id": 220,
+        "name": "《人民的名义》电视连续剧",
+        "is_file": false,
+        "is_shared": false,
+        "modified_date": "2019-11-24"
+    }
+]
 ```
 
 ### 删除某群组仓库某文件(夹)
 
-* Url: `/api/group_storage/3/98/`
+* Url: `/api/group_storage/98/`
 * Method: `DELETE`
-* Return: `json`
+* Body: `json`
 
 ```json
 {
-    "status": "success",
-    "result":{}
+    "id": //[源目录id]
+    [
+        12,
+        13,
+        14
+    ]
 }
+```
+
+* Return: `200 OK`
+
+```json
+{}
 ```
 
 ### 修改某群组仓库某文件(夹)
@@ -218,28 +230,22 @@
 }
 ```
 
-* Return: `json`
+* Return: `200 OK`
 
 ```json
-{
-    "status": "success",
-    "result":{}
-}
+{}
 ```
 
 ### 在群组仓库新建文件夹
 
 * Url: `/api/group_storage/3/98/`
 * Method: `POST`
-* Return: `json`
+* Return: `200 OK`
 
 ```json
 {
-    "status": "success",
-    "result":{
-        "id": 100,
-        "name": "新建文件夹"
-    }
+    "id": 100,
+    "name": "新建文件夹"
 }
 ```
 
@@ -247,13 +253,23 @@
 
 * Url: `/api/group_storage/3/98/99/`
 * Method: `PUT`
-* Return: `json`
+* Body: `json`
 
 ```json
 {
-    "status": "success",
-    "result":{}
+    "id": //[源目录id]
+    [
+        12,
+        13,
+        14
+    ]
 }
+```
+
+* Return: `200 OK`
+
+```json
+{}
 ```
 
 ### **上传文件**
