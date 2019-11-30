@@ -1,13 +1,11 @@
-from django.http import JsonResponse
-
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from my_utils.utils import sub_dict
-
 from .models import User as UserModel
 from .serializers import UserSerializer
+
+from my_utils.utils import sub_dict
 
 
 # Create your views here.
@@ -29,20 +27,15 @@ class User(APIView):
         if username is None: # 获取个人全部资料
             user = request.user.user
             serializer = UserSerializer(user)
-            data = serializer.data
-            keys = ['username', 'nickname', 'max_size', 'used_size', 'date_last_opt']
-            ret = sub_dict(data, keys)
-            return Response(ret, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request):
         '''
         修改个人资料
         '''
-        keys = ['nickname',]
-        data = sub_dict(request.POST, keys)
         user = request.user.user
-        serializer = UserSerializer(user, data=data)
+        serializer = UserSerializer(user, data=request.POST)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
