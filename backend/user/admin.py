@@ -10,6 +10,5 @@ class User(admin.ModelAdmin):
         'nickname',
         'used_size',
         'max_size',
-        'date_last_opt',
-        'token'
+        'date_last_opt'
     )
