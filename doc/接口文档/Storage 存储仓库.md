@@ -120,7 +120,7 @@
 
 ### 移动个人仓库文件(夹)
 
-* Url: `/api/my_storage/99/`
+* Url: `/api/my_storage/move/99/`
 * Method: `PUT`
 * Body: `json`
 
@@ -251,7 +251,7 @@
 
 ### 移动群组仓库文件(夹)
 
-* Url: `/api/group_storage/3/98/99/`
+* Url: `/api/group_storage/move/3/99/`
 * Method: `PUT`
 * Body: `json`
 
