@@ -4,7 +4,7 @@
 
 ### 获取个人全部群组
 
-* Url: `/api/my_group/`
+* Url: `/api/my-group/`
 * Method: `GET`
 * Return: `200 OK`
 
@@ -13,20 +13,20 @@
     {
         "id": 3,
         "name": "重案六组",
-        "member_number": 60,
-        "my_permission": "master"
+        "num_of_members": 60,
+        "permission": "master"
     },{
         "id": 12,
         "name": "日语资料分享群",
-        "member_number": 122,
-        "my_permission": "memeber"
+        "num_of_members": 122,
+        "permission": "memeber"
     }
 ]
 ```
 
 ### 获取某群组详细信息
 
-* Url: `/api/my_group/12/`
+* Url: `/api/my-group/12/`
 * Method: `GET`
 * Return: `200 OK`
 
@@ -34,7 +34,7 @@
 {
     "id": 12,
     "name": "日语资料分享群",
-    "member_number": 122,
+    "num_of_members": 122,
     "members": [
         {
             "username": "2017110048",
@@ -51,7 +51,7 @@
 
 ### 修改某群组信息
 
-* Url: `/api/my_group/12/`
+* Url: `/api/my-group/12/`
 * Method: `PUT`
 * Body: `json`
 
@@ -69,7 +69,7 @@
 
 ### 建立一个新群组
 
-* Url: `/api/my_group/`
+* Url: `/api/my-group/`
 * Method: `POST`
 * Return: `200 OK`
 
@@ -80,15 +80,29 @@
 }
 ```
 
-### 解散一个群组
+### 解散/退出一个群组
 
-* Url: `/api/my_group/36/`
+* Url: `/api/my-group/36/`
 * Method: `DELETE`
 * Return: `200 OK`
 
 ```json
 {}
 ```
+
+### 修改成员权限
+
+* Url: `/api/membership/36[群组id]/9012123456[用户名]/`
+* Method: `PUT`
+* Body: `json`
+
+```json
+{
+    "premission": "manager" // "member"
+}
+```
+
+* Return: `200 OK`
 
 ### 踢掉一个成员
 
