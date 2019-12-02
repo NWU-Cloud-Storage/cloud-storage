@@ -6,12 +6,12 @@ from .models import Group, Membership, Intention
 
 @admin.register(Group)
 class Group(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('pk', 'name', 'num_of_members')
     fields = ('name',)
 
 @admin.register(Membership)
 class Membership(admin.ModelAdmin):
-    list_display = ('id', 'group_name', 'user_name', 'permission')
+    list_display = ('group_name', 'user_name', 'permission')
     fields = ('group', 'user', 'permission')
 
     def group_name(self, obj):
@@ -24,8 +24,8 @@ class Membership(admin.ModelAdmin):
 
 @admin.register(Intention)
 class Intention(admin.ModelAdmin):
-    list_display = ('id', 'group_name', 'user_name', 'date_intended')
-    fields = ('group', 'user', 'date_intended')
+    list_display = ('group_name', 'user_name', 'date_intended')
+    fields = ('group', 'user')
 
     def group_name(self, obj):
         return obj.group
