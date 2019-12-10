@@ -4,18 +4,13 @@
             <el-button>共享</el-button>
             <el-button>下载</el-button>
             <el-button @click="delete_file">删除</el-button>
-            <el-button @click="dialog_visible = true">移动到</el-button>
+            <el-button @click="treeview_dialog.visible = true">移动到</el-button>
             <el-button>复制到</el-button>
             <el-button>重命名</el-button>
 
-            <TreeView title="将项目移动到"></TreeView>
-            <!-- <el-dialog title="将项目移动到" :visible.sync="dialogVisible" width="30%">
-                <el-tree :props="props" :load="loadNode" lazy></el-tree>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-                </span>
-            </el-dialog>-->
+            <TreeView title="将项目移动到" :dialog_visible.sync="treeview_dialog.visible"></TreeView>
+            <TreeView title="将项目复制到" :dialog_visible.sync="treeview_dialog.visible"></TreeView>
+
         </div>
         <div v-else>
             <el-dropdown trigger="click">
@@ -105,18 +100,9 @@ export default {
             path: "",
             apiPath: "",
             loading: false,
-            dialog_visible: false,
-            props: {
-                label: "directory_name",
-                children: "zones",
-                isLeaf: "leaf"
+            treeview_dialog: {
+                visible: false
             }
-        };
-    },
-    provide: function() {
-        console.log(this.dialog_visible)
-        return {
-            dialog_visible: this.dialog_visible
         };
     },
     created() {
