@@ -1,12 +1,21 @@
  <template>
     <div id="file">
-        <div v-if="checked.length">
+        <div v-if="selected_file.length">
             <el-button>共享</el-button>
             <el-button>下载</el-button>
-            <el-button>删除</el-button>
-            <el-button>移动到</el-button>
+            <el-button @click="delete_file">删除</el-button>
+            <el-button @click="dialog_visible = true">移动到</el-button>
             <el-button>复制到</el-button>
             <el-button>重命名</el-button>
+
+            <TreeView title="将项目移动到"></TreeView>
+            <!-- <el-dialog title="将项目移动到" :visible.sync="dialogVisible" width="30%">
+                <el-tree :props="props" :load="loadNode" lazy></el-tree>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                </span>
+            </el-dialog>-->
         </div>
         <div v-else>
             <el-dropdown trigger="click">
@@ -51,22 +60,22 @@
                 @cell-click="handleCellClick"
             >
                 <el-table-column width="50" type="selection"></el-table-column>
-                <el-table-column width="50" prop="isDirectory">
+                <el-table-column width="50" prop="is_file">
                     <template v-slot:header>
                         <i class="el-icon-files"></i>
                     </template>
                     <template v-slot:="slotProps">
-                        <i v-if="slotProps.row.isDirectory" class="el-icon-folder"></i>
-                        <i v-else class="el-icon-document" />
+                        <i v-if="slotProps.row.is_file" class="el-icon-document"></i>
+                        <i v-else class="el-icon-folder" />
                         <!-- {{ slotProps.row.isDirectory }} -->
                     </template>
                 </el-table-column>
-                <el-table-column prop="fileName" label="名称" width="280" column-key="fileName">
+                <el-table-column prop="name" label="名称" width="280" column-key="fileName">
                     <template v-slot="slotProps">
                         <router-link
                             :to="filePath(slotProps.$index)"
                             @click.native="addBreadcrumbElement(slotProps.$index)"
-                        >{{ slotProps.row.fileName }}</router-link>
+                        >{{ slotProps.row.name }}</router-link>
                         <!-- {{ slotProps.$index }} -->
                     </template>
                 </el-table-column>
@@ -81,17 +90,33 @@
 
 <script>
 import axios from "axios";
+import TreeView from "./components/TreeView.vue";
 
 export default {
+    components: {
+        TreeView
+    },
     data() {
         return {
-            checked: [],
+            selected_file: [], // 选中的文件
             info: "",
             tableData: [],
             breadcrumbs: [{ id: 0, path: "/file/", name: "文件" }],
             path: "",
             apiPath: "",
-            loading: false
+            loading: false,
+            dialog_visible: false,
+            props: {
+                label: "directory_name",
+                children: "zones",
+                isLeaf: "leaf"
+            }
+        };
+    },
+    provide: function() {
+        console.log(this.dialog_visible)
+        return {
+            dialog_visible: this.dialog_visible
         };
     },
     created() {
@@ -104,6 +129,7 @@ export default {
         $route() {
             this.fetchData();
             this.setBreadcrumbFromRoute();
+            this.selected_file.splice(0);
         }
     },
     filters: {
@@ -119,9 +145,10 @@ export default {
             axios
                 .get(this.apiPath)
                 .then(response => {
-                    this.tableData = response.data.data;
+                    this.tableData = response.data;
                     // this.info = response;
                     this.loading = false;
+                    console.log(response);
                 })
                 .catch(error => console.log(error));
             // console.log(this.path);
@@ -133,13 +160,13 @@ export default {
             this.$refs.fileTable.toggleRowSelection(row);
         },
         handleSelectionChange(val) {
-            this.checked = val;
+            this.selected_file = val;
         },
         handleCellClick(row, column, cell, event) {
             console.log(cell);
         },
         filePath(index) {
-            return this.$route.path + this.tableData[index].fileName + "/";
+            return this.$route.path + this.tableData[index].name + "/";
         },
         setBreadcrumbFromRoute() {
             // ["", "file", "文件夹1", "文件夹2", ""]
@@ -173,7 +200,44 @@ export default {
         deleteBreadcrumb(index) {
             // console.log(index);
             // this.breadcrumbs.splice(index+1);
-        } // 以上两个方法暂时被setBreadcrumbFromRoute替代
+        }, // 以上两个方法暂时被setBreadcrumbFromRoute替代
+        delete_file() {
+            this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            })
+                .then(() => {
+                    this.$message({
+                        type: "success",
+                        message: "删除成功!"
+                    });
+                })
+                .catch(() => {
+                    this.$message({
+                        type: "info",
+                        message: "已取消删除"
+                    });
+                });
+        },
+        loadNode(node, resolve) {
+            if (node.level === 0) {
+                return resolve([{ directory_name: "region" }]);
+            }
+            if (node.level > 1) return resolve([]);
+
+            setTimeout(() => {
+                const data = [
+                    {
+                        directory_name: "leaf"
+                    },
+                    {
+                        directory_name: "zone"
+                    }
+                ];
+                resolve(data);
+            }, 500);
+        }
     },
     computed: {}
 };
@@ -203,6 +267,6 @@ export default {
 }
 
 .el-breadcrumb {
-    margin: 20px 0px
+    margin: 20px 0px;
 }
 </style>
