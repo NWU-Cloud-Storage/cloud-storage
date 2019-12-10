@@ -12,23 +12,9 @@
   * Status Code: 200 OK
 
     ```json
-    [
-        {
-            "id": 71,
-            "name": "日语学习资料",
-            "is_file": false,
-            "is_shared": false,
-            "modified_date": "2019-11-30T15:34:42.257461+08:00"
-        },{
-            "id": 103,
-            "name": "那个自由♂男人",
-            "is_file": true,
-            "size": 10241024,
-            "extension": "avi",
-            "is_shared": false,
-            "modified_date": "2019-11-30T15:34:42.257461+08:00"
-        }
-    ]
+    {
+        "id": 100
+    }
     ```
 
 ### 获取个人仓库某文件夹内容
@@ -41,31 +27,39 @@
   * Status Code: 200 OK
 
     ```json
-    [
-        {
-            "id": 109,
-            "name": "すごい AV机器",
-            "is_file": true,
-            "size": 101234,
-            "extension": "mp4",
-            "is_shared": false,
-            "modified_date": "2019-11-30T15:34:42.257461+08:00"
-        },{
-            "id": 110,
-            "name": "やばい! おフェロ女子",
-            "is_file": true,
-            "size": 1021443,
-            "extension": "flv",
-            "is_shared": false,
-            "modified_date": "2019-11-30T15:34:42.257461+08:00"
-        },{
-            "id": 78,
-            "name": "最新写真集",
-            "is_file": false,
-            "is_shared": false,
-            "modified_date": "2019-11-30T15:34:42.257461+08:00"
-        }
-    ]
+    {
+        "breadcrumbs": [
+            {
+                "id": 100,
+                "name": "File"
+            }
+        ],
+        "content": [
+            {
+                "id": 109,
+                "name": "すごい AV机器",
+                "is_file": true,
+                "size": 101234,
+                "extension": "mp4",
+                "is_shared": false,
+                "modified_date": "2019-11-30T15:34:42.257461+08:00"
+            },{
+                "id": 110,
+                "name": "やばい! おフェロ女子",
+                "is_file": true,
+                "size": 1021443,
+                "extension": "flv",
+                "is_shared": false,
+                "modified_date": "2019-11-30T15:34:42.257461+08:00"
+            },{
+                "id": 78,
+                "name": "最新写真集",
+                "is_file": false,
+                "is_shared": false,
+                "modified_date": "2019-11-30T15:34:42.257461+08:00"
+            }
+        ]
+    }
     ```
 
 ### 删除个人仓库某文件(夹)
@@ -88,6 +82,7 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### 修改个人仓库某文件(夹)
@@ -107,6 +102,7 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### 在个人仓库新建文件夹
@@ -146,6 +142,7 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### 获取某群组仓库根目录
@@ -225,6 +222,7 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### 修改某群组仓库某文件(夹)
@@ -243,6 +241,7 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### 在群组仓库新建文件夹
@@ -282,6 +281,7 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### **上传文件**
