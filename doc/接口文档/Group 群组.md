@@ -4,42 +4,43 @@
 
 ### 获取个人全部群组
 
-* Url: `/api/my_group/`
-* Method: `GET`
-* Return: `json`
+* Request
+  * Url: `/api/my-group/`
+  * Method: GET
 
-```json
-{
-    "msg": "success",
-    "result":[
+* Response
+  * Status Code: 200 OK
+
+    ```json
+    [
         {
             "id": 3,
             "name": "重案六组",
-            "member_number": 60,
-            "my_permission": "master"
+            "num_of_members": 60,
+            "permission": "master"
         },{
             "id": 12,
             "name": "日语资料分享群",
-            "member_number": 122,
-            "my_permission": "memeber"
+            "num_of_members": 122,
+            "permission": "memeber"
         }
     ]
-}
-```
+    ```
 
 ### 获取某群组详细信息
 
-* Url: `/api/my_group/12/`
-* Method: `GET`
-* Return: `json`
+* Request
+  * Url: `/api/my-group/12/`
+  * Method: GET
 
-```json
-{
-    "msg": "success",
-    "result": {
+* Response
+  * Status Code: 200 OK
+
+    ```json
+    {
         "id": 12,
         "name": "日语资料分享群",
-        "member_number": 122,
+        "num_of_members": 122,
         "members": [
             {
                 "username": "2017110048",
@@ -52,130 +53,121 @@
             }
         ]
     }
-}
-```
+    ```
 
 ### 修改某群组信息
 
-* Url: `/api/my_group/12/`
-* Method: `PUT`
-* Body: `json`
+* Request
+  * Url: `/api/my-group/12/`
+  * Method: PUT
+  * Content-Type: application/json
+  * Body:
 
-```json
-{
-    "name": "正经学习群",
-}
-```
+    ```json
+    {
+        "name": "正经学习群",
+    }
+    ```
 
-* Return: `json`
-
-```json
-{
-    "msg": "success",
-    "result": {}
-}
-```
+* Response
+  * Status Code: 200 OK
 
 ### 建立一个新群组
 
-* Url: `/api/my_group/`
-* Method: `POST`
-* Return: `json`
+* Request
+  * Url: `/api/my-group/`
+  * Method: POST
+* Response
+  * Status Code: 200 OK
 
-```json
-{
-    "msg": "success",
-    "result": {
+    ```json
+    {
         "id": 36,
         "name": "zjb的小组"
     }
-}
-```
+    ```
 
-### 解散一个群组
+### 解散/退出一个群组
 
-* Url: `/api/my_group/36/`
-* Method: `DELETE`
-* Return: `json`
+* Request
+  * Url: `/api/my-group/36/`
+  * Method: DELETE
 
-```json
-{
-    "msg": "success",
-    "result": {}
-}
-```
+* Response
+  * Status Code: 200 OK
+
+### 修改成员权限
+
+* Request
+  * Url: `/api/membership/36[群组id]/9012123456[用户名]/`
+  * Method: PUT
+  * Content-Type: application/json
+  * Body:
+
+    ```json
+    {
+        "premission": "manager" // "member"
+    }
+    ```
+
+* Response
+  * Status Code: 200 OK
 
 ### 踢掉一个成员
 
-* Url: `/api/membership/36[群组id]/9012123456[用户名]/`
-* Method: `DELETE`
-* Return: `json`
+* Request
+  * Url: `/api/membership/36[群组id]/9012123456[用户名]/`
+  * Method: DELETE
 
-```json
-{
-    "msg": "success",
-    "result": {}
-}
-```
+* Response
+  * Status Code: 200 OK
 
 ### 请求加入一个群
 
-* Url: `/api/intention/36/`
-* Method: `POST`
-* Return: `json`
+* Request
+  * Url: `/api/intention/36/`
+  * Method: POST
 
-```json
-{
-    "msg": "success",
-    "result": {}
-}
-```
+* Response
+  * Status Code: 200 OK
 
 ### 查看某群的请求加入列表
 
-* Url: `/api/intention/36/`
-* Method: `GET`
-* Return: `json`
+* Request
+  * Url: `/api/intention/36/`
+  * Method: GET
+
+* Response
+  * Status Code: 200 OK
 
 ```json
-{
-    "msg": "success",
-    "result": [
-        {
-            "username": "2017110048",
-            "nickname": "zjb",
-            "date_intented": "2017-12-12 08:12:12" //申请时间
-        },{
-            "username": "9012110048",
-            "nickname": "richzjb",
-            "date_intented": "2017-12-12 08:12:12"
-        }
-    ]
-}
+[
+    {
+        "username": "2017110048",
+        "nickname": "zjb",
+        "date_intented": "2019-11-30T15:34:42.257461+08:00" //申请时间
+    },{
+        "username": "9012110048",
+        "nickname": "richzjb",
+        "date_intented": "2019-11-30T15:34:42.257461+08:00"
+    }
+]
 ```
 
 ### 同意某人的加入申请
 
-* Url: `/api/intention/36/2017110048/`
-* Method: `POST`
-* Return: `json`
+* Request
+  * Url: `/api/intention/36/2017110048/`
+  * Method: POST
 
-```json
-{
-    "msg": "success",
-    "result": {}
-}
-```
+* Response
+  * Status Code: 200 OK
 
 ### 拒绝某人的加入申请
 
-* Url: `api/intention/36/2017110048/`
-* Method: `DELETE`
-* Return: `json`
+* Request
+  * Url: `api/intention/36/2017110048/`
+  * Method: DELETE
 
-```json
-{
-    "msg": "success",
-    "result": {}
-}
-```
+* Response
+  * Status Code: 200 OK
