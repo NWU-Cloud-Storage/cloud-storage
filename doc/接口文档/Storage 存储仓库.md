@@ -144,6 +144,30 @@
 * Response
   
   * Status Code: 200 OK
+  
+  ### 复制个人仓库文件(夹)
+  
+* Request
+  * Url: `/api/my-storage/copy/`
+  * Method: PUT
+  * Content-Type: application/json
+  * Body:
+
+    ```json
+    {
+        "source_id":
+        [
+            12,
+            13,
+            14
+        ],
+        "destination_id": 10
+    }
+    ```
+
+* Response
+
+  * Status Code: 200 OK
 
 ### 获取某群组仓库根目录
 
