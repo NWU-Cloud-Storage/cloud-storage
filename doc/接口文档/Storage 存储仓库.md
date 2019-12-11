@@ -1,71 +1,52 @@
-# 前后端接口设计说明书
+# Storage 存储仓库
 
-## Storage 存储仓库
+## ## 个人仓库
 
-### 获取个人仓库根目录
+### 获取个人仓库内容
 
 * Request
-  * Url: `/api/my-storage/`
+  * Url: `/api/my-storage/71[目录id]/`或`/api/my-storage/`
   * Method: GET
 
 * Response
   * Status Code: 200 OK
 
+  * 面包屑的顺序为从根目录向下直到自身
+  
     ```json
-    [
-        {
-            "id": 71,
-            "name": "日语学习资料",
-            "is_file": false,
-            "is_shared": false,
-            "modified_date": "2019-11-30T15:34:42.257461+08:00"
-        },{
-            "id": 103,
-            "name": "那个自由♂男人",
-            "is_file": true,
-            "size": 10241024,
-            "extension": "avi",
-            "is_shared": false,
-            "modified_date": "2019-11-30T15:34:42.257461+08:00"
-        }
-    ]
-    ```
-
-### 获取个人仓库某文件夹内容
-
-* Request
-  * Url: `/api/my-storage/71[目录id]/`
-  * Method: GET
-
-* Response
-  * Status Code: 200 OK
-
-    ```json
-    [
-        {
-            "id": 109,
-            "name": "すごい AV机器",
-            "is_file": true,
-            "size": 101234,
-            "extension": "mp4",
-            "is_shared": false,
-            "modified_date": "2019-11-30T15:34:42.257461+08:00"
-        },{
-            "id": 110,
-            "name": "やばい! おフェロ女子",
-            "is_file": true,
-            "size": 1021443,
-            "extension": "flv",
-            "is_shared": false,
-            "modified_date": "2019-11-30T15:34:42.257461+08:00"
-        },{
-            "id": 78,
-            "name": "最新写真集",
-            "is_file": false,
-            "is_shared": false,
-            "modified_date": "2019-11-30T15:34:42.257461+08:00"
-        }
-    ]
+    {
+        "breadcrumbs": [
+            {
+                "id": 100,
+                "name": "File"
+            }
+        ],
+        "content": [
+            {
+                "id": 109,
+                "name": "すごい AV机器",
+                "is_file": true,
+                "size": 101234,
+                "extension": "mp4",
+                "is_shared": false,
+                "modified_date": "2019-11-30T15:34:42.257461+08:00"
+            },{
+                "id": 110,
+                "name": "やばい! おフェロ女子",
+                "is_file": true,
+                "size": 1021443,
+                "extension": "flv",
+                "is_shared": false,
+                "modified_date": "2019-11-30T15:34:42.257461+08:00"
+            },{
+                "id": 78,
+                "name": "最新写真集",
+                "is_file": false,
+                "is_shared": false,
+                "modified_date": "2019-11-30T15:34:42.257461+08:00"
+            }
+        ]
+    }
     ```
 
 ### 删除个人仓库某文件(夹)
@@ -88,6 +69,7 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### 修改个人仓库某文件(夹)
@@ -107,6 +89,7 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### 在个人仓库新建文件夹
@@ -146,7 +129,44 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
+  
+  
+  
+### 复制个人仓库文件(夹)
+
+* Request
+  * Url: `/api/my-storage/copy/`
+  * Method: PUT
+  * Content-Type: application/json
+  * Body:
+
+    ```json
+    {
+        "source_id":
+        [
+            12,
+            13,
+            14
+        ],
+        "destination_id": 10
+    }
+    ```
+
+* Response
+
+  * Status Code: 200 OK
+
+### **上传文件**
+
+？
+
+### **下载文件**
+
+?
+
+## 群组仓库
 
 ### 获取某群组仓库根目录
 
@@ -225,6 +245,7 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### 修改某群组仓库某文件(夹)
@@ -243,6 +264,7 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### 在群组仓库新建文件夹
@@ -282,12 +304,7 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
-### **上传文件**
 
-？
-
-### **下载文件**
-
-?

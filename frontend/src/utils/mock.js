@@ -1,36 +1,62 @@
 import Mock from 'mockjs'
 
 // const Random = Mock.Random;
+Mock.setup({
+    timeout: 800
+})
 //使用mockjs模拟数据
-Mock.mock('/api/data', () => {//当post或get请求到/api/data路由时Mock会拦截请求并返回上面的数据
-    let list = [];
-    let listObject1 = {
-        fileName: "文件夹1",
-        modifiedDate: "2019-11-25",
-        shareStatus: "私有",
-        size: "",
-        isDirectory: true
-    };
-    let listObject2 = {
-        fileName: "文件1",
-        modifiedDate: "2019-11-25",
-        shareStatus: "私有",
-        size: "1.5MB",
-        isDirectory: false
-    };
-    list.push(listObject1);
-    list.push(listObject2);
-    // for(let i = 0; i < 30; i++) {
-    //     let listObject = {
-    //         fileName: Random.cname(),
-    //         modifiedDate: Random.date(),
-    //         shareStatus: Random.boolean() ? "私有" : "已共享",
-    //         size: Random.float(0, 100),
-    //         isDirectory: Random.boolean()
-    //     }
-    //     list.push(listObject);
-    // }
-    return {
-        data: list
-    }
+Mock.mock('/api/file/', () => {//当post或get请求到/api/data路由时Mock会拦截请求并返回上面的数据
+    return [
+        {
+            "id": 71,
+            "name": "文件夹1",
+            "is_file": false,
+            "is_shared": false,
+            "modified_date": "2019-11-24"
+        }, {
+            "id": 103,
+            "name": "那个自由♂男人",
+            "is_file": true,
+            "size": 10241024,
+            "extension": "avi",
+            "is_shared": false,
+            "modified_date": "2019-11-24"
+        }
+    ]
+})
+
+Mock.mock('/api/file/71/', () => {
+    return [
+        {
+            "id": 72,
+            "name": "文件夹2",
+            "is_file": false,
+            "is_shared": false,
+            "modified_date": "2019-11-24"
+        }, {
+            "id": 104,
+            "name": "文件2",
+            "is_file": true,
+            "size": 10241024,
+            "extension": "avi",
+            "is_shared": false,
+            "modified_date": "2019-11-24"
+        }
+    ]
+})
+
+Mock.mock('/api/file/72/', () => {
+    return [{
+        "id": 106,
+        "name": "文件3",
+        "is_file": true,
+        "size": 10241024,
+        "extension": "avi",
+        "is_shared": false,
+        "modified_date": "2019-11-24"
+    }]
+})
+
+Mock.mock('/api/test/', () => {
+    return
 })
