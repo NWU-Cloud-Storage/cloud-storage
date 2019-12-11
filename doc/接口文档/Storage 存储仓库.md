@@ -2,30 +2,17 @@
 
 ## ## 个人仓库
 
-### 获取个人仓库根目录
+### 获取个人仓库内容
 
 * Request
-  * Url: `/api/my-storage/`
+  * Url: `/api/my-storage/71[目录id]/`或`/api/my-storage/`
   * Method: GET
 
 * Response
   * Status Code: 200 OK
 
-    ```json
-    {
-        "id": 100
-    }
-    ```
-
-### 获取个人仓库某文件夹内容
-
-* Request
-  * Url: `/api/my-storage/71[目录id]/`
-  * Method: GET
-
-* Response
-  * Status Code: 200 OK
-
+  * 面包屑的顺序为从根目录向下直到自身
+  
     ```json
     {
         "breadcrumbs": [
