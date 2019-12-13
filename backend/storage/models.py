@@ -2,11 +2,15 @@
 存储功能app的models
 '''
 from django.db import models
+from django.db.models import F
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
-from django.db.models import F
+
 
 from mptt.models import MPTTModel, TreeForeignKey
+
+from group.models import Group
+from user.models import User
 
 
 class MyFile(models.Model):
@@ -27,6 +31,31 @@ class MyFile(models.Model):
 
     def __str__(self):
         return self.res_path
+
+# class CatalogueManager(models.Manager):
+#     '''
+#     目录管理器
+#     '''
+#     def create_root_by_user(self, user):
+#         '''为用户创建一个根目录（仓库）'''
+#         return self.create(
+#             name='user '+str(user.username)+' root',
+#             user=user
+#         )
+#     def create_root_by_group(self, group):
+#         '''为群组创建一个根目录（仓库）'''
+#         return self.create(
+#             name='group '+str(group.id)+' root',
+#             group=group
+#         )
+#     def create_by_parent(self, name, parent, my_file=None, extension=None):
+#         '''创建一个子文件夹'''
+#         if my_file:
+#             return self.create(
+#                 name=name, parent=parent,
+#                 is_file=True, my_file=my_file, extension=extension
+#             )
+#         return self.create(name=name, parent=parent)
 
 class Catalogue(MPTTModel):
     '''
@@ -70,6 +99,18 @@ class Catalogue(MPTTModel):
         auto_now=True,
         verbose_name="修改日期"
     )
+    group = models.OneToOneField(
+        Group,
+        on_delete=models.CASCADE,
+        null=True, blank=True, default=None,
+        related_name='storage'
+    )
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        null=True, blank=True, default=None,
+        related_name='storage'
+    )
 
     class Meta:
         verbose_name = verbose_name_plural = '目录'
@@ -85,11 +126,36 @@ class Catalogue(MPTTModel):
                     & models.Q(extension__isnull=True)
                 ),
                 name='file_or_directory'
+            ),
+            models.CheckConstraint(
+                check=(
+                    models.Q(user__isnull=True) | models.Q(group__isnull=True)
+                ),
+                name='user_or_group'
             )
         ]
 
+    # objects = CatalogueManager()
+
     def __str__(self):
         return self.name
+
+    def copy_to(self, target):
+        '''
+        递归拷贝。
+        调用之前一定要做检查，防止死循环。
+        可以使用check_des_not_src_children
+        '''
+        new_cata = Catalogue(
+            name=self.name,
+            is_file=self.is_file,
+            my_file=self.my_file,
+            extension=self.extension,
+        )
+        new_cata.insert_at(target, 'first-child', save=True)
+        children = self.get_children()
+        for child in children:
+            child.copy_to(new_cata)
 
 # dispatch_uid 的作用是防止多次调用，具体原理不清楚。要求是个unique hashable类型的就行，那我就写一些中文了。
 @receiver(post_save, sender=Catalogue, dispatch_uid="新建一个目录之后，文件引用数应该加1")
@@ -105,6 +171,7 @@ def before_delete_catalogue(instance, **kwargs):
         my_file = instance.my_file
         my_file.reference_count = F('reference_count') - 1
         my_file.save()
+        instance.refresh_from_db()
 
 @receiver(post_save, sender=MyFile, dispatch_uid="当文件引用数为0，文件自动被删除")
 def after_save_file(instance, created, **kwargs):
@@ -113,3 +180,21 @@ def after_save_file(instance, created, **kwargs):
     instance.refresh_from_db()
     if instance.reference_count == 0:
         instance.delete()
+
+@receiver(post_save, sender=User, dispatch_uid="用户被创建后，自动为其创建仓库")
+def after_create_user(instance, created, **kwargs):
+    if not created:
+        return
+    Catalogue.objects.create(
+        name='user '+str(instance.username)+' root',
+        user=instance
+    )
+
+@receiver(post_save, sender=Group, dispatch_uid="群组被创建后，自动为其创建仓库")
+def after_create_group(instance, created, **kwargs):
+    if not created:
+        return
+    Catalogue.objects.create(
+        name='group '+str(instance.id)+' root',
+        group=instance
+    )

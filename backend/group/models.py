@@ -1,10 +1,9 @@
 from django.db import models
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
-from django.db.models import F, Q
+from django.db.models import F
 
 from user.models import User
-from storage.models import Catalogue
 
 # Create your models here.
 
@@ -86,7 +85,6 @@ class Intention(models.Model):
         '''
         membership, created = Membership.objects.get_or_create(group=self.group, user=self.user)
         self.delete()
-        
         return membership
 
     def reject(self):

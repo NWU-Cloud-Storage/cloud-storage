@@ -1,24 +1,19 @@
 '''
 membership相关接口的视图
 '''
-from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from my_utils.check_decorator import check_add_request_post
-from my_utils.check_decorator import check_keys_are_in_dict
-from my_utils.check_decorator import check_a_not_eq_b
-from my_utils.check_decorator import check_serializer_is_valid
+from my_utils.checker import check_not_same
+from my_utils.checker import check_in_list
+from my_utils.checker import check_serializer_is_valid
 
-from user.check_decorator import check_add_myself
-from user.check_decorator import check_exist_the_other
-from user.check_decorator import check_i_am_not_the_other
+from user.checker import check_exist_user
 
-from group.check_decorator import check_exist_group
-from group.check_decorator import check_i_am_in_group
-from group.check_decorator import check_the_other_is_in_group
-from group.check_decorator import check_i_am_master
-from group.check_decorator import check_i_have_higher_permission
+from group.checker import check_exist_group
+from group.checker import check_user_in_group
+from group.checker import check_user_is_master
+from group.checker import check_higher_permission
 from group.serializers import MyGroupSerializer
 
 class Membership(APIView):
@@ -27,35 +22,38 @@ class Membership(APIView):
     '''
 
     @staticmethod
-    @check_add_myself
-    @check_exist_the_other
-    @check_i_am_not_the_other
-    @check_exist_group
-    @check_i_am_in_group
-    @check_the_other_is_in_group
-    @check_i_am_master
-    @check_add_request_post
-    @check_keys_are_in_dict(['permission'], 'request_post')
-    @check_a_not_eq_b('request_post_permission', 'master', "不可以修改他人权限为群主。")
-    @check_serializer_is_valid('others_membership', MyGroupSerializer, 'request_post')
-    def put(others_membership_serializer, **kwargs):
+    def put(request, group_id, username):
         '''
         修改成员权限
         '''
-        others_membership_serializer.save()
-        return Response(others_membership_serializer.data, status.HTTP_200_OK)
+        myself = request.user.user
+        the_other = check_exist_user(username)
+        check_not_same(myself, the_other)   # 不可修改自己的权限
+        group = check_exist_group(group_id)
+        my_membership = check_user_in_group(myself, group)
+        others_membership = check_user_in_group(the_other, group)
+        check_user_is_master(my_membership)
+        # 只可以修改权限为manager或member
+        check_in_list(request.POST.get('permission', None), ('manager', 'member'))
+        serializer = check_serializer_is_valid(MyGroupSerializer, others_membership, request.POST)
+
+        serializer.save()
+        return Response(serializer.data)
+
+
 
     @staticmethod
-    @check_add_myself
-    @check_exist_the_other
-    @check_i_am_not_the_other
-    @check_exist_group
-    @check_i_am_in_group
-    @check_the_other_is_in_group
-    @check_i_have_higher_permission
-    def delete(others_membership, **kwargs):
+    def delete(request, group_id, username):
         '''
         移出成员
         '''
+        myself = request.user.user
+        the_other = check_exist_user(username)
+        check_not_same(myself, the_other)   # 不可移出自己
+        group = check_exist_group(group_id)
+        my_membership = check_user_in_group(myself, group)
+        others_membership = check_user_in_group(the_other, group)
+        check_higher_permission(my_membership, others_membership)
+
         others_membership.delete()
-        return Response(status=status.HTTP_200_OK)
+        return Response()

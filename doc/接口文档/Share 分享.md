@@ -19,28 +19,6 @@
     }
     ```
 
-### 分享到群组
-
-* Request
-  * Url: `/api/share-to-group/3[群组id]/110[群组目录id]/`
-  * Method: POST
-  * Content-Type: application/json
-  * Body:
-
-    ```json
-    {
-        "id": //[源目录id]
-        [
-            12,
-            13,
-            14
-        ]
-    }
-    ```
-
-* Response
-  * Status Code: 200 OK
-
 ### 保存别人的分享到个人仓库
 
 * Request
