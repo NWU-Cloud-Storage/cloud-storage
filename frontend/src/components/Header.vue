@@ -1,8 +1,8 @@
 <template>
     <div id="header">
         Northwest University Cloud Storage
-        <el-dropdown>
-            <i class="el-icon-user"></i>
+        <el-dropdown style="float: right;">
+            <i class="el-icon-user" id="user-icon"></i>
             <!-- <span class="el-dropdown-link">
                 <i class="el-icon-arrow-down el-icon--right el-icon-user"></i>
             </span> -->
@@ -23,7 +23,8 @@ export default {
 #header {
     font: 30px Extra large;
 }
-.el-dropdown {
-    right: 5%;
+
+#user-icon {
+    font-size: 2rem;
 }
 </style>

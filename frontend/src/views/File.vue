@@ -4,13 +4,11 @@
             <el-button>共享</el-button>
             <el-button>下载</el-button>
             <el-button @click="delete_file">删除</el-button>
-            <el-button @click="treeview_dialog.visible = true">移动到</el-button>
-            <el-button>复制到</el-button>
-            <el-button>重命名</el-button>
+            <el-button @click="treeview_dialog.visible = true, treeview_dialog.operation = 'move'">移动到</el-button>
+            <el-button @click="treeview_dialog.visible = true, treeview_dialog.operation = 'copy'">复制到</el-button>
+            <el-button v-if="selected_file.length == 1" @click="rename_file">重命名</el-button>
 
-            <TreeView title="将项目移动到" :dialog_visible.sync="treeview_dialog.visible"></TreeView>
-            <TreeView title="将项目复制到" :dialog_visible.sync="treeview_dialog.visible"></TreeView>
-
+            <TreeView :operation="treeview_dialog.operation" :dialog_visible.sync="treeview_dialog.visible" :source_id="selected_file.map(a => a.id)"></TreeView>
         </div>
         <div v-else>
             <el-dropdown trigger="click">
@@ -19,7 +17,7 @@
                     <i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>文件夹</el-dropdown-item>
+                    <el-dropdown-item @click.native="new_floder">文件夹</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
             <el-dropdown trigger="click">
@@ -38,8 +36,7 @@
             <el-breadcrumb-item
                 v-for="i in breadcrumbs"
                 :key="i.id"
-                :to="i.path"
-                @click.native="deleteBreadcrumb(i.id)"
+                :to="{ name: 'File', params: { id: i.id }}"
             >{{ i.name }}</el-breadcrumb-item>
         </el-breadcrumb>
 
@@ -67,11 +64,10 @@
                 </el-table-column>
                 <el-table-column prop="name" label="名称" width="280" column-key="fileName">
                     <template v-slot="slotProps">
-                        <router-link
-                            :to="filePath(slotProps.$index)"
-                            @click.native="addBreadcrumbElement(slotProps.$index)"
-                        >{{ slotProps.row.name }}</router-link>
-                        <!-- {{ slotProps.$index }} -->
+                        <el-link
+                            @click.native="handle_file_click(slotProps.$index)"
+                        >{{ slotProps.row.name }}</el-link>
+                        <!-- {{ tableData[slotProps.$index].id }} -->
                     </template>
                 </el-table-column>
                 <el-table-column prop="modifiedDate" label="修改时间" width="180"></el-table-column>
@@ -86,6 +82,7 @@
 <script>
 import axios from "axios";
 import TreeView from "./components/TreeView.vue";
+import router from "../router/index.js";
 
 export default {
     components: {
@@ -94,27 +91,24 @@ export default {
     data() {
         return {
             selected_file: [], // 选中的文件
-            info: "",
             tableData: [],
             breadcrumbs: [{ id: 0, path: "/file/", name: "文件" }],
-            path: "",
-            apiPath: "",
+            id: undefined,
             loading: false,
             treeview_dialog: {
-                visible: false
+                visible: false,
+                operation: undefined
             }
         };
     },
     created() {
         this.fetchData();
-        this.setBreadcrumbFromRoute();
     },
     mounted() {},
     watch: {
         // 如果路由有变化，会再次执行该方法
         $route() {
             this.fetchData();
-            this.setBreadcrumbFromRoute();
             this.selected_file.splice(0);
         }
     },
@@ -126,19 +120,22 @@ export default {
     methods: {
         fetchData() {
             this.loading = true;
-            this.path = "/file/" + this.$route.params.pathMatch;
-            this.apiPath = "/api" + this.path;
+            console.log(this.$route.params.id);
+            this.id = this.$route.params.id;
+            if (this.id == undefined) {
+                this.apiPath = "/api/my-storage/";
+            } else {
+                this.apiPath = "/api/my-storage/" + this.id + "/";
+            }
             axios
                 .get(this.apiPath)
                 .then(response => {
-                    this.tableData = response.data;
-                    // this.info = response;
+                    this.tableData = response.data.content;
+                    this.breadcrumbs = response.data.breadcrumbs;
                     this.loading = false;
                     console.log(response);
                 })
                 .catch(error => console.log(error));
-            // console.log(this.path);
-            // console.log(this.$route.params.pathMatch.split("/"));
         },
         toggleSelection(row, column, event) {
             console.log(row, column, event);
@@ -152,41 +149,15 @@ export default {
             console.log(cell);
         },
         filePath(index) {
-            return this.$route.path + this.tableData[index].name + "/";
+            return this.$route.path + this.tableData[index].id + "/";
         },
-        setBreadcrumbFromRoute() {
-            // ["", "file", "文件夹1", "文件夹2", ""]
-            // 可能存在效率问题
-            this.breadcrumbs.splice(1);
-            let pathArray = this.$route.path.split("/");
-            for (let i = 2; i < pathArray.length - 1; i++) {
-                let path = "";
-                let name = pathArray[i];
-                for (let j = 0; j <= i; j++) {
-                    path += pathArray[j] + "/";
-                }
-                this.breadcrumbs.push({
-                    id: this.breadcrumbs.length,
-                    path: path,
-                    name: name
-                });
+        handle_file_click(index) {
+            let file = this.tableData[index];
+            console.log(this.tableData[index].id);
+            if (file.is_file == false) {
+                router.push({ name: "File", params: { id: file.id } });
             }
         },
-        addBreadcrumbElement(index) {
-            // 这个事件触发时路由已经是点击后的路由了
-            // console.log(this.$route.params)
-            // let path = this.$route.path;
-            // let name = this.tableData[index].fileName;
-            // this.breadcrumbs.push({
-            //     id: this.breadcrumbs.length,
-            //     path: path,
-            //     name: name
-            // });
-        },
-        deleteBreadcrumb(index) {
-            // console.log(index);
-            // this.breadcrumbs.splice(index+1);
-        }, // 以上两个方法暂时被setBreadcrumbFromRoute替代
         delete_file() {
             this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
                 confirmButtonText: "确定",
@@ -206,23 +177,38 @@ export default {
                     });
                 });
         },
-        loadNode(node, resolve) {
-            if (node.level === 0) {
-                return resolve([{ directory_name: "region" }]);
-            }
-            if (node.level > 1) return resolve([]);
+        rename_file() {
+            let id = this.selected_file[0].id;
+            this.$prompt("重命名", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                inputValue: this.selected_file[0].name,
+                inputPattern: /\w/,
+                inputErrorMessage: "文件名不能包含特殊字符"
+            }).then(({value}) => {
+                console.log(value)
+                axios.put(this.apiPath, {
+                    "name": value,
+                })
+                .then((response) => {
+                    console.log(response)
+                    this.$message('修改成功');
+                })
+                .catch((error) => {
+                    console.log(error)
+                    this.$message.error('出错了')
+                })
+            });
+        },
+        new_floder() {
+            this.$prompt("新建", {
+                inputPlaceholder: "输入您的文件夹名称",
+            })
+            .then(({value}) => {
+                axios.post(this.apiPath, {
 
-            setTimeout(() => {
-                const data = [
-                    {
-                        directory_name: "leaf"
-                    },
-                    {
-                        directory_name: "zone"
-                    }
-                ];
-                resolve(data);
-            }, 500);
+                })
+            })
         }
     },
     computed: {}

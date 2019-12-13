@@ -10,7 +10,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: File
   },
   {
     path: '/about',
@@ -25,14 +25,14 @@ const routes = [
     name: 'hello',
     component: HelloWorld
   },
-  // {
-  //   path: '/file',
-  //   name: 'file',
-  //   component: File
-  // },
   {
-    name: 'file',
-    path: '/file/*',
+    path: '/file',
+    name: 'FileRoot',
+    component: File
+  },
+  {
+    name: 'File',
+    path: '/file/:id',
     component: File
   },
 ]
