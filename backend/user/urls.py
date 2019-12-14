@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import User
+from user.views.user import User
 
 
 

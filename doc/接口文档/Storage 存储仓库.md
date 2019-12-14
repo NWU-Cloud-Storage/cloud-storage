@@ -1,6 +1,6 @@
 # Storage 存储仓库
 
-## ## 个人仓库
+## 个人仓库
 
 ### 获取个人仓库内容
 
@@ -157,6 +157,42 @@
 * Response
 
   * Status Code: 200 OK
+  
+  
+  
+### 复制个人仓库文件(夹)
+
+* Request
+  * Url: `/api/my-storage/copy/`
+  * Method: PUT
+  * Content-Type: application/json
+  * Body:
+
+    ```json
+    {
+        "source_id":
+        [
+            12,
+            13,
+            14
+        ],
+        "destination_id": 10
+    }
+    ```
+
+* Response
+
+  * Status Code: 200 OK
+
+### **上传文件**
+
+？
+
+### **下载文件**
+
+?
+
+## 群组仓库
 
 ### **上传文件**
 
@@ -307,4 +343,48 @@
   
   * Status Code: 200 OK
 
+## 个人仓库与群组仓库
 
+### 上传到群组
+
+* Request
+  * Url: `/api/upload-to-group/3[群组id]/110[群组目录id]/`
+  * Method: POST
+  * Content-Type: application/json
+  * Body:
+
+    ```json
+    {
+        "id": //[个人仓库源目录id]
+        [
+            12,
+            13,
+            14
+        ]
+    }
+    ```
+
+* Response
+  * Status Code: 200 OK
+
+### 保存到个人仓库
+
+* Request
+  * Url: `/api/save-to-my-storage/3[群组id]/322[个人目录id]/`
+  * Method: POST
+  * Content-Type: application/json
+  * Body:
+
+    ```json
+    {
+        "id": //[群组仓库源目录id]
+        [
+            102,
+            103,
+            104
+        ]
+    }
+    ```
+
+* Response
+  * Status Code: 200 OK
