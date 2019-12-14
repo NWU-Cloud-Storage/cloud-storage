@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import File from '../views/File.vue'
+import Share from '../views/Share.vue'
 import HelloWorld from '../components/HelloWorld.vue'
 
 Vue.use(VueRouter)
@@ -34,6 +35,10 @@ const routes = [
     name: 'File',
     path: '/file/:id',
     component: File
+  },
+  {
+    path: '/share',
+    component: Share
   },
 ]
 

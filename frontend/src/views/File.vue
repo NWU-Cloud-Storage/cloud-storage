@@ -4,11 +4,19 @@
             <el-button>共享</el-button>
             <el-button>下载</el-button>
             <el-button @click="delete_file">删除</el-button>
-            <el-button @click="treeview_dialog.visible = true, treeview_dialog.operation = 'move'">移动到</el-button>
-            <el-button @click="treeview_dialog.visible = true, treeview_dialog.operation = 'copy'">复制到</el-button>
+            <el-button
+                @click="treeview_dialog.visible = true, treeview_dialog.operation = 'move'"
+            >移动到</el-button>
+            <el-button
+                @click="treeview_dialog.visible = true, treeview_dialog.operation = 'copy'"
+            >复制到</el-button>
             <el-button v-if="selected_file.length == 1" @click="rename_file">重命名</el-button>
 
-            <TreeView :operation="treeview_dialog.operation" :dialog_visible.sync="treeview_dialog.visible" :source_id="selected_file.map(a => a.id)"></TreeView>
+            <TreeView
+                :operation="treeview_dialog.operation"
+                :dialog_visible.sync="treeview_dialog.visible"
+                :source_id="selected_file.map(a => a.id)"
+            ></TreeView>
         </div>
         <div v-else>
             <el-dropdown trigger="click">
@@ -26,8 +34,26 @@
                     <i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>文件</el-dropdown-item>
-                    <el-dropdown-item>文件夹</el-dropdown-item>
+                    <el-dropdown-item>
+                        <label for="file-upload">文件</label>
+                        <input
+                            type="file"
+                            name="file"
+                            class="upload-button"
+                            id="file-upload"
+                            @change="upload_file"
+                        />
+                    </el-dropdown-item>
+                    <el-dropdown-item>
+                        <label for="folder-upload">文件夹</label>
+                        <input
+                            type="file"
+                            class="upload-button"
+                            id="folder-upload"
+                            webkitdirectory
+                            @change="upload_file"
+                        />
+                    </el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
@@ -179,36 +205,54 @@ export default {
         },
         rename_file() {
             let id = this.selected_file[0].id;
+            // TODO input validate
             this.$prompt("重命名", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
                 inputValue: this.selected_file[0].name,
                 inputPattern: /\w/,
                 inputErrorMessage: "文件名不能包含特殊字符"
-            }).then(({value}) => {
-                console.log(value)
-                axios.put(this.apiPath, {
-                    "name": value,
-                })
-                .then((response) => {
-                    console.log(response)
-                    this.$message('修改成功');
-                })
-                .catch((error) => {
-                    console.log(error)
-                    this.$message.error('出错了')
-                })
+            }).then(({ value }) => {
+                console.log(value);
+                axios
+                    .put(this.apiPath, {
+                        name: value
+                    })
+                    .then(response => {
+                        console.log(response);
+                        this.$message("修改成功");
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.$message.error("出错了");
+                    });
+            }).catch(error => {
+                console.log(error)
             });
         },
         new_floder() {
             this.$prompt("新建", {
-                inputPlaceholder: "输入您的文件夹名称",
-            })
-            .then(({value}) => {
-                axios.post(this.apiPath, {
+                inputPlaceholder: "输入您的文件夹名称"
+            }).then(({ value }) => {
+                axios.post(this.apiPath, {});
+            });
+        },
+        upload_file(e) {
+            let formData = new FormData();
+            let data = JSON.stringify({
+                user: "username",
+                env: "dev"
+            });
+            formData.append("file", e.target.files[0]);
+            formData.append("data", data); // 上传文件的同时， 也可以上传其他数据
 
-                })
-            })
+            axios.post("/api/upload/", formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            }).then(response => {
+                console.log(response)
+            }).catch(error => {
+                console.log(error)
+            });
         }
     },
     computed: {}
@@ -240,5 +284,9 @@ export default {
 
 .el-breadcrumb {
     margin: 20px 0px;
+}
+
+.upload-button {
+    display: none;
 }
 </style>
