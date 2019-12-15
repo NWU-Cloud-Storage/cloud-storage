@@ -1,6 +1,6 @@
 <template>
     <el-container style="height: 1000px; border: 1px solid #eee">
-        <el-header height="150px">
+        <el-header height="82px">
             <Header></Header>
         </el-header>
         <el-container direction="horizontal">
@@ -67,6 +67,7 @@ export default {
 }
 
 .el-header, .el-footer {
-    border: 1px solid rgb(53, 48, 48)
+    border: 1px solid rgb(53, 48, 48);
+    padding: 0px;
   }
 </style>

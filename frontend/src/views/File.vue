@@ -1,7 +1,22 @@
  <template>
     <div id="file">
         <div v-if="selected_file.length">
-            <el-button>共享</el-button>
+            <el-popover placement="bottom" width="400" trigger="click">
+                过期时间
+                <el-select v-model="share.duration.value" placeholder="请选择">
+                    <el-option
+                        v-for="item in share.duration.options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                    ></el-option>
+                </el-select>
+                <br />密码
+                <el-switch v-model="share.password.status"></el-switch>
+                <el-input placeholder="请输入内容" v-model="share.password.value" :disabled="!share.password.status"></el-input>
+                <el-button @click="share_file">生成共享链接</el-button>
+                <el-button slot="reference" style="margin-right: 10px;">共享</el-button>
+            </el-popover>
             <el-button>下载</el-button>
             <el-button @click="delete_file">删除</el-button>
             <el-button
@@ -124,7 +139,8 @@ export default {
             treeview_dialog: {
                 visible: false,
                 operation: undefined
-            }
+            },
+            share: undefined,
         };
     },
     created() {
@@ -136,6 +152,27 @@ export default {
         $route() {
             this.fetchData();
             this.selected_file.splice(0);
+        },
+        selected_file() {
+            this.share = {
+                duration: {
+                    options: [
+                        {
+                            value: 1,
+                            label: "一天"
+                        },
+                        {
+                            value: "infinite",
+                            label: "永久"
+                        }
+                    ],
+                    value: "infinite"
+                },
+                password: {
+                    status: false,
+                    value: ""
+                }
+            }
         }
     },
     filters: {
@@ -212,23 +249,25 @@ export default {
                 inputValue: this.selected_file[0].name,
                 inputPattern: /\w/,
                 inputErrorMessage: "文件名不能包含特殊字符"
-            }).then(({ value }) => {
-                console.log(value);
-                axios
-                    .put(this.apiPath, {
-                        name: value
-                    })
-                    .then(response => {
-                        console.log(response);
-                        this.$message("修改成功");
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        this.$message.error("出错了");
-                    });
-            }).catch(error => {
-                console.log(error)
-            });
+            })
+                .then(({ value }) => {
+                    console.log(value);
+                    axios
+                        .put(this.apiPath, {
+                            name: value
+                        })
+                        .then(response => {
+                            console.log(response);
+                            this.$message("修改成功");
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            this.$message.error("出错了");
+                        });
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         },
         new_floder() {
             this.$prompt("新建", {
@@ -246,14 +285,18 @@ export default {
             formData.append("file", e.target.files[0]);
             formData.append("data", data); // 上传文件的同时， 也可以上传其他数据
 
-            axios.post("/api/upload/", formData, {
-                headers: { "Content-Type": "multipart/form-data" }
-            }).then(response => {
-                console.log(response)
-            }).catch(error => {
-                console.log(error)
-            });
-        }
+            axios
+                .post("/api/upload/", formData, {
+                    headers: { "Content-Type": "multipart/form-data" }
+                })
+                .then(response => {
+                    console.log(response);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        share_file() {}
     },
     computed: {}
 };
@@ -288,5 +331,9 @@ export default {
 
 .upload-button {
     display: none;
+}
+
+.el-button {
+    margin-left: 10px;
 }
 </style>

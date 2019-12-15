@@ -1,6 +1,6 @@
 <template>
     <div id="header">
-        <img alt="NWU logo" src="../assets/nwu_logo.png" style="object-fit: fill;"/>
+        <img alt="NWU logo" src="../assets/nwu_logo.png" style="width: 300px;"/>
         <el-dropdown style="float: right;">
             <i class="el-icon-user" id="user-icon"></i>
             <!-- <span class="el-dropdown-link">
