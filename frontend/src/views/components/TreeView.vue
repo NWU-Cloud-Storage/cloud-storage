@@ -51,11 +51,11 @@ export default {
             let apiPath;
             //第0层的node没有id
             if (node.level === 0) {
-                apiPath = "/api/my-storage/";
+                apiPath = "/my-storage/";
             } else {
                 let id = node.data.id;
                 console.log(node.data.id);
-                apiPath = "/api/my-storage/" + id + "/";
+                apiPath = "/my-storage/" + id + "/";
             }
             axios
                 .get(apiPath)
@@ -79,7 +79,7 @@ export default {
                 this.$message.warning("请选择一个文件夹");
             } else {
                 axios
-                    .put("/api/my-storage/" + this.operation + "/", {
+                    .put("/my-storage/" + this.operation + "/", {
                         source_id: this.source_id,
                         destination_id: this.$refs.tree.getCurrentNode().id
                     })

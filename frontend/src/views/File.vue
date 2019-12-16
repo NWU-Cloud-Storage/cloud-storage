@@ -11,10 +11,11 @@
                         :value="item.value"
                     ></el-option>
                 </el-select>
-                <br />密码
+                <br/>密码
                 <el-switch v-model="share.password.status"></el-switch>
                 <el-input placeholder="请输入内容" v-model="share.password.value" :disabled="!share.password.status"></el-input>
-                <el-button @click="share_file">生成共享链接</el-button>
+                <el-button @click="share_file">生成共享链接</el-button><br>
+                共享链接<el-input v-model="share.share_url"></el-input>
                 <el-button slot="reference" style="margin-right: 10px;">共享</el-button>
             </el-popover>
             <el-button>下载</el-button>
@@ -73,85 +74,43 @@
             </el-dropdown>
         </div>
 
-        <el-breadcrumb separator-class="el-icon-arrow-right" id="fileNav">
-            <el-breadcrumb-item
-                v-for="i in breadcrumbs"
-                :key="i.id"
-                :to="{ name: 'File', params: { id: i.id }}"
-            >{{ i.name }}</el-breadcrumb-item>
-        </el-breadcrumb>
+        <FileList api_base="/my-storage" :id="id" @selected-file-change="handle_file_selected"></FileList>
 
-        <div v-if="loading" class="loading">Loading...</div>
-
-        <div v-else class="content">
-            <el-table
-                ref="fileTable"
-                :data="tableData"
-                style="width: 100%"
-                @selection-change="handleSelectionChange"
-                @row-click="toggleSelection"
-                @cell-click="handleCellClick"
-            >
-                <el-table-column width="50" type="selection"></el-table-column>
-                <el-table-column width="50" prop="is_file">
-                    <template v-slot:header>
-                        <i class="el-icon-files"></i>
-                    </template>
-                    <template v-slot:="slotProps">
-                        <i v-if="slotProps.row.is_file" class="el-icon-document"></i>
-                        <i v-else class="el-icon-folder" />
-                        <!-- {{ slotProps.row.isDirectory }} -->
-                    </template>
-                </el-table-column>
-                <el-table-column prop="name" label="名称" width="280" column-key="fileName">
-                    <template v-slot="slotProps">
-                        <el-link
-                            @click.native="handle_file_click(slotProps.$index)"
-                        >{{ slotProps.row.name }}</el-link>
-                        <!-- {{ tableData[slotProps.$index].id }} -->
-                    </template>
-                </el-table-column>
-                <el-table-column prop="modifiedDate" label="修改时间" width="180"></el-table-column>
-                <el-table-column prop="shareStatus" label="共享" width="180"></el-table-column>
-                <el-table-column prop="size" label="大小"></el-table-column>
-            </el-table>
-        </div>
-        <!-- {{ $route.params.id }} -->
     </div>
 </template>
 
 <script>
-import axios from "axios";
 import TreeView from "./components/TreeView.vue";
-import router from "../router/index.js";
+import FileList from "./components/FileList.vue";
+import axios from "axios";
+
 
 export default {
     components: {
-        TreeView
+        TreeView,
+        FileList
     },
     data() {
         return {
-            selected_file: [], // 选中的文件
-            tableData: [],
-            breadcrumbs: [{ id: 0, path: "/file/", name: "文件" }],
             id: undefined,
-            loading: false,
+            selected_file: {
+                length: 0,
+            },
             treeview_dialog: {
                 visible: false,
                 operation: undefined
             },
-            share: undefined,
+            share: {},
         };
     },
     created() {
-        this.fetchData();
+        this.id = this.$route.params.id;
     },
     mounted() {},
     watch: {
         // 如果路由有变化，会再次执行该方法
         $route() {
-            this.fetchData();
-            this.selected_file.splice(0);
+            this.id = this.$route.params.id;
         },
         selected_file() {
             this.share = {
@@ -171,7 +130,8 @@ export default {
                 password: {
                     status: false,
                     value: ""
-                }
+                },
+                share_url: ""
             }
         }
     },
@@ -181,46 +141,14 @@ export default {
         }
     },
     methods: {
-        fetchData() {
-            this.loading = true;
-            console.log(this.$route.params.id);
-            this.id = this.$route.params.id;
-            if (this.id == undefined) {
-                this.apiPath = "/api/my-storage/";
-            } else {
-                this.apiPath = "/api/my-storage/" + this.id + "/";
-            }
-            axios
-                .get(this.apiPath)
-                .then(response => {
-                    this.tableData = response.data.content;
-                    this.breadcrumbs = response.data.breadcrumbs;
-                    this.loading = false;
-                    console.log(response);
-                })
-                .catch(error => console.log(error));
+        handle_file_selected(selected_file) {
+            this.selected_file = selected_file;
         },
-        toggleSelection(row, column, event) {
-            console.log(row, column, event);
-            this.$refs.fileTable.clearSelection();
-            this.$refs.fileTable.toggleRowSelection(row);
-        },
-        handleSelectionChange(val) {
-            this.selected_file = val;
-        },
-        handleCellClick(row, column, cell, event) {
-            console.log(cell);
-        },
+    
         filePath(index) {
             return this.$route.path + this.tableData[index].id + "/";
         },
-        handle_file_click(index) {
-            let file = this.tableData[index];
-            console.log(this.tableData[index].id);
-            if (file.is_file == false) {
-                router.push({ name: "File", params: { id: file.id } });
-            }
-        },
+
         delete_file() {
             this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
                 confirmButtonText: "确定",
@@ -253,7 +181,7 @@ export default {
                 .then(({ value }) => {
                     console.log(value);
                     axios
-                        .put(this.apiPath, {
+                        .put('/my-storage/' + id + '/', {
                             name: value
                         })
                         .then(response => {
@@ -273,14 +201,17 @@ export default {
             this.$prompt("新建", {
                 inputPlaceholder: "输入您的文件夹名称"
             }).then(({ value }) => {
-                axios.post(this.apiPath, {});
+                axios.post('/my-storage/', {
+                    name: value
+                }).then(response => {
+                    this.$message.success("成功");
+                });
             });
         },
         upload_file(e) {
             let formData = new FormData();
             let data = JSON.stringify({
-                user: "username",
-                env: "dev"
+                base_folder_id: this.id
             });
             formData.append("file", e.target.files[0]);
             formData.append("data", data); // 上传文件的同时， 也可以上传其他数据
@@ -296,24 +227,20 @@ export default {
                     console.log(error);
                 });
         },
-        share_file() {}
+        share_file() {
+            axios.post('/share-to-public/' + this.selected_file[0].id + '/', {
+                duration: this.share.duration.value,
+                password: this.share.password.value
+            }).then(response => {
+                this.share.share_url = response.data.url;
+            })
+        }
     },
     computed: {}
 };
 </script>
 
 <style>
-#fileNav {
-    font: 25px bold;
-}
-
-.fileName {
-    text-decoration: underline;
-}
-
-/* .cell:hover {
-    text-decoration: underline;
-} */
 
 .el-dropdown {
     vertical-align: top;

@@ -11,6 +11,10 @@
                             <el-menu-item>文件</el-menu-item>
                         </router-link>
 
+                        <router-link to="/group">
+                            <el-menu-item>群组</el-menu-item>
+                        </router-link>
+
                         <router-link to="/share/">
                             <el-menu-item>共享</el-menu-item>
                         </router-link>
@@ -34,11 +38,22 @@
 
 <script>
 import Header from "@/components/Header.vue";
+import axios from "axios";
 
 export default {
     name: "app",
     components: {
         Header
+    },
+    created() {
+        axios
+            .post(this.GLOBAL.api_base + "/login/", {})
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 };
 </script>
@@ -66,8 +81,9 @@ export default {
     color: #42b983;
 }
 
-.el-header, .el-footer {
+.el-header,
+.el-footer {
     border: 1px solid rgb(53, 48, 48);
     padding: 0px;
-  }
+}
 </style>

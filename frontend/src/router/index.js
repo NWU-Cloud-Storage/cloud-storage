@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import File from '../views/File.vue'
 import Share from '../views/Share.vue'
 import HelloWorld from '../components/HelloWorld.vue'
+import Group from '../views/Group.vue'
 
 Vue.use(VueRouter)
 
@@ -40,6 +41,13 @@ const routes = [
     path: '/share',
     component: Share
   },
+  {
+    path: '/share/:share_id'
+  },
+  {
+    path: '/group',
+    component: Group
+  }
 ]
 
 const router = new VueRouter({
