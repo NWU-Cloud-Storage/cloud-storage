@@ -11,7 +11,7 @@
                             <el-menu-item>文件</el-menu-item>
                         </router-link>
 
-                        <router-link to="/group">
+                        <router-link to="/group-storage">
                             <el-menu-item>群组</el-menu-item>
                         </router-link>
 

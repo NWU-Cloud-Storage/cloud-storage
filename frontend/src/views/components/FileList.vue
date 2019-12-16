@@ -4,7 +4,7 @@
             <el-breadcrumb-item
                 v-for="i in breadcrumbs"
                 :key="i.id"
-                :to="{ name: 'File', params: { id: i.id }}"
+                :to="api_base + '/' + i.id + '/'"
             >{{ i.name }}</el-breadcrumb-item>
         </el-breadcrumb>
 

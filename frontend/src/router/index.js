@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import File from '../views/File.vue'
+import MyStorage from '../views/MyStorage.vue'
 import Share from '../views/Share.vue'
 import HelloWorld from '../components/HelloWorld.vue'
-import Group from '../views/Group.vue'
+import GroupList from '../views/GroupList.vue'
+import GroupStorage from '../views/GroupStorage.vue'
 
 Vue.use(VueRouter)
 
@@ -12,7 +13,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: File
+    component: MyStorage
   },
   {
     path: '/about',
@@ -28,14 +29,14 @@ const routes = [
     component: HelloWorld
   },
   {
-    path: '/file',
+    path: '/my-storage',
     name: 'FileRoot',
-    component: File
+    component: MyStorage
   },
   {
     name: 'File',
-    path: '/file/:id',
-    component: File
+    path: '/my-storage/:id',
+    component: MyStorage
   },
   {
     path: '/share',
@@ -45,8 +46,13 @@ const routes = [
     path: '/share/:share_id'
   },
   {
-    path: '/group',
-    component: Group
+    path: '/group-storage',
+    component: GroupList
+  },
+  {
+    name: 'GroupStorage',
+    path: '/group-storage/:group_id',
+    component: GroupStorage
   }
 ]
 

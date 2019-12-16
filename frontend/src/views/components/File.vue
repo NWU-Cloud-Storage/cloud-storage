@@ -74,14 +74,14 @@
             </el-dropdown>
         </div>
 
-        <FileList api_base="/my-storage" :id="id" @selected-file-change="handle_file_selected"></FileList>
+        <FileList :api_base=api_base :id="id" @selected-file-change="handle_file_selected"></FileList>
 
     </div>
 </template>
 
 <script>
-import TreeView from "./components/TreeView.vue";
-import FileList from "./components/FileList.vue";
+import TreeView from "./TreeView.vue";
+import FileList from "./FileList.vue";
 import axios from "axios";
 
 
@@ -90,6 +90,7 @@ export default {
         TreeView,
         FileList
     },
+    props: ["api_base"],
     data() {
         return {
             id: undefined,
@@ -105,12 +106,14 @@ export default {
     },
     created() {
         this.id = this.$route.params.id;
+        console.log(this.$route.params)
     },
     mounted() {},
     watch: {
         // 如果路由有变化，会再次执行该方法
         $route() {
             this.id = this.$route.params.id;
+            this.selected_file = [];
         },
         selected_file() {
             this.share = {
@@ -181,7 +184,7 @@ export default {
                 .then(({ value }) => {
                     console.log(value);
                     axios
-                        .put('/my-storage/' + id + '/', {
+                        .put(this.api_base + '/' + id + '/', {
                             name: value
                         })
                         .then(response => {
@@ -201,7 +204,7 @@ export default {
             this.$prompt("新建", {
                 inputPlaceholder: "输入您的文件夹名称"
             }).then(({ value }) => {
-                axios.post('/my-storage/', {
+                axios.post(this.api_base + '/', {
                     name: value
                 }).then(response => {
                     this.$message.success("成功");

@@ -5,15 +5,12 @@
             ref="fileTable"
             :data="groups"
             style="width: 100%"
-            @selection-change="handleSelectionChange"
-            @row-click="toggleSelection"
-            @cell-click="handleCellClick"
         >
             <el-table-column width="50" type="selection"></el-table-column>
             <el-table-column prop="name" label="名称" width="280" column-key="fileName">
                 <template v-slot="slotProps">
                     <el-link
-                        @click.native="handle_file_click(slotProps.$index)"
+                        @click.native="handle_group_click(slotProps.$index)"
                     >{{ slotProps.row.name }}</el-link>
                     <!-- {{ tableData[slotProps.$index].id }} -->
                 </template>
@@ -26,6 +23,8 @@
 
 <script>
 import axios from "axios";
+import router from "../router/index.js";
+
 
 export default {
     data() {
@@ -46,6 +45,11 @@ export default {
             axios.post("/my-group/").then(response => {
                 this.$message.success("成功");
             });
+        },
+        handle_group_click(index) {
+            let group = this.groups[index];
+            console.log(this.groups[index].id);
+            router.push({ name: "GroupStorage", params: { group_id: group.id } });
         }
     }
 };
