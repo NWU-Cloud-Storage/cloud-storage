@@ -51,7 +51,7 @@ const routes = [
   },
   {
     name: 'GroupStorage',
-    path: '/group-storage/:group_id',
+    path: '/group-storage/:group_id/:id',
     component: GroupStorage
   }
 ]

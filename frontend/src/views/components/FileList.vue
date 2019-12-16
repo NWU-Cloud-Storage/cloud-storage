@@ -104,7 +104,8 @@ export default {
             let file = this.tableData[index];
             console.log(this.tableData[index].id);
             if (file.is_file == false) {
-                router.push({ name: "File", params: { id: file.id } });
+                router.push({ path: this.api_base + '/' + file.id + '/'})
+                // router.push({ name: "File", params: { id: file.id } });
             }
         }
     }
