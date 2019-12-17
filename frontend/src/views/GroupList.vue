@@ -116,10 +116,11 @@ export default {
         handle_group_click(index) {
             let group = this.groups[index];
             console.log(this.groups[index].id);
-            router.push({
-                name: "GroupStorage",
-                params: { group_id: group.id }
-            });
+            // router.push({
+            //     name: "GroupStorage",
+            //     params: { group_id: group.id }
+            // });
+            router.push({ path: "/group-storage/" + group.id + "/" })
         },
         change_group_name(id) {
             this.$prompt("请输入新的群组名称").then(({ value }) => {

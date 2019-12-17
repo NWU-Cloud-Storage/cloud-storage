@@ -6,6 +6,7 @@ import Share from '../views/Share.vue'
 import HelloWorld from '../components/HelloWorld.vue'
 import GroupList from '../views/GroupList.vue'
 import GroupStorage from '../views/GroupStorage.vue'
+import SharedFilesView from '../views/SharedFilesView'
 
 Vue.use(VueRouter)
 
@@ -43,7 +44,8 @@ const routes = [
     component: Share
   },
   {
-    path: '/share/:share_id'
+    path: '/share/:share_id',
+    component: SharedFilesView
   },
   {
     path: '/group-storage',
@@ -52,6 +54,10 @@ const routes = [
   {
     name: 'GroupStorage',
     path: '/group-storage/:group_id/:id',
+    component: GroupStorage
+  },
+  {
+    path: '/group-storage/:group_id',
     component: GroupStorage
   }
 ]

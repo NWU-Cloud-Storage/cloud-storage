@@ -24,6 +24,13 @@
                         </router-link>
                     </el-menu>
                 </div>
+                <div id="info">
+                    {{ user_info.username }} <br>
+                    {{ user_info.nickname }} <br>
+                    最大容量：{{ user_info.max_size }} <br>
+                    已用容量：{{ user_info.used_size }} <br>
+                    最后操作时间：{{ Date(user_info.date_last_opt )}}
+                </div>
             </el-aside>
             <el-main>
                 <div id="app">
@@ -37,7 +44,8 @@
 </template>
 
 <script>
-import Header from "@/components/Header.vue";
+// import Header from "@/components/Header.vue";
+import Header from "./views/Header"
 import axios from "axios";
 
 export default {
@@ -45,15 +53,33 @@ export default {
     components: {
         Header
     },
+    data() {
+        return {
+            user_info: {
+                username: undefined,
+                nickname: undefined,
+                max_size: undefined,
+                used_size: undefined,
+                date_last_opt: undefined,
+            },
+        }
+    },
     created() {
         axios
-            .post(this.GLOBAL.api_base + "/login/", {})
+            .post("/login/", {})
             .then(response => {
                 console.log(response);
             })
             .catch(error => {
                 console.log(error);
             });
+    },
+    mounted() {
+        axios
+            .get('/user/')
+            .then(response => {
+                this.user_info = response.data
+            })
     }
 };
 </script>

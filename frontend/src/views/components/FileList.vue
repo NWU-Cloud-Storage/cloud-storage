@@ -38,8 +38,16 @@
                         <!-- {{ tableData[slotProps.$index].id }} -->
                     </template>
                 </el-table-column>
-                <el-table-column prop="modified_date" label="修改时间" width="180"></el-table-column>
-                <el-table-column prop="is_shared" label="共享" width="180"></el-table-column>
+                <el-table-column label="修改时间" width="180">
+                    <template v-slot="scope">
+                        {{ Date(scope.row.date_modified) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="is_shared" label="共享" width="180">
+                    <template scope="scope">
+                        <p>{{ scope.row.is_shared ? "是" : "否" }}</p>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="size" label="大小"></el-table-column>
             </el-table>
         </div>
