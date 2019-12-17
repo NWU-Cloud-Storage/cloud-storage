@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from user.checker import check_exist_user
-from user.serializers import UserSerializer
+from user.serializers import UserSerializer, TheOtherSerializer
 
 from my_utils.utils import sub_dict
 from my_utils.checker import check_serializer_is_valid
@@ -43,10 +43,8 @@ class User(APIView):
         '''
         user = check_exist_user(username)
 
-        serializer = UserSerializer(user)
-        data = serializer.data
-        ret = sub_dict(data, ['username', 'nickname'])
-        return Response(ret)
+        serializer = TheOtherSerializer(user)
+        return Response(serializer.data)
 
     @staticmethod
     def _get_myself(myself):

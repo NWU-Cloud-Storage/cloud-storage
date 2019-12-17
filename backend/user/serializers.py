@@ -12,3 +12,11 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'nickname', 'max_size', 'used_size', 'date_last_opt')
+
+class TheOtherSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField()
+    nickname = serializers.ReadOnlyField()
+
+    class Meta:
+        model = User
+        fields = ('username', 'nickname')
