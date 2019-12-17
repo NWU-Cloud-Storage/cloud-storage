@@ -23,6 +23,7 @@ class MyTmpAuthToken(ObtainAuthToken):
         临时账号密码登入
         '''
         response = super().post(request, *args, **kwargs)
+        response.data['token'] = 'Token '+response.data['token']
         response.set_cookie('token', response.data['token'])
         return response
 
@@ -63,6 +64,6 @@ class OAuthToken(APIView):
             user = User.objects.create_user(username=username, nickname=nickname, password=password)
         token = Token.objects.get(user=user)
         # token.save() # 更新token值
-        response = Response({'token': token.key})
+        response = Response({'token': 'Token '+token.key})
         response.set_cookie('token', response.data['token'])
         return response
