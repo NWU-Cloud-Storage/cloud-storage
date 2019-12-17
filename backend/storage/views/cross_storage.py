@@ -44,7 +44,7 @@ class SaveToMe(APIView):
 
         my_root = my_self.storage
         group_root = group.storage
-        src_ids = _check_src_ids(request.POST.getlist('id', None))
+        src_ids = _check_src_ids(request.data.getlist('id', None))
         src_catas, des_cata = _check_src_and_des(group_root, src_ids, my_root, des_id)
 
         for cata in src_catas:
@@ -66,7 +66,7 @@ class UploadToGroup(APIView):
 
         my_root = my_self.storage
         group_root = group.storage
-        src_ids = _check_src_ids(request.POST.getlist('id', None))
+        src_ids = _check_src_ids(request.data.getlist('id', None))
         src_catas, des_cata = _check_src_and_des(my_root, src_ids, group_root, des_id)
 
         for cata in src_catas:

@@ -34,8 +34,8 @@ class Membership(APIView):
         others_membership = check_user_in_group(the_other, group)
         check_user_is_master(my_membership)
         # 只可以修改权限为manager或member
-        check_in_list(request.POST.get('permission', None), ('manager', 'member'))
-        serializer = check_serializer_is_valid(MyGroupSerializer, others_membership, request.POST)
+        check_in_list(request.data.get('permission', None), ('manager', 'member'))
+        serializer = check_serializer_is_valid(MyGroupSerializer, others_membership, request.data)
 
         serializer.save()
         return Response(serializer.data)

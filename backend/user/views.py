@@ -25,7 +25,7 @@ class User(APIView):
         修改个人资料
         '''
         user = request.user.user
-        serializer = UserSerializer(user, data=request.POST)
+        serializer = UserSerializer(user, data=request.data)
         if not serializer.is_valid():
             return Response(detail("数据不合法。", serializer.errors), status=status.HTTP_400_BAD_REQUEST)
         serializer.save()

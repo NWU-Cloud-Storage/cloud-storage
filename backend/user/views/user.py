@@ -31,7 +31,7 @@ class User(APIView):
         修改个人资料
         '''
         check_is_none(username)
-        serializer = check_serializer_is_valid(UserSerializer, request.user.user, request.POST)
+        serializer = check_serializer_is_valid(UserSerializer, request.user.user, request.data)
 
         serializer.save()
         return Response(serializer.data)

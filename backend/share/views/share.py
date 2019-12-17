@@ -33,8 +33,8 @@ class ShareToPublic(APIView):
         my_root = user.storage
         check_not_same(my_root, cata)
         check_are_same(my_root, cata.get_root())
-        days = request.POST.get('duration', None)
-        pwd = request.POST.get('password', None)
+        days = request.data.get('duration', None)
+        pwd = request.data.get('password', None)
         days = check_is_int(days)
 
         share = ShareModel.objects.create_by_user(user, cata, days, pwd)
@@ -47,7 +47,7 @@ def _check_session(request, share):
     url = share.url
     # request.session.clear()
     if request.session.get(url, None) is None:
-        pwd = request.POST.get('password', None)
+        pwd = request.data.get('password', None)
         check_password(pwd, share)
         request.session[url] = url
     request.session.set_expiry(300)

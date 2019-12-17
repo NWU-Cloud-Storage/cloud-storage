@@ -52,7 +52,7 @@ class MyStorage(APIView):
         删除个人仓库某文件（夹）。
         '''
         check_is_none(src_cata_id)
-        cata_ids = request.POST.getlist('id', None)
+        cata_ids = request.data.getlist('id', None)
         if not cata_ids:
             return Response()
         cata_ids = check_all_int(cata_ids)
@@ -89,7 +89,7 @@ class MyStorage(APIView):
         cata = check_exist_catalogue(src_cata_id)
         check_not_root(cata)
         check_are_same(my_root, cata.get_root())
-        serializer = check_serializer_is_valid(CatalogueSerializer, cata, request.POST)
+        serializer = check_serializer_is_valid(CatalogueSerializer, cata, request.data)
 
         serializer.save()
         return Response(serializer.data)
@@ -98,13 +98,13 @@ def _move_or_copy_check(request):
 
     my_root = request.user.user.storage
 
-    src_ids = request.POST.getlist('source_id', None)
+    src_ids = request.data.getlist('source_id', None)
     if not src_ids:
         return Response()
     src_ids = check_all_int(src_ids)
     src_catas = check_are_siblings_and_in_root(src_ids, my_root)
 
-    des_id = request.POST.get('destination_id', None)
+    des_id = request.data.get('destination_id', None)
     des_cata = my_root
     if des_id:
         des_id = check_is_int(des_id)
