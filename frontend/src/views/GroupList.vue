@@ -1,6 +1,7 @@
 <template>
     <div id="group">
         <el-button type="primary" @click="create_group">建立新群组</el-button>
+        <el-button type="primary" @click="join_group">申请加群</el-button>
         <el-table ref="fileTable" :data="groups" style="width: 100%">
             <el-table-column width="50" type="selection"></el-table-column>
             <el-table-column prop="name" label="名称" width="280" column-key="fileName">
@@ -47,6 +48,28 @@
                 </el-table-column>
             </el-table>
         </el-dialog>
+
+        <el-dialog title="加群列表" :visible.sync="apply_table_visible">
+            <el-table :data="apply_table_data">
+                <el-table-column property="username" label="学号" width="150"></el-table-column>
+                <el-table-column property="nickname" label="昵称" width="200"></el-table-column>
+                <el-table-column property="date_intented" label="申请时间"></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button
+                            size="mini"
+                            type="success"
+                            @click="agree_apply(scope.row)"
+                        >同意</el-button>
+                        <el-button
+                            size="mini"
+                            type="danger"
+                            @click="deny_apply(scope.row)"
+                        >拒绝</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-dialog>
     </div>
 </template>
 
@@ -60,6 +83,7 @@ export default {
             groups: [],
             detail_table_visible: false,
             detail_table_data: [],
+            apply_table_data: [],
             current_group_id: undefined,
         };
     },
@@ -77,6 +101,12 @@ export default {
             axios.get("/my-group/" + id + "/").then(response => {
                 this.detail_table_data = response.data.members;
             });
+        },
+        fetch_apply_detail(id) {
+            this.current_group_id = id;
+            axios.get("/intention/" + id + "/").then(response => {
+                this.apply_table_data = response.data;
+            })
         },
         create_group() {
             axios.post("/my-group/").then(response => {
@@ -125,6 +155,30 @@ export default {
                         this.$message.success("成功")
                     })
             });
+        },
+        agree_apply(row) {
+            axios
+                .post('/intention/' + this.current_group_id + '/' + row.username + '/')
+                .then(response => {
+                    this.$message.success("同意成功")
+                })
+        },
+        deny_apply(row) {
+            axios
+                .delete('/intention/' + this.current_group_id + '/' + row.username + '/')
+                .then(response => {
+                    this.$message.success("拒绝成功")
+                })
+        },
+        join_group() {
+            this.$prompt("请输入要加入群组的id")
+                .then(({value}) => {
+                    axios
+                        .post('/intention/' + value + '/')
+                        .then(response => {
+                            this.$message.success("申请成功")
+                        })
+                })
         }
     }
 };
