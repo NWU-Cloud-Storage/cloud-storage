@@ -37,7 +37,7 @@ class MyGroup(APIView):
         group = check_exist_group(group_id)
         membership = check_user_in_group(myself, group)
         check_user_is_master_or_manager(membership)
-        serializer = check_serializer_is_valid(GroupSerializer, group, request.POST)
+        serializer = check_serializer_is_valid(GroupSerializer, group, request.data)
 
         serializer.save()
         return Response(serializer.data)

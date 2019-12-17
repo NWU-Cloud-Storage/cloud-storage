@@ -18,14 +18,17 @@ from django.urls import path, include
 from django.conf.urls import url
 
 from rest_framework.authtoken import views
+from user.views import token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('user.urls')),
     path('api/', include('group.urls')),
     path('api/', include('storage.urls')),
+    path('api/', include('share.urls'))
 ]
 
 urlpatterns += [
-    url(r'^api-token-auth/', views.obtain_auth_token)
+    url(r'^api-token-auth/', views.obtain_auth_token),
+    url(r'^my-tmp-auth/', token.MyTmpAuthToken.as_view())
 ]

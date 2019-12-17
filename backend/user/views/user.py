@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from user.checker import check_exist_user
-from user.serializers import UserSerializer
+from user.serializers import UserSerializer, TheOtherSerializer
 
 from my_utils.utils import sub_dict
 from my_utils.checker import check_serializer_is_valid
@@ -31,7 +31,7 @@ class User(APIView):
         修改个人资料
         '''
         check_is_none(username)
-        serializer = check_serializer_is_valid(UserSerializer, request.user.user, request.POST)
+        serializer = check_serializer_is_valid(UserSerializer, request.user.user, request.data)
 
         serializer.save()
         return Response(serializer.data)
@@ -43,10 +43,8 @@ class User(APIView):
         '''
         user = check_exist_user(username)
 
-        serializer = UserSerializer(user)
-        data = serializer.data
-        ret = sub_dict(data, ['username', 'nickname'])
-        return Response(ret)
+        serializer = TheOtherSerializer(user)
+        return Response(serializer.data)
 
     @staticmethod
     def _get_myself(myself):
