@@ -97,13 +97,12 @@ export default {
     created() {
         console.log(this.$route.query.code);
         if (localStorage.token) {
-            axios.defaults.headers.common['Authorization'] = localStorage.token;
+            axios.defaults.headers.common["Authorization"] = localStorage.token;
             axios.get("/user/").catch(() => {
-                this.login()
+                this.login();
             });
-        }
-        else {
-            this.login()
+        } else {
+            this.login();
         }
     },
     mounted() {
@@ -115,18 +114,13 @@ export default {
         login() {
             if (this.$route.query.code) {
                 let code = this.$route.query.code;
-                axios
-                    .post("/login/" + code + "/")
-                    .then(response => {
-                        localStorage.token = response.data.token
-                        location.reload()
-                    });
+                axios.post("/login/" + code + "/").then(response => {
+                    localStorage.token = response.data.token;
+                    location.reload();
+                });
             } else {
-                    axios.get("/user/").catch(error => {
-                        console.log(error);
-                        window.location.href =
-                            "http://authserver.nwu.edu.cn/authserver/oauth2.0/authorize?client_id=sfxzTU6D&redirect_uri=http://localhost/&state=nwu&scope=all&response_type=code";
-                    });
+                window.location.href =
+                    "http://authserver.nwu.edu.cn/authserver/oauth2.0/authorize?client_id=sfxzTU6D&redirect_uri=http://localhost/&state=nwu&scope=all&response_type=code";
             }
         },
         format(percentage) {

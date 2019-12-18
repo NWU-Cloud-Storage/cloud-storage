@@ -82,7 +82,12 @@ class GroupStorage(APIView):
             ancestor = check_exist_catalogue(src_cata_id)
             check_are_same(ancestor.get_root(), group_root)
 
-        new_cata = Catalogue(name='新建文件夹')
+        if request.data.get('name') is not None:
+            name = request.data['name']
+        else:
+            name = '新建文件夹'
+
+        new_cata = Catalogue(name=name)
         new_cata.insert_at(ancestor, 'first-child', save=True)
         serializer = CatalogueSerializer(new_cata)
         return Response(serializer.data)

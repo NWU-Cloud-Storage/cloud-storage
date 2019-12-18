@@ -44,7 +44,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="is_shared" label="共享" width="180">
-                    <template scope="scope">
+                    <template v-slot="scope">
                         <p>{{ scope.row.is_shared ? "是" : "否" }}</p>
                     </template>
                 </el-table-column>
@@ -80,11 +80,18 @@ export default {
     methods: {
         fetch_data() {
             this.loading = true;
+            let api_path;
+            if (this.id == undefined) {
+                api_path = this.api_base + "/";
+            } else {
+                api_path = this.api_base + "/" + this.id + "/";
+            }
             axios
-                .get(this.current_folder_api_path)
+                .get(api_path)
                 .then(response => {
                     this.tableData = response.data.content;
                     this.breadcrumbs = response.data.breadcrumbs;
+                    this.breadcrumbs[0].name = "文件"
                     this.loading = false;
                     console.log(response);
                     this.$emit("load-complete");
