@@ -33,7 +33,7 @@
                     <br />
                     已用容量：{{ user_info.used_size }}
                     <br />
-                    最后操作时间：{{ Date(user_info.date_last_opt )}}
+                    最后操作时间：{{ Date(user_info.date_last_opt) }}
                 </div>
             </el-aside>
             <el-main>
@@ -71,15 +71,13 @@ export default {
     created() {
         console.log(this.$route.query.code);
         if (localStorage.token) {
-            axios.defaults.headers.common['Authorization'] = localStorage.token;
+            axios.defaults.headers.common["Authorization"] = localStorage.token;
             axios.get("/user/").catch(() => {
-                this.login()
+                this.login();
             });
+        } else {
+            this.login();
         }
-        else {
-            this.login()
-        }
-
     },
     mounted() {
         axios.get("/user/").then(response => {
@@ -90,18 +88,13 @@ export default {
         login() {
             if (this.$route.query.code) {
                 let code = this.$route.query.code;
-                axios
-                    .post("/login/" + code + "/")
-                    .then(response => {
-                        localStorage.token = response.data.token
-                        location.reload()
-                    });
+                axios.post("/login/" + code + "/").then(response => {
+                    localStorage.token = response.data.token;
+                    location.reload();
+                });
             } else {
-                    axios.get("/user/").catch(error => {
-                        console.log(error);
-                        window.location.href =
-                            "http://authserver.nwu.edu.cn/authserver/oauth2.0/authorize?client_id=sfxzTU6D&redirect_uri=http://localhost/&state=nwu&scope=all&response_type=code";
-                    });
+                window.location.href =
+                    "http://authserver.nwu.edu.cn/authserver/oauth2.0/authorize?client_id=sfxzTU6D&redirect_uri=http://localhost/&state=nwu&scope=all&response_type=code";
             }
         }
     }

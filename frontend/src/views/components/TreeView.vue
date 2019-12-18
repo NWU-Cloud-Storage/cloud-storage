@@ -51,26 +51,30 @@ export default {
             let apiPath;
             //第0层的node没有id
             if (node.level === 0) {
-                apiPath = "/my-storage/";
+                resolve([{ name: "文件" }]);
             } else {
-                let id = node.data.id;
-                console.log(node.data.id);
-                apiPath = "/my-storage/" + id + "/";
-            }
-            axios
-                .get(apiPath)
-                .then(response => {
-                    let data = response.data.content;
-                    let res = [];
-                    for (let i in data) {
-                        if (data[i].is_file === false) {
-                            res.push(data[i]);
+                if (node.level === 1) {
+                    apiPath = "/my-storage/";
+                } else {
+                    let id = node.data.id;
+                    console.log(node.data.id);
+                    apiPath = "/my-storage/" + id + "/";
+                }
+                axios
+                    .get(apiPath)
+                    .then(response => {
+                        let data = response.data.content;
+                        let res = [];
+                        for (let i in data) {
+                            if (data[i].is_file === false) {
+                                res.push(data[i]);
+                            }
                         }
-                    }
-                    resolve(res);
-                    // console.log(node);
-                })
-                .catch(error => console.log(error));
+                        resolve(res);
+                        // console.log(node);
+                    })
+                    .catch(error => console.log(error));
+            }
         },
         submit() {
             console.log(this.$refs.tree.getCurrentNode());
@@ -85,6 +89,7 @@ export default {
                     })
                     .then(response => {
                         this.$message.success("成功");
+                        this.$emit("update_data");
                     })
                     .catch(error => {
                         this.$message.error(error);

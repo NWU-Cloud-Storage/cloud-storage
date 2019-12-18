@@ -37,7 +37,9 @@
                 :operation="treeview_dialog.operation"
                 :dialog_visible.sync="treeview_dialog.visible"
                 :source_id="selected_file.map(a => a.id)"
+                @update_data="update_data"
             ></TreeView>
+
         </div>
         <div v-else>
             <el-dropdown trigger="click">
@@ -190,7 +192,7 @@ export default {
                 })
                 .then(() => {
                     this.$message.success("删除成功");
-                    this.$refs.file_list.fetch_data();
+                    this.update_data()
                 })
                 .catch(error => {
                     this.$message.error("出错了，请重试")
@@ -215,6 +217,7 @@ export default {
                         .then(response => {
                             console.log(response);
                             this.$message("修改成功");
+                            this.update_data()
                         })
                         .catch(error => {
                             console.log(error);
@@ -235,7 +238,7 @@ export default {
                     })
                     .then(response => {
                         this.$message.success("成功");
-                        this.$refs.file_list.fetch_data();
+                        this.update_data()
                     });
             });
         },
@@ -268,6 +271,9 @@ export default {
                     this.share.share_url =
                         "http://127.0.0.1/share/" + response.data.url;
                 });
+        },
+        update_data() {
+            this.$refs.file_list.fetch_data();
         }
     }
 };

@@ -101,7 +101,7 @@ def _move_or_copy_check(request):
 
     my_root = request.user.user.storage
 
-    src_ids = request.data.getlist('source_id', None)
+    src_ids = request.data.get('source_id', None)
     if not src_ids:
         return Response()
     src_ids = check_all_int(src_ids)
