@@ -17,7 +17,7 @@
                 style="width: 100%"
                 @selection-change="handleSelectionChange"
                 @row-click="toggleSelection"
-                @cell-click="handleCellClick"
+                @row-dblclick="handle_file_click"
             >
                 <el-table-column width="50" type="selection"></el-table-column>
                 <el-table-column width="50" prop="is_file">
@@ -33,7 +33,7 @@
                 <el-table-column prop="name" label="名称" width="280" column-key="fileName">
                     <template v-slot="slotProps">
                         <el-link
-                            @click.native="handle_file_click(slotProps.$index)"
+                            @click.native="handle_file_click(slotProps.row)"
                         >{{ slotProps.row.name }}</el-link>
                         <!-- {{ tableData[slotProps.$index].id }} -->
                     </template>
@@ -60,7 +60,7 @@ import axios from "axios";
 import router from "../../router/index.js";
 
 export default {
-    props: ["id", "api_base"],
+    props: ["id", "api_base", "current_folder_api_path"],
     created() {
         this.fetch_data();
     },
@@ -80,13 +80,8 @@ export default {
     methods: {
         fetch_data() {
             this.loading = true;
-            if (this.id == undefined) {
-                this.apiPath = this.api_base + "/";
-            } else {
-                this.apiPath = this.api_base + "/" + this.id + "/";
-            }
             axios
-                .get(this.apiPath)
+                .get(this.current_folder_api_path)
                 .then(response => {
                     this.tableData = response.data.content;
                     this.breadcrumbs = response.data.breadcrumbs;
@@ -108,11 +103,11 @@ export default {
         handleCellClick(row, column, cell, event) {
             console.log(cell);
         },
-        handle_file_click(index) {
-            let file = this.tableData[index];
-            console.log(this.tableData[index].id);
-            if (file.is_file == false) {
-                router.push({ path: this.api_base + '/' + file.id + '/'})
+        handle_file_click(row) {
+            // let file = this.tableData[index];
+            // console.log(this.tableData[index].id);
+            if (row.is_file == false) {
+                router.push({ path: this.api_base + '/' + row.id + '/'})
                 // router.push({ name: "File", params: { id: file.id } });
             }
         }

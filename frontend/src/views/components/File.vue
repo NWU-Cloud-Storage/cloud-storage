@@ -74,7 +74,7 @@
             </el-dropdown>
         </div>
 
-        <FileList :api_base=api_base :id="id" @selected-file-change="handle_file_selected"></FileList>
+        <FileList ref="file_list" :api_base=api_base :id="id" :current_folder_api_path="current_folder_api_path" @selected-file-change="handle_file_selected"></FileList>
 
     </div>
 </template>
@@ -107,6 +107,15 @@ export default {
     created() {
         this.id = this.$route.params.id;
         console.log(this.$route.params)
+    },
+    computed: {
+        current_folder_api_path() {
+            if (this.id == undefined) {
+                return this.api_base + "/";
+            } else {
+                return this.api_base + "/" + this.id + "/";
+            }
+        }
     },
     mounted() {},
     watch: {
@@ -204,10 +213,11 @@ export default {
             this.$prompt("新建", {
                 inputPlaceholder: "输入您的文件夹名称"
             }).then(({ value }) => {
-                axios.post(this.api_base + '/', {
+                axios.post(this.current_folder_api_path, {
                     name: value
                 }).then(response => {
                     this.$message.success("成功");
+                    this.$refs.file_list.fetch_data()
                 });
             });
         },
@@ -235,11 +245,10 @@ export default {
                 duration: this.share.duration.value,
                 password: this.share.password.value
             }).then(response => {
-                this.share.share_url = response.data.url;
+                this.share.share_url = "http://127.0.0.1/share/" + response.data.url;
             })
         }
     },
-    computed: {}
 };
 </script>
 

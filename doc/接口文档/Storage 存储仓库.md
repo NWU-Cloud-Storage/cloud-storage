@@ -96,8 +96,21 @@
 
 * Request
   * Url: `/api/my-storage/71/`
-  * Method: POST
-
+  
+* Method: POST
+  
+  * Content-Type: application/json
+  
+  * Body:
+  
+    ```json
+    {
+        "name": "新建文件夹"
+    }
+    ```
+  
+    
+  
 * Response
   * Status Code: 200 OK
 
@@ -158,35 +171,28 @@
 
   * Status Code: 200 OK
   
-  
-  
-### 复制个人仓库文件(夹)
+### **上传文件**
 
 * Request
-  * Url: `/api/my-storage/copy/`
-  * Method: PUT
-  * Content-Type: application/json
+
+  * Url: `/api/upload/`
+
+  * Method: POST
+
+  * Content-Type: multipart/form-data
+
   * Body:
 
     ```json
-    {
-        "source_id":
-        [
-            12,
-            13,
-            14
-        ],
-        "destination_id": 10
+    file: <baniry>
+    data: {
+        "base_folder_id": 100
     }
     ```
 
 * Response
 
-  * Status Code: 200 OK
-
-### **上传文件**
-
-？
+  * Status Code: 200OK
 
 ### **下载文件**
 
@@ -365,6 +371,7 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### 保存到个人仓库
@@ -387,4 +394,5 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
