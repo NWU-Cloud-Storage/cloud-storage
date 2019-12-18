@@ -11,11 +11,16 @@
                         :value="item.value"
                     ></el-option>
                 </el-select>
-                <br/>密码
+                <br />密码
                 <el-switch v-model="share.password.status"></el-switch>
-                <el-input placeholder="请输入内容" v-model="share.password.value" :disabled="!share.password.status"></el-input>
-                <el-button @click="share_file">生成共享链接</el-button><br>
-                共享链接<el-input v-model="share.share_url"></el-input>
+                <el-input
+                    placeholder="请输入内容"
+                    v-model="share.password.value"
+                    :disabled="!share.password.status"
+                ></el-input>
+                <el-button @click="share_file">生成共享链接</el-button>
+                <br />共享链接
+                <el-input v-model="share.share_url"></el-input>
                 <el-button slot="reference" style="margin-right: 10px;">共享</el-button>
             </el-popover>
             <el-button>下载</el-button>
@@ -74,8 +79,13 @@
             </el-dropdown>
         </div>
 
-        <FileList ref="file_list" :api_base=api_base :id="id" :current_folder_api_path="current_folder_api_path" @selected-file-change="handle_file_selected"></FileList>
-
+        <FileList
+            ref="file_list"
+            :api_base="api_base"
+            :id="id"
+            :current_folder_api_path="current_folder_api_path"
+            @selected-file-change="handle_file_selected"
+        ></FileList>
     </div>
 </template>
 
@@ -83,7 +93,6 @@
 import TreeView from "./TreeView.vue";
 import FileList from "./FileList.vue";
 import axios from "axios";
-
 
 export default {
     components: {
@@ -95,18 +104,18 @@ export default {
         return {
             id: undefined,
             selected_file: {
-                length: 0,
+                length: 0
             },
             treeview_dialog: {
                 visible: false,
                 operation: undefined
             },
-            share: {},
+            share: {}
         };
     },
     created() {
         this.id = this.$route.params.id;
-        console.log(this.$route.params)
+        console.log(this.$route.params);
     },
     computed: {
         current_folder_api_path() {
@@ -144,7 +153,7 @@ export default {
                     value: ""
                 },
                 share_url: ""
-            }
+            };
         }
     },
     filters: {
@@ -156,29 +165,36 @@ export default {
         handle_file_selected(selected_file) {
             this.selected_file = selected_file;
         },
-    
+
         filePath(index) {
             return this.$route.path + this.tableData[index].id + "/";
         },
 
         delete_file() {
-            this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+            console.log(this.selected_file.map(a => a.id));
+            this.$confirm("此操作将永久删除这些文件, 是否继续?", "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
                 type: "warning"
             })
+                .catch(() => {
+                    this.$message.info("已取消删除");
+                })
                 .then(() => {
-                    this.$message({
-                        type: "success",
-                        message: "删除成功!"
+                    let id = this.selected_file.map(a => a.id);
+                    return axios.delete(this.api_base + "/", {
+                        data: {
+                            id: this.selected_file.map(a => a.id)
+                        }
                     });
                 })
-                .catch(() => {
-                    this.$message({
-                        type: "info",
-                        message: "已取消删除"
-                    });
-                });
+                .then(() => {
+                    this.$message.success("删除成功");
+                    this.$refs.file_list.fetch_data();
+                })
+                .catch(error => {
+                    this.$message.error("出错了，请重试")
+                })
         },
         rename_file() {
             let id = this.selected_file[0].id;
@@ -193,7 +209,7 @@ export default {
                 .then(({ value }) => {
                     console.log(value);
                     axios
-                        .put(this.api_base + '/' + id + '/', {
+                        .put(this.api_base + "/" + id + "/", {
                             name: value
                         })
                         .then(response => {
@@ -213,12 +229,14 @@ export default {
             this.$prompt("新建", {
                 inputPlaceholder: "输入您的文件夹名称"
             }).then(({ value }) => {
-                axios.post(this.current_folder_api_path, {
-                    name: value
-                }).then(response => {
-                    this.$message.success("成功");
-                    this.$refs.file_list.fetch_data()
-                });
+                axios
+                    .post(this.current_folder_api_path, {
+                        name: value
+                    })
+                    .then(response => {
+                        this.$message.success("成功");
+                        this.$refs.file_list.fetch_data();
+                    });
             });
         },
         upload_file(e) {
@@ -241,19 +259,21 @@ export default {
                 });
         },
         share_file() {
-            axios.post('/share-to-public/' + this.selected_file[0].id + '/', {
-                duration: this.share.duration.value,
-                password: this.share.password.value
-            }).then(response => {
-                this.share.share_url = "http://127.0.0.1/share/" + response.data.url;
-            })
+            axios
+                .post("/share-to-public/" + this.selected_file[0].id + "/", {
+                    duration: this.share.duration.value,
+                    password: this.share.password.value
+                })
+                .then(response => {
+                    this.share.share_url =
+                        "http://127.0.0.1/share/" + response.data.url;
+                });
         }
-    },
+    }
 };
 </script>
 
 <style>
-
 .el-dropdown {
     vertical-align: top;
 }

@@ -25,10 +25,14 @@
                     </el-menu>
                 </div>
                 <div id="info">
-                    {{ user_info.username }} <br>
-                    {{ user_info.nickname }} <br>
-                    最大容量：{{ user_info.max_size }} <br>
-                    已用容量：{{ user_info.used_size }} <br>
+                    {{ user_info.username }}
+                    <br />
+                    {{ user_info.nickname }}
+                    <br />
+                    最大容量：{{ user_info.max_size }}
+                    <br />
+                    已用容量：{{ user_info.used_size }}
+                    <br />
                     最后操作时间：{{ Date(user_info.date_last_opt )}}
                 </div>
             </el-aside>
@@ -45,7 +49,7 @@
 
 <script>
 // import Header from "@/components/Header.vue";
-import Header from "./views/Header"
+import Header from "./views/Header";
 import axios from "axios";
 
 export default {
@@ -60,26 +64,46 @@ export default {
                 nickname: undefined,
                 max_size: undefined,
                 used_size: undefined,
-                date_last_opt: undefined,
-            },
-        }
+                date_last_opt: undefined
+            }
+        };
     },
     created() {
-        axios
-            .post("/login/", {})
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
+        console.log(this.$route.query.code);
+        if (localStorage.token) {
+            axios.defaults.headers.common['Authorization'] = localStorage.token;
+            axios.get("/user/").catch(() => {
+                this.login()
             });
+        }
+        else {
+            this.login()
+        }
+
     },
     mounted() {
-        axios
-            .get('/user/')
-            .then(response => {
-                this.user_info = response.data
-            })
+        axios.get("/user/").then(response => {
+            this.user_info = response.data;
+        });
+    },
+    methods: {
+        login() {
+            if (this.$route.query.code) {
+                let code = this.$route.query.code;
+                axios
+                    .post("/login/" + code + "/")
+                    .then(response => {
+                        localStorage.token = response.data.token
+                        location.reload()
+                    });
+            } else {
+                    axios.get("/user/").catch(error => {
+                        console.log(error);
+                        window.location.href =
+                            "http://authserver.nwu.edu.cn/authserver/oauth2.0/authorize?client_id=sfxzTU6D&redirect_uri=http://localhost/&state=nwu&scope=all&response_type=code";
+                    });
+            }
+        }
     }
 };
 </script>

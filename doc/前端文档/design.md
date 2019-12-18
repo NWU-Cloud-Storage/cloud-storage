@@ -3,7 +3,11 @@
 
 Others see in package.json
 
+## 目录结构
 
+src为源代码：入口点main.js
+
+主界面App.vue
 
 ## Data structure
 
@@ -25,3 +29,16 @@ Others see in package.json
 
 * 拖放至任意处上传
 * 拖放到一个文件夹即上传至这个文件夹
+
+## API的维护
+
+在全局配置文件中定义api_base
+
+
+
+## 优点
+
+* 组件化，减少冗余代码
+
+* 数据双向绑定，实时响应用户的操作
+* 界面简洁易用

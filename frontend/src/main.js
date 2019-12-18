@@ -9,8 +9,8 @@ import axios from 'axios'
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
-axios.defaults.xsrfCookieName = 'csrftoken'; // default
-axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // default
+axios.defaults.xsrfCookieName = 'token'; // default
+axios.defaults.xsrfHeaderName = 'Authorization'; // default
 
 
 Vue.config.productionTip = false

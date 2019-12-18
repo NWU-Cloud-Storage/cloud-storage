@@ -35,7 +35,10 @@ class ShareToPublic(APIView):
         check_are_same(my_root, cata.get_root())
         days = request.data.get('duration', None)
         pwd = request.data.get('password', None)
-        days = check_is_int(days)
+        if days == "infinite":
+            days = None
+        else:
+            days = check_is_int(days)
 
         share = ShareModel.objects.create_by_user(user, cata, days, pwd)
         serializer = ShareSerializer(share)

@@ -52,7 +52,7 @@ class MyStorage(APIView):
         删除个人仓库某文件（夹）。
         '''
         check_is_none(src_cata_id)
-        cata_ids = request.data.getlist('id', None)
+        cata_ids = request.data.get('id', None)
         if not cata_ids:
             return Response()
         cata_ids = check_all_int(cata_ids)
