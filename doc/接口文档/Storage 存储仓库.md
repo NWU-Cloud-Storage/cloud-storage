@@ -175,7 +175,7 @@
 
 * Request
 
-  * Url: `/api/upload/`
+  * Url: `/api/my-storage/upload/`
 
   * Method: POST
 

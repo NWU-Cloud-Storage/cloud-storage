@@ -152,3 +152,12 @@ class MyStorageCopy(APIView):
         for cata in src_catas:
             cata.copy_to(des_cata)
         return Response()
+
+class MyStorageUpload(APIView):
+    """
+    上传文件
+    """
+    @staticmethod
+    def post(request):
+        print(1)
+        return Response()

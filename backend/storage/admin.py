@@ -10,7 +10,7 @@ from .models import MyFile, Catalogue
 @admin.register(MyFile)
 class MyFile(admin.ModelAdmin):
     list_display = (
-        'res_path',
+        'file',
         'size',
         'date_joined',
         'reference_count',
