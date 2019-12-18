@@ -1,7 +1,7 @@
 <template>
     <el-container style="height: 1000px; border: 1px solid #eee">
         <el-header height="82px">
-            <Header></Header>
+            <Header :user_info="user_info"></Header>
         </el-header>
         <el-container direction="horizontal">
             <el-aside>
@@ -25,10 +25,6 @@
                     </el-menu>
                 </div>
                 <div id="info">
-                    {{ user_info.username }}
-                    <br />
-                    {{ user_info.nickname }}
-                    <br />
                     最大容量：{{ user_info.max_size }}
                     <br />
                     已用容量：{{ user_info.used_size }}

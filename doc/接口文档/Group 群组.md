@@ -70,13 +70,27 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### 建立一个新群组
 
 * Request
   * Url: `/api/my-group/`
+  
   * Method: POST
+  
+  * Content-Type: application/json
+  
+  * Body:
+  
+    ```json
+    {
+        "name": "开车群"
+    }
+    ```
+  
+    
 * Response
   * Status Code: 200 OK
 
@@ -111,6 +125,7 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### 踢掉一个成员

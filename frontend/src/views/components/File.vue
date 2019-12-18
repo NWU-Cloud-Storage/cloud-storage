@@ -247,15 +247,17 @@ export default {
             let data = JSON.stringify({
                 base_folder_id: this.id
             });
+            console.log(data)
             formData.append("file", e.target.files[0]);
             formData.append("data", data); // 上传文件的同时， 也可以上传其他数据
 
             axios
-                .post("/api/upload/", formData, {
+                .post(this.api_base + "/upload/", formData, {
                     headers: { "Content-Type": "multipart/form-data" }
                 })
                 .then(response => {
                     console.log(response);
+                    this.update_data()
                 })
                 .catch(error => {
                     console.log(error);
@@ -269,11 +271,12 @@ export default {
                 })
                 .then(response => {
                     this.share.share_url =
-                        "http://127.0.0.1/share/" + response.data.url;
+                        "http://localhost/share/" + response.data.url;
                 });
         },
         update_data() {
             this.$refs.file_list.fetch_data();
+            this.selected_file.splice(0)
         }
     }
 };

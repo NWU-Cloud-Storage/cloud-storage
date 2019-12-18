@@ -16,11 +16,6 @@ class User(AuthUser):
     def __str__(self):
         return self.username
 
-    def create_a_group(self):
-        from group.models import Group, Membership
-        my_group = Group.objects.create(name=self.nickname+"的小组")
-        Membership.objects.create(group=my_group, user=self, permission='master')
-        return my_group
 
 @receiver(pre_save, sender=User, dispatch_uid="创建之前要检查密码")
 def before_create_user(instance, **kwargs):
