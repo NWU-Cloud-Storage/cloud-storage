@@ -1,10 +1,7 @@
 <template>
     <div  >
-        <el-header height="82px" style="
-            <!-- box-shadow: inset 30px 30px 70px rgb(217, 236, 255); -->
-            border: 1px solid #eee;
-            padding: 0px 20px 0px 0px">
-            <Header></Header>
+        <el-header height="82px" style="border: 1px solid #eee;">
+            <Header :user_info="user_info"></Header>
         </el-header>
         <el-container direction="horizontal" style="">
             <el-aside style="position:relative;border: 1px solid #eee;">
@@ -123,7 +120,7 @@ export default {
                     "http://authserver.nwu.edu.cn/authserver/oauth2.0/authorize?client_id=sfxzTU6D&redirect_uri=http://localhost/&state=nwu&scope=all&response_type=code";
             }
         },
-        format(percentage) {
+        format() {
             return (this.user_info.used_size/1024/1024/1024).toFixed(2) + 'GB'
                 + '/' + (this.user_info.max_size/1024/1024/1024).toFixed(2) + 'GB';
         }
