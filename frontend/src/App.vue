@@ -88,11 +88,10 @@ export default {
     computed: {
         percentage: function () {
             return Math.round(this.user_info.used_size/this.user_info.max_size * 100)
-            // return Math.round(parseInt(this.user_info.user_size)/parseInt(this.user_info.max_size) * 100)
         }
     },
     created() {
-        console.log(this.$route.query.code);
+        // console.log(this.$route.query.code);
         if (localStorage.token) {
             axios.defaults.headers.common["Authorization"] = localStorage.token;
             axios.get("/user/").catch(() => {

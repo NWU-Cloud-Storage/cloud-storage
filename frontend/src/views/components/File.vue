@@ -20,9 +20,10 @@
                 ></el-input>
                 <el-button @click="share_file">生成共享链接</el-button>
                 <br />共享链接
-                <el-input v-model="share.share_url"></el-input>
+                <el-input v-model="share.share_url" ref="share_url_input"></el-input>
                 <el-button slot="reference" style="margin-right: 10px;">共享</el-button>
             </el-popover>
+
             <el-button>下载</el-button>
             <el-button @click="delete_file">删除</el-button>
             <el-button
@@ -39,7 +40,6 @@
                 :source_id="selected_file.map(a => a.id)"
                 @update_data="update_data"
             ></TreeView>
-
         </div>
         <div v-else>
             <el-dropdown trigger="click">
@@ -192,11 +192,11 @@ export default {
                 })
                 .then(() => {
                     this.$message.success("删除成功");
-                    this.update_data()
+                    this.update_data();
                 })
                 .catch(error => {
-                    this.$message.error("出错了，请重试")
-                })
+                    this.$message.error("出错了，请重试");
+                });
         },
         rename_file() {
             let id = this.selected_file[0].id;
@@ -217,7 +217,7 @@ export default {
                         .then(response => {
                             console.log(response);
                             this.$message("修改成功");
-                            this.update_data()
+                            this.update_data();
                         })
                         .catch(error => {
                             console.log(error);
@@ -238,7 +238,7 @@ export default {
                     })
                     .then(response => {
                         this.$message.success("成功");
-                        this.update_data()
+                        this.update_data();
                     });
             });
         },
@@ -247,7 +247,7 @@ export default {
             let data = JSON.stringify({
                 base_folder_id: this.id
             });
-            console.log(data)
+            console.log(data);
             formData.append("file", e.target.files[0]);
             formData.append("data", data); // 上传文件的同时， 也可以上传其他数据
 
@@ -257,7 +257,7 @@ export default {
                 })
                 .then(response => {
                     console.log(response);
-                    this.update_data()
+                    this.update_data();
                 })
                 .catch(error => {
                     console.log(error);
@@ -272,11 +272,18 @@ export default {
                 .then(response => {
                     this.share.share_url =
                         "http://localhost/share/" + response.data.url;
+                    //我也不知道为什么要再来一个then
+                    //不这样的话执行select()的时候实际上输入框里还没内容
+                })
+                .then(() => {
+                    this.$refs.share_url_input.select();
+                    document.execCommand("copy");
+                    this.$message.success("链接已复制到剪切板")
                 });
         },
         update_data() {
             this.$refs.file_list.fetch_data();
-            this.selected_file.splice(0)
+            this.selected_file.splice(0);
         }
     }
 };

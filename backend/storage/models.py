@@ -20,7 +20,7 @@ class MyFile(models.Model):
     如果已经没有任何一个目录保存着文件，那么文件应该被删除。
     每当有新的外键引用该文件，文件的引用次数要加1，同理外键被删除应该减1，减到0文件就要被删除。
     '''
-    res_path = models.CharField(max_length=100, verbose_name="静态资源路径")
+    file = models.FileField(upload_to='upload/')
     size = models.BigIntegerField(verbose_name="文件大小")
     date_joined = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
     reference_count = models.IntegerField(verbose_name="引用次数", default=0)
@@ -30,7 +30,7 @@ class MyFile(models.Model):
         verbose_name = verbose_name_plural = '文件'
 
     def __str__(self):
-        return self.res_path
+        return self.file
 
 # class CatalogueManager(models.Manager):
 #     '''
