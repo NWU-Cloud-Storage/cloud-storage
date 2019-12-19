@@ -79,7 +79,8 @@ export default {
             detail_table_visible: false,
             detail_table_data: [],
             apply_table_data: [],
-            current_group_id: undefined
+            current_group_id: undefined,
+            apply_table_visible: false
         };
     },
     created() {

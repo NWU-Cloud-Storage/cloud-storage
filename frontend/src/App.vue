@@ -1,10 +1,10 @@
 <template>
-    <div  >
+    <div>
         <el-header height="82px" style="
             <!-- box-shadow: inset 30px 30px 70px rgb(217, 236, 255); -->
             border: 1px solid #eee;
             padding: 0px 20px 0px 0px">
-            <Header></Header>
+            <Header :user_info="user_info"></Header>
         </el-header>
         <el-container direction="horizontal" style="">
             <el-aside style="position:relative;border: 1px solid #eee;">
@@ -91,11 +91,10 @@ export default {
     computed: {
         percentage: function () {
             return Math.round(this.user_info.used_size/this.user_info.max_size * 100)
-            // return Math.round(parseInt(this.user_info.user_size)/parseInt(this.user_info.max_size) * 100)
         }
     },
     created() {
-        console.log(this.$route.query.code);
+        // console.log(this.$route.query.code);
         if (localStorage.token) {
             axios.defaults.headers.common["Authorization"] = localStorage.token;
             axios.get("/user/").catch(() => {
