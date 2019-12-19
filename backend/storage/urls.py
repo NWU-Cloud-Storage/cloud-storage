@@ -12,6 +12,7 @@ urlpatterns = [
     path("my-storage/copy/", MyStorageCopy.as_view()),
     path("my-storage/upload/", MyStorageFiles.as_view()),
     path("my-storage/upload/<int:src_cata_id>/", MyStorageFiles.as_view()),
+    path("my-storage/download/<int:src_cata_id>/", MyStorageFiles.as_view()),
 
     path("group-storage/<int:group_id>/", GroupStorage.as_view()),
     path("group-storage/<int:group_id>/<int:src_cata_id>/", GroupStorage.as_view()),

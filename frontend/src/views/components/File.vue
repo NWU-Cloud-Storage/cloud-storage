@@ -24,7 +24,7 @@
                 <el-button slot="reference" style="margin-right: 10px;">共享</el-button>
             </el-popover>
 
-            <el-button>下载</el-button>
+            <el-button @click="download_file">下载</el-button>
             <el-button @click="delete_file">删除</el-button>
             <el-button
                 @click="treeview_dialog.visible = true, treeview_dialog.operation = 'move'"
@@ -253,9 +253,9 @@ export default {
 
             let api_path;
             if (this.id == undefined) {
-                api_path =  this.api_base + "/upload/";
+                api_path = this.api_base + "/upload/";
             } else {
-                api_path =  this.api_base + "/upload/" + this.id + "/";
+                api_path = this.api_base + "/upload/" + this.id + "/";
             }
 
             axios
@@ -269,6 +269,11 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        download_file() {
+            let id = this.selected_file[0].id;
+            let api_path = this.api_base + "/download/" + id + "/";
+            window.location.href = "http://localhost:8000/api" + api_path
         },
         share_file() {
             axios
@@ -285,7 +290,7 @@ export default {
                 .then(() => {
                     this.$refs.share_url_input.select();
                     document.execCommand("copy");
-                    this.$message.success("链接已复制到剪切板")
+                    this.$message.success("链接已复制到剪切板");
                 });
         },
         update_data() {

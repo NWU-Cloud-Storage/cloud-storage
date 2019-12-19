@@ -154,6 +154,7 @@ class MyStorageCopy(APIView):
         return Response()
 
 class MyStorageFiles(APIView):
+    permission_classes = ()
     """
     上传文件
     """
@@ -174,5 +175,29 @@ class MyStorageFiles(APIView):
         return Response(serializer.data)
 
     @staticmethod
-    def get(request):
-        pass
+    def get(request, src_cata_id):
+        from django.http import StreamingHttpResponse
+
+        # myself = request.user.user
+        # my_root = myself.storage
+        # cata = check_exist_catalogue(src_cata_id)
+        # check_are_same(cata.get_root(), my_root)
+        cata = check_exist_catalogue(src_cata_id)
+
+        file_path = cata.my_file.file.path
+
+        def file_iterator(file_name, chunk_size=512):
+            with open(file_name, 'rb') as f:
+                while True:
+                    c = f.read(chunk_size)
+                    if c:
+                        yield c
+                    else:
+                        break
+
+        response = StreamingHttpResponse(file_iterator(file_path))
+        response['Content-Type'] = 'application/octet-stream'
+        response['Content-Disposition'] = 'attachment;filename="{0}"'.format(cata.name)
+        response['Content-Length'] = cata.my_file.size
+
+        return response

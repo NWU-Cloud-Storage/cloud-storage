@@ -195,7 +195,19 @@
 
 ### **下载文件**
 
-?
+AJAX下载有锅！！
+
+* Request
+
+  * Url: `/api/my-storage/download/[id]/`
+
+  * Method: GET
+
+* Response
+
+  * Status Code: 200OK
+
+目前取消了下载接口的授权验证。
 
 ## 群组仓库
 

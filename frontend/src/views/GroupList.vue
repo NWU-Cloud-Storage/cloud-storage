@@ -179,6 +179,7 @@ export default {
                         "/"
                 )
                 .then(response => {
+                    this.fetch_apply_detail();
                     this.$message.success("同意成功");
                 });
         },
@@ -192,6 +193,7 @@ export default {
                         "/"
                 )
                 .then(response => {
+                    this.fetch_apply_detail();
                     this.$message.success("拒绝成功");
                 });
         },
@@ -202,7 +204,8 @@ export default {
                 })
                 .then(response => {
                     this.$message.success("申请成功");
-                }); ``
+                });
+            ``;
         }
     }
 };
