@@ -1,6 +1,9 @@
 # zhangjunbo
 zjb/
 
+# static files
+backend/media/
+
 # some test files
 frontend/test.json
 

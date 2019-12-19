@@ -30,7 +30,7 @@ class MyFile(models.Model):
         verbose_name = verbose_name_plural = '文件'
 
     def __str__(self):
-        return self.file
+        return self.file.name
 
 # class CatalogueManager(models.Manager):
 #     '''

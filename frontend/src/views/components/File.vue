@@ -251,8 +251,15 @@ export default {
             formData.append("file", e.target.files[0]);
             formData.append("data", data); // 上传文件的同时， 也可以上传其他数据
 
+            let api_path;
+            if (this.id == undefined) {
+                api_path =  this.api_base + "/upload/";
+            } else {
+                api_path =  this.api_base + "/upload/" + this.id + "/";
+            }
+
             axios
-                .post(this.api_base + "/upload/", formData, {
+                .post(api_path, formData, {
                     headers: { "Content-Type": "multipart/form-data" }
                 })
                 .then(response => {
