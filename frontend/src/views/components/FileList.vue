@@ -38,17 +38,17 @@
                         <!-- {{ tableData[slotProps.$index].id }} -->
                     </template>
                 </el-table-column>
-                <el-table-column label="修改时间" width="180">
-                    <template v-slot="scope">
-                        {{ Date(scope.row.date_modified) }}
-                    </template>
+                <el-table-column label="修改时间" width="200">
+                    <template v-slot="scope">{{ scope.row.date_modified }}</template>
                 </el-table-column>
                 <el-table-column prop="is_shared" label="共享" width="180">
                     <template v-slot="scope">
                         <p>{{ scope.row.is_shared ? "是" : "否" }}</p>
                     </template>
                 </el-table-column>
-                <el-table-column prop="size" label="大小"></el-table-column>
+                <el-table-column prop="size" label="大小">
+                    <template v-slot="scope">{{ file_size(scope.row.size) }}</template>
+                </el-table-column>
             </el-table>
         </div>
         <!-- {{ $route.params.id }} -->
@@ -67,6 +67,23 @@ export default {
     watch: {
         id() {
             this.fetch_data();
+        }
+    },
+    computed: {
+        file_size() {
+            return size => {
+                if (size === undefined) return ""
+                let dimensions = ["B", "KB", "MB", "GB"];
+
+                for (let i in dimensions) {
+                    if (size >= 1024) {
+                        size /= 1024;
+                    } else {
+                        return size.toFixed(2) + dimensions[i];
+                    }
+                }
+                return size.toFixed(2) + dimensions[3];
+            };
         }
     },
     data() {
@@ -91,7 +108,7 @@ export default {
                 .then(response => {
                     this.tableData = response.data.content;
                     this.breadcrumbs = response.data.breadcrumbs;
-                    this.breadcrumbs[0].name = "文件"
+                    this.breadcrumbs[0].name = "文件";
                     this.loading = false;
                     console.log(response);
                     this.$emit("load-complete");
@@ -114,7 +131,7 @@ export default {
             // let file = this.tableData[index];
             // console.log(this.tableData[index].id);
             if (row.is_file == false) {
-                router.push({ path: this.api_base + '/' + row.id + '/'})
+                router.push({ path: this.api_base + "/" + row.id + "/" });
                 // router.push({ name: "File", params: { id: file.id } });
             }
         }
@@ -126,5 +143,4 @@ export default {
 #fileNav {
     font: 25px bold;
 }
-
 </style>

@@ -10,12 +10,13 @@ class CatalogueSerializer(serializers.ModelSerializer):
 
     name = serializers.CharField(required=False, default='新建文件夹')
     extension = serializers.CharField(required=False)
+    size = serializers.ReadOnlyField(source="my_file.size")
 
     class Meta:
         model = Catalogue
         fields = (
             'id', 'name', 'is_file', 'is_shared',
-            'date_modified', 'extension'
+            'date_modified', 'extension', 'size'
         )
 
 class BreadcrumbsSerializer(serializers.ModelSerializer):
