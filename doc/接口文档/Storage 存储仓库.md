@@ -95,6 +95,7 @@
 ### 在个人仓库新建文件夹
 
 * Request
+  
   * Url: `/api/my-storage/71/`
   
 * Method: POST
@@ -175,7 +176,7 @@
 
 * Request
 
-  * Url: `/api/my-storage/upload/`
+  * Url: `/api/my-storage/upload/[id]/`
 
   * Method: POST
 
@@ -185,11 +186,9 @@
 
     ```json
     file: <baniry>
-    data: {
-        "base_folder_id": 100
-    }
+    data: {}
     ```
-
+  
 * Response
 
   * Status Code: 200OK

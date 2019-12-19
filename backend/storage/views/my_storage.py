@@ -9,7 +9,7 @@ from my_utils.checker import check_is_none
 from my_utils.checker import check_is_int, check_all_int
 from my_utils.checker import check_serializer_is_valid
 
-from storage.models import Catalogue
+from storage.models import Catalogue, MyFile
 from storage.checker import check_exist_catalogue
 from storage.checker import check_not_root
 from storage.checker import check_are_siblings_and_in_root
@@ -153,11 +153,26 @@ class MyStorageCopy(APIView):
             cata.copy_to(des_cata)
         return Response()
 
-class MyStorageUpload(APIView):
+class MyStorageFiles(APIView):
     """
     上传文件
     """
     @staticmethod
-    def post(request):
-        print(1)
-        return Response()
+    def post(request, src_cata_id=None):
+        myself = request.user.user
+        my_root = myself.storage
+        ancestor = my_root
+        if src_cata_id:
+            ancestor = check_exist_catalogue(src_cata_id)
+            check_are_same(ancestor.get_root(), my_root)
+        file = request.FILES['file']
+        new_file = MyFile(file=file, size=file.size)
+        new_file.save()
+        new_cata = Catalogue(name=file.name, extension=file.content_type, my_file=new_file, is_file=True)
+        new_cata.insert_at(ancestor, 'first-child', save=True)
+        serializer = CatalogueSerializer(new_cata)
+        return Response(serializer.data)
+
+    @staticmethod
+    def get(request):
+        pass
