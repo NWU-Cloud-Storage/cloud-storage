@@ -173,13 +173,13 @@ def before_delete_catalogue(instance, **kwargs):
         my_file.save()
         instance.refresh_from_db()
 
-@receiver(post_save, sender=MyFile, dispatch_uid="当文件引用数为0，文件自动被删除")
-def after_save_file(instance, created, **kwargs):
-    if created:
-        return
-    instance.refresh_from_db()
-    if instance.reference_count == 0:
-        instance.delete()
+# @receiver(post_save, sender=MyFile, dispatch_uid="当文件引用数为0，文件自动被删除")
+# def after_save_file(instance, created, **kwargs):
+#     if created:
+#         return
+#     instance.refresh_from_db()
+#     if instance.reference_count == 0:
+#         instance.delete()
 
 @receiver(post_save, sender=User, dispatch_uid="用户被创建后，自动为其创建仓库")
 def after_create_user(instance, created, **kwargs):
