@@ -130,9 +130,13 @@ export default {
         handle_file_click(row) {
             // let file = this.tableData[index];
             // console.log(this.tableData[index].id);
-            if (row.is_file == false) {
+            if (row.is_file === false) {
                 router.push({ path: this.api_base + "/" + row.id + "/" });
                 // router.push({ name: "File", params: { id: file.id } });
+            }
+            else {
+                    let api_path = this.api_base + "/download/" + row.id + "/";
+                    window.location.href = "http://localhost:8000/api" + api_path
             }
         }
     }

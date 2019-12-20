@@ -87,6 +87,7 @@
             :id="id"
             :current_folder_api_path="current_folder_api_path"
             @selected-file-change="handle_file_selected"
+            @file-click="download_file"
         ></FileList>
     </div>
 </template>
@@ -179,23 +180,25 @@ export default {
                 cancelButtonText: "取消",
                 type: "warning"
             })
-                .catch(() => {
-                    this.$message.info("已取消删除");
-                })
+
                 .then(() => {
                     let id = this.selected_file.map(a => a.id);
-                    return axios.delete(this.api_base + "/", {
-                        data: {
-                            id: this.selected_file.map(a => a.id)
-                        }
-                    });
+                    axios
+                        .delete(this.api_base + "/", {
+                            data: {
+                                id: this.selected_file.map(a => a.id)
+                            }
+                        })
+                        .then(() => {
+                            this.$message.success("删除成功");
+                            this.update_data();
+                        })
+                        .catch(error => {
+                            this.$message.error("出错了，请重试");
+                        });
                 })
-                .then(() => {
-                    this.$message.success("删除成功");
-                    this.update_data();
-                })
-                .catch(error => {
-                    this.$message.error("出错了，请重试");
+                .catch(() => {
+                    this.$message.info("已取消删除");
                 });
         },
         rename_file() {
@@ -257,10 +260,14 @@ export default {
             } else {
                 api_path = this.api_base + "/upload/" + this.id + "/";
             }
-
+            let that = this
             axios
                 .post(api_path, formData, {
-                    headers: { "Content-Type": "multipart/form-data" }
+                    headers: { "Content-Type": "multipart/form-data" },
+                    onUploadProgress: function(progressEvent) {
+                        that.$emit("uploading", progressEvent)
+                        console.log(progressEvent);
+                    }
                 })
                 .then(response => {
                     console.log(response);
@@ -273,7 +280,7 @@ export default {
         download_file() {
             let id = this.selected_file[0].id;
             let api_path = this.api_base + "/download/" + id + "/";
-            window.location.href = "http://localhost:8000/api" + api_path
+            window.location.href = "http://localhost:8000/api" + api_path;
         },
         share_file() {
             axios
