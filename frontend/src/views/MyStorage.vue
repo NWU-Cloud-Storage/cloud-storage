@@ -1,6 +1,6 @@
 <template>
     <div id="my-storage">
-        <File @uploading="handle_upload_progress" api_base="/my-storage"></File>
+        <File @uploading="handle_upload_progress" api_base="/my-storage" name="my-storage"></File>
 
         <div id="upload-loading" v-if="loading">
             <span class="tips">上传进度</span>
@@ -21,7 +21,7 @@ export default {
     data() {
         return {
             percentage: 0,
-            loading: true,
+            loading: false,
             last_time_stamp: 0,
             last_loaded: 0,
             total: 0,

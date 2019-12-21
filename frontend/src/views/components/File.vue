@@ -34,6 +34,26 @@
             >复制到</el-button>
             <el-button v-if="selected_file.length == 1" @click="rename_file">重命名</el-button>
 
+            <el-button
+                v-if="name == 'my-storage'"
+                @click="save_to_group_open"
+                style="display: inline-block;"
+            >保存至群组</el-button>
+            <el-dialog title="保存至群组" :visible.sync="save_to_group_dialog.visible">
+                <el-select v-model="save_to_group_dialog.id" placeholder="请选择">
+                    <el-option
+                        v-for="item in save_to_group_dialog.groups"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                    ></el-option>
+                </el-select>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="save_to_group_dialog.visible = false">取 消</el-button>
+                    <el-button type="primary" @click="save_to_group_confirm">确 定</el-button>
+                </span>
+            </el-dialog>
+
             <TreeView
                 :operation="treeview_dialog.operation"
                 :dialog_visible.sync="treeview_dialog.visible"
@@ -102,7 +122,7 @@ export default {
         TreeView,
         FileList
     },
-    props: ["api_base"],
+    props: ["api_base", "name"],
     data() {
         return {
             id: undefined,
@@ -113,7 +133,12 @@ export default {
                 visible: false,
                 operation: undefined
             },
-            share: {}
+            share: {},
+            save_to_group_dialog: {
+                visible: false,
+                groups: [],
+                id: ""
+            }
         };
     },
     created() {
@@ -260,12 +285,12 @@ export default {
             } else {
                 api_path = this.api_base + "/upload/" + this.id + "/";
             }
-            let that = this
+            let that = this;
             axios
                 .post(api_path, formData, {
                     headers: { "Content-Type": "multipart/form-data" },
                     onUploadProgress: function(progressEvent) {
-                        that.$emit("uploading", progressEvent)
+                        that.$emit("uploading", progressEvent);
                         console.log(progressEvent);
                     }
                 })
@@ -303,6 +328,26 @@ export default {
         update_data() {
             this.$refs.file_list.fetch_data();
             this.selected_file.splice(0);
+        },
+        save_to_group_open() {
+            this.save_to_group_dialog.visible = true;
+            axios.get("/my-group/").then(response => {
+                this.save_to_group_dialog.groups = response.data;
+            });
+        },
+        save_to_group_confirm() {
+            let id = this.selected_file.map(a => a.id);
+            axios
+                .put(
+                    "/upload-to-group/" + this.save_to_group_dialog.id + "/",
+                    {
+                        id: id
+                    }
+                )
+                .then(response => {
+                    this.save_to_group_dialog.visible = false;
+                    this.$message.success("成功");
+                });
         }
     }
 };

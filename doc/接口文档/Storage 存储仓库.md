@@ -366,7 +366,7 @@ AJAX下载有锅！！
 
 * Request
   * Url: `/api/upload-to-group/3[群组id]/110[群组目录id]/`
-  * Method: POST
+  * Method: PUT
   * Content-Type: application/json
   * Body:
 
@@ -389,7 +389,7 @@ AJAX下载有锅！！
 
 * Request
   * Url: `/api/save-to-my-storage/3[群组id]/322[个人目录id]/`
-  * Method: POST
+  * Method: PUT
   * Content-Type: application/json
   * Body:
 
