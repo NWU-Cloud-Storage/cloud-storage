@@ -169,13 +169,15 @@ class MyStorageFiles(APIView):
         file = request.FILES['file']
         new_file = MyFile(file=file, size=file.size)
         new_file.save()
+        myself.used_size += file.size
+        myself.save()
         new_cata = Catalogue(name=file.name, extension=file.content_type, my_file=new_file, is_file=True)
         new_cata.insert_at(ancestor, 'first-child', save=True)
         serializer = CatalogueSerializer(new_cata)
         return Response(serializer.data)
 
     @staticmethod
-    def get(request, src_cata_id):
+    def get(request, src_cata_id, group_id=None):
         from django.http import StreamingHttpResponse
 
         # myself = request.user.user
