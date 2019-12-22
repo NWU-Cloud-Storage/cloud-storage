@@ -328,6 +328,7 @@ export default {
         update_data() {
             this.$refs.file_list.fetch_data();
             this.selected_file.splice(0);
+            this.$emit("file-change")
         },
         save_to_group_open() {
             this.save_to_group_dialog.visible = true;

@@ -17,7 +17,7 @@
                 {{ user_info.username }}
             </el-button>
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item divided icon="el-icon-switch-button">退出</el-dropdown-item>
+                <el-dropdown-item @click.native="logout" icon="el-icon-switch-button">退出</el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
         <!-- <el-dropdown style="float: right;">
@@ -38,6 +38,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
     name: "Header",
     props: ["user_info"],
@@ -54,7 +56,10 @@ export default {
         };
     },
     methods: {
-        settings() {}
+        settings() {},
+        logout() {
+            localStorage.removeItem("token");
+        }
     }
 };
 </script>

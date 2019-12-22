@@ -1,6 +1,6 @@
 <template>
     <div id="my-storage">
-        <File @uploading="handle_upload_progress" api_base="/my-storage" name="my-storage"></File>
+        <File @file-change="file_change" @uploading="handle_upload_progress" api_base="/my-storage" name="my-storage"></File>
 
         <div id="upload-loading" v-if="loading">
             <span class="tips">上传进度</span>
@@ -56,6 +56,9 @@ export default {
                 }
             }
             return size.toFixed(2) + dimensions[3];
+        },
+        file_change() {
+            this.$emit("file-change")
         }
     }
 };

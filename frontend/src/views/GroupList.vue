@@ -179,7 +179,7 @@ export default {
                         "/"
                 )
                 .then(response => {
-                    this.fetch_apply_detail();
+                    this.fetch_apply_detail(this.current_group_id);
                     this.$message.success("同意成功");
                 });
         },
@@ -193,7 +193,7 @@ export default {
                         "/"
                 )
                 .then(response => {
-                    this.fetch_apply_detail();
+                    this.fetch_apply_detail(this.current_group_id);
                     this.$message.success("拒绝成功");
                 });
         },

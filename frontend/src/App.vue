@@ -9,7 +9,7 @@
                     <el-menu style="background:#00000000">
                         <router-link to="/">
                             <el-menu-item index="1">
-                                <i class="el-icon-files"></i>文件
+                                <i class="el-icon-folder-opened"></i>文件
                             </el-menu-item>
                         </router-link>
                         
@@ -21,13 +21,13 @@
 
                         <router-link to="/share/">
                             <el-menu-item index="3">
-                                <i class="el-icon-menu"></i>共享
+                                <i class="el-icon-share"></i>共享
                             </el-menu-item>
                         </router-link>
 
                         <router-link to="/about">
                             <el-menu-item index="4">
-                                <i class="el-icon-menu"></i>关于
+                                <i class="el-icon-more"></i>关于
                             </el-menu-item>
                         </router-link>
 
