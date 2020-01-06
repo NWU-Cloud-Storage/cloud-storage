@@ -1,6 +1,6 @@
-'''
+"""
 my-group相关接口的视图
-'''
+"""
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -15,14 +15,14 @@ from group.serializers import MyGroupSerializer
 from group.serializers import GroupMemberSerializer
 
 class MyGroup(APIView):
-    '''
+    """
     my-group相关接口的视图类
-    '''
+    """
     @staticmethod
     def get(request, group_id=None):
-        '''
+        """
         获取群组
-        '''
+        """
         myself = request.user.user
         if group_id:
             return MyGroup._get_group_detail(myself, group_id)
@@ -30,9 +30,9 @@ class MyGroup(APIView):
 
     @staticmethod
     def put(request, group_id=None):
-        '''
+        """
         修改群组资料
-        '''
+        """
         myself = request.user.user
         group = check_exist_group(group_id)
         membership = check_user_in_group(myself, group)
@@ -44,9 +44,9 @@ class MyGroup(APIView):
 
     @staticmethod
     def post(request, group_id=None):
-        '''
+        """
         新建群组
-        '''
+        """
         from group.models import Group, Membership
         check_is_none(group_id)
 
@@ -59,9 +59,9 @@ class MyGroup(APIView):
 
     @staticmethod
     def delete(request, group_id=None):
-        '''
+        """
         解散/退出群组
-        '''
+        """
         myself = request.user.user
         group = check_exist_group(group_id)
         membership = check_user_in_group(myself, group)
@@ -75,18 +75,18 @@ class MyGroup(APIView):
 
     @staticmethod
     def _get_my_groups(myself):
-        '''
+        """
         获取个人全部群组
-        '''
+        """
         groups = myself.membership_set
         serializer = MyGroupSerializer(groups, many=True)
         return Response(serializer.data)
 
     @staticmethod
     def _get_group_detail(myself, group_id):
-        '''
+        """
         获取某群组详细信息
-        '''
+        """
         group = check_exist_group(group_id)
         check_user_in_group(myself, group)
 

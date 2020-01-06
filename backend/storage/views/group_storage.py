@@ -1,6 +1,6 @@
-'''
+"""
 group-storage相关接口的视图
-'''
+"""
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -26,15 +26,15 @@ def _get_group_root(request, group_id):
     return group.storage
 
 class GroupStorage(APIView):
-    '''
+    """
     group-storage相关接口的视图类
-    '''
+    """
     @staticmethod
     def get(request, group_id, src_cata_id=None):
-        '''
+        """
         获取群组仓库内容，
         src_cata_id为None时，获取根目录。
-        '''
+        """
         group_root = _get_group_root(request, group_id)
         src_cata = group_root
         ancestors = [group_root]
@@ -56,9 +56,9 @@ class GroupStorage(APIView):
 
     @staticmethod
     def delete(request, group_id, src_cata_id=None):
-        '''
+        """
         删除群组仓库某文件（夹）。
-        '''
+        """
         check_is_none(src_cata_id)
         cata_ids = request.data.getlist('id', None)
         if not cata_ids:
@@ -73,9 +73,9 @@ class GroupStorage(APIView):
 
     @staticmethod
     def post(request, group_id, src_cata_id=None):
-        '''
+        """
         新建群组仓库文件（夹）。
-        '''
+        """
         group_root = _get_group_root(request, group_id)
         ancestor = group_root
         if src_cata_id:
@@ -94,9 +94,9 @@ class GroupStorage(APIView):
 
     @staticmethod
     def put(request, group_id, src_cata_id):
-        '''
+        """
         修改群组仓库文件（夹），主要是改名。
-        '''
+        """
         group_root = _get_group_root(request, group_id)
         cata = check_exist_catalogue(src_cata_id)
         check_not_root(cata)
@@ -128,14 +128,14 @@ def _move_or_copy_check(request, group_id):
     return src_catas, des_cata
 
 class GroupStorageMove(APIView):
-    '''
+    """
     group-storage/move/ 相关接口的视图类
-    '''
+    """
     @staticmethod
     def put(request, group_id):
-        '''
+        """
         移动群组仓库文件（夹）。
-        '''
+        """
         src_catas, des_cata = _move_or_copy_check(request, group_id)
 
         # Catalogue.objects.filter(pk__in=src_ids).update(parent=des_cata)
@@ -149,14 +149,14 @@ class GroupStorageMove(APIView):
         return Response()
 
 class GroupStorageCopy(APIView):
-    '''
+    """
     group-storage/copy/ 相关接口的视图类
-    '''
+    """
     @staticmethod
     def put(request, group_id):
-        '''
+        """
         拷贝群组仓库文件（夹）。
-        '''
+        """
         src_catas, des_cata = _move_or_copy_check(request, group_id)
 
         for cata in src_catas:

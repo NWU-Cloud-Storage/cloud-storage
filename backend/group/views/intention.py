@@ -1,6 +1,6 @@
-'''
+"""
 intention相关接口的视图
-'''
+"""
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -17,14 +17,14 @@ from group.checker import check_exist_intention
 from group.serializers import IntentionSerializer, GroupMemberSerializer
 
 class Intention(APIView):
-    '''
+    """
     intention相关接口的视图类
-    '''
+    """
     @staticmethod
     def get(request, group_id, username=None):
-        '''
+        """
         获取某群请求加入列表
-        '''
+        """
         check_is_none(username)
 
         myself = request.user.user
@@ -38,10 +38,10 @@ class Intention(APIView):
 
     @staticmethod
     def post(request, group_id, username=None):
-        '''
+        """
         如果username为None 则是请求加入一个群
         否则是同意某人的加入
-        '''
+        """
         myself = request.user.user
         group = check_exist_group(group_id)
         if username: # 同意某人加入
@@ -50,9 +50,9 @@ class Intention(APIView):
 
     @staticmethod
     def _new_intention(myself, group):
-        '''
+        """
         请求加入一个群
-        '''
+        """
         check_user_not_in_group(myself, group)
 
         intention, created = IntentionModel.objects.get_or_create(group=group, user=myself)
@@ -63,9 +63,9 @@ class Intention(APIView):
 
     @staticmethod
     def _consent_intention(myself, group, username):
-        '''
+        """
         同意某人的加群申请
-        '''
+        """
         the_other = check_exist_user(username)
         others_intention = check_exist_intention(the_other, group)
 
@@ -78,9 +78,9 @@ class Intention(APIView):
 
     @staticmethod
     def delete(request, group_id, username):
-        '''
+        """
         拒绝某人的加群申请
-        '''
+        """
         myself = request.user.user
         group = check_exist_group(group_id)
 

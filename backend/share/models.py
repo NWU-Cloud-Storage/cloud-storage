@@ -1,6 +1,6 @@
-'''
+"""
 Share models
-'''
+"""
 import math
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
@@ -10,13 +10,13 @@ from my_utils.utils import gen_url, after_n_days
 
 
 class ShareManager(models.Manager):
-    '''
+    """
     Share管理器
-    '''
+    """
     def create_by_user(self, user, cata, days=None, pwd=None):
-        '''
+        """
         由一位user生成的分享链接（不检查）
-        '''
+        """
         length = int(math.log(self.count()+100000001, 10))
         url = gen_url(length)
         print(pwd)
@@ -40,9 +40,9 @@ class ShareManager(models.Manager):
 
 
 class Share(models.Model):
-    '''
+    """
     Share model
-    '''
+    """
     url = models.CharField(max_length=32, verbose_name='分享链接', primary_key=True)
     password = models.CharField(max_length=4, verbose_name='提取码', null=True, default=None)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)

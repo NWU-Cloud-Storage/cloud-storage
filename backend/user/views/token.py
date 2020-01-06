@@ -1,6 +1,6 @@
-'''
+"""
 登入视图
-'''
+"""
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.authtoken.models import Token
@@ -15,22 +15,22 @@ from my_utils.checker import check_are_same
 from user.models import User
 
 class MyTmpAuthToken(ObtainAuthToken):
-    '''
+    """
     临时账号密码登入
-    '''
+    """
     def post(self, request, *args, **kwargs):
-        '''
+        """
         临时账号密码登入
-        '''
+        """
         response = super().post(request, *args, **kwargs)
         response.data['token'] = 'Token '+response.data['token']
         response.set_cookie('token', response.data['token'])
         return response
 
 class OAuthToken(APIView):
-    '''
+    """
     code转token登入
-    '''
+    """
     permission_classes = ()
 
     ACCESS_TOKEN_URL = 'http://authserver.nwu.edu.cn/authserver/oauth2.0/accessToken'
@@ -38,9 +38,9 @@ class OAuthToken(APIView):
 
     @staticmethod
     def post(request, code):
-        '''
+        """
         code转token登入
-        '''
+        """
         params = {
             'grant_type': 'authorization_code',
             'client_id': 'sfxzTU6D',

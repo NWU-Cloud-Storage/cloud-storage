@@ -80,17 +80,17 @@ class Intention(models.Model):
         return self.user.username + ' 申请加入 ' + self.group.name
 
     def consent(self):
-        '''
+        """
         同意申请
-        '''
+        """
         membership, created = Membership.objects.get_or_create(group=self.group, user=self.user)
         self.delete()
         return membership
 
     def reject(self):
-        '''
+        """
         拒绝申请
-        '''
+        """
         self.delete()
 
 @receiver(post_save, sender=Membership, dispatch_uid="加入群以后，群人数加1")

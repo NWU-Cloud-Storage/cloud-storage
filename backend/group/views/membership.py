@@ -1,6 +1,6 @@
-'''
+"""
 membership相关接口的视图
-'''
+"""
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -17,15 +17,15 @@ from group.checker import check_higher_permission
 from group.serializers import MyGroupSerializer
 
 class Membership(APIView):
-    '''
+    """
     membership相关接口的视图类
-    '''
+    """
 
     @staticmethod
     def put(request, group_id, username):
-        '''
+        """
         修改成员权限
-        '''
+        """
         myself = request.user.user
         the_other = check_exist_user(username)
         check_not_same(myself, the_other)   # 不可修改自己的权限
@@ -44,9 +44,9 @@ class Membership(APIView):
 
     @staticmethod
     def delete(request, group_id, username):
-        '''
+        """
         移出成员
-        '''
+        """
         myself = request.user.user
         the_other = check_exist_user(username)
         check_not_same(myself, the_other)   # 不可移出自己

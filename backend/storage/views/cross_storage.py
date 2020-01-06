@@ -1,6 +1,6 @@
-'''
+"""
 跨仓库相关接口的视图
-'''
+"""
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -30,14 +30,14 @@ def _check_src_and_des(src_root, src_ids, des_root, des_id):
     return src_catas, des_cata
 
 class SaveToMe(APIView):
-    '''
+    """
     save-to-me 相关接口的视图类
-    '''
+    """
     @staticmethod
     def put(request, group_id, des_id=None):
-        '''
+        """
         将群组仓库内文件保存到个人仓库。
-        '''
+        """
         my_self = request.user.user
         group = check_exist_group(group_id)
         check_user_in_group(my_self, group)
@@ -52,14 +52,14 @@ class SaveToMe(APIView):
         return Response()
 
 class UploadToGroup(APIView):
-    '''
+    """
     upload-to-group 相关接口的视图类
-    '''
+    """
     @staticmethod
     def put(request, group_id, des_id=None):
-        '''
+        """
         将个人仓库内文件保存到群组仓库。
-        '''
+        """
         my_self = request.user.user
         group = check_exist_group(group_id)
         check_user_in_group(my_self, group)

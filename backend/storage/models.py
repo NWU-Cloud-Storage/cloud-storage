@@ -1,6 +1,6 @@
-'''
+"""
 存储功能app的models
-'''
+"""
 from django.db import models
 from django.db.models import F
 from django.db.models.signals import pre_delete, post_save
@@ -14,12 +14,12 @@ from user.models import User
 
 
 class MyFile(models.Model):
-    '''
+    """
     文件model类，存储文件所在的静态资源路径，文件大小，创建时间，是否被禁用，引用次数。
     文件和目录之间是一对多关系，因为同一个文件在两个人的目录下，或者在群组目录下是不同的。
     如果已经没有任何一个目录保存着文件，那么文件应该被删除。
     每当有新的外键引用该文件，文件的引用次数要加1，同理外键被删除应该减1，减到0文件就要被删除。
-    '''
+    """
     file = models.FileField(upload_to='upload/')
     size = models.BigIntegerField(verbose_name="文件大小")
     date_joined = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
@@ -33,23 +33,23 @@ class MyFile(models.Model):
         return self.file.name
 
 # class CatalogueManager(models.Manager):
-#     '''
+#     """
 #     目录管理器
-#     '''
+#     """
 #     def create_root_by_user(self, user):
-#         '''为用户创建一个根目录（仓库）'''
+#         """为用户创建一个根目录（仓库）"""
 #         return self.create(
 #             name='user '+str(user.username)+' root',
 #             user=user
 #         )
 #     def create_root_by_group(self, group):
-#         '''为群组创建一个根目录（仓库）'''
+#         """为群组创建一个根目录（仓库）"""
 #         return self.create(
 #             name='group '+str(group.id)+' root',
 #             group=group
 #         )
 #     def create_by_parent(self, name, parent, my_file=None, extension=None):
-#         '''创建一个子文件夹'''
+#         """创建一个子文件夹"""
 #         if my_file:
 #             return self.create(
 #                 name=name, parent=parent,
@@ -58,13 +58,13 @@ class MyFile(models.Model):
 #         return self.create(name=name, parent=parent)
 
 class Catalogue(MPTTModel):
-    '''
+    """
     目录model类，个人的目录，群组的目录，分享的目录都会引用这个对象为外键。
     一个人通过分享功能可以把文件（夹）分享给另一个人或者一个群组，
     这时另一个人或群组并保存到自己的仓库里以后，就能够独立管理这个文件（夹）。
     要注意的是，一定要先建立File，再把File的引用当作参数来建立Catalogue。
     不可以建立好Catalogue之后，再把File的引用更新进去。
-    '''
+    """
 
     name = models.CharField(
         max_length=50,
@@ -141,11 +141,11 @@ class Catalogue(MPTTModel):
         return self.name
 
     def copy_to(self, target):
-        '''
+        """
         递归拷贝。
         调用之前一定要做检查，防止死循环。
         可以使用check_des_not_src_children
-        '''
+        """
         new_cata = Catalogue(
             name=self.name,
             is_file=self.is_file,

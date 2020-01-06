@@ -12,18 +12,18 @@ from .serializers import UserSerializer
 class User(APIView):
 
     def get(self, request, username=None):
-        '''
+        """
         获取用户资料
-        '''
+        """
         if username:
             return self.get_someone(username)
 
         return self.get_myself(request.user.user)
 
     def put(self, request):
-        '''
+        """
         修改个人资料
-        '''
+        """
         user = request.user.user
         serializer = UserSerializer(user, data=request.data)
         if not serializer.is_valid():
@@ -32,9 +32,9 @@ class User(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_someone(self, username):
-        '''
+        """
         获取某用户资料
-        '''
+        """
         try:
             user = UserModel.objects.get(username=username)
         except ObjectDoesNotExist:
@@ -46,8 +46,8 @@ class User(APIView):
         return Response(ret, status=status.HTTP_200_OK)
 
     def get_myself(self, user):
-        '''
+        """
         获取个人全部资料
-        '''
+        """
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,6 +1,6 @@
-'''
+"""
 share 相关接口的视图
-'''
+"""
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -20,14 +20,14 @@ from share.checker import check_password
 from share.serializers import ShareSerializer
 
 class ShareToPublic(APIView):
-    '''
+    """
     share-to-public
-    '''
+    """
     @staticmethod
     def post(request, src_id):
-        '''
+        """
         新建一个分享
-        '''
+        """
         user = request.user.user
         cata = check_exist_catalogue(src_id)
         my_root = user.storage
@@ -56,14 +56,14 @@ def _check_session(request, share):
     request.session.set_expiry(300)
 
 class Share(APIView):
-    '''
+    """
     share
-    '''
+    """
     @staticmethod
     def get(request, url, cata_id=None):
-        '''
+        """
         查看分享内文件
-        '''
+        """
         share = check_exist_share(url)
         _check_session(request, share)
         share_root = share.catalogue
@@ -88,14 +88,14 @@ class Share(APIView):
         return Response(res)
 
 class ShareToMe(APIView):
-    '''
+    """
     share-to-me
-    '''
+    """
     @staticmethod
     def post(request, url, src_id, des_id=None):
-        '''
+        """
         保存分享中的内容到本地
-        '''
+        """
         share = check_exist_share(url)
         _check_session(request, share)
         share_cata = check_exist_catalogue(src_id)

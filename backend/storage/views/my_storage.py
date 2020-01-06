@@ -1,6 +1,6 @@
-'''
+"""
 my-storage相关接口的视图
-'''
+"""
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -17,15 +17,15 @@ from storage.checker import check_des_not_src_children
 from storage.serializers import CatalogueSerializer, BreadcrumbsSerializer
 
 class MyStorage(APIView):
-    '''
+    """
     my-storage相关接口的视图类
-    '''
+    """
     @staticmethod
     def get(request, src_cata_id=None):
-        '''
+        """
         获取个人仓库内容，
         src_cata_id为None时，获取根目录。
-        '''
+        """
         myself = request.user.user
         my_root = myself.storage
         src_cata = my_root
@@ -48,9 +48,9 @@ class MyStorage(APIView):
 
     @staticmethod
     def delete(request, src_cata_id=None):
-        '''
+        """
         删除个人仓库某文件（夹）。
-        '''
+        """
         check_is_none(src_cata_id)
         cata_ids = request.data.get('id', None)
         if not cata_ids:
@@ -64,9 +64,9 @@ class MyStorage(APIView):
 
     @staticmethod
     def post(request, src_cata_id=None):
-        '''
+        """
         新建个人仓库文件（夹）。
-        '''
+        """
         myself = request.user.user
         my_root = myself.storage
         ancestor = my_root
@@ -84,9 +84,9 @@ class MyStorage(APIView):
 
     @staticmethod
     def put(request, src_cata_id):
-        '''
+        """
         修改个人仓库文件（夹），主要是改名。
-        '''
+        """
         myself = request.user.user
         my_root = myself.storage
         cata = check_exist_catalogue(src_cata_id)
@@ -119,14 +119,14 @@ def _move_or_copy_check(request):
     return src_catas, des_cata
 
 class MyStorageMove(APIView):
-    '''
+    """
     my-storage/move/ 相关接口的视图类
-    '''
+    """
     @staticmethod
     def put(request):
-        '''
+        """
         移动个人仓库文件（夹）。
-        '''
+        """
         src_catas, des_cata = _move_or_copy_check(request)
 
         # Catalogue.objects.filter(pk__in=src_ids).update(parent=des_cata)
@@ -139,14 +139,14 @@ class MyStorageMove(APIView):
         return Response()
 
 class MyStorageCopy(APIView):
-    '''
+    """
     my-storage/copy/ 相关接口的视图类
-    '''
+    """
     @staticmethod
     def put(request):
-        '''
+        """
         拷贝个人仓库文件（夹）。
-        '''
+        """
         src_catas, des_cata = _move_or_copy_check(request)
 
         for cata in src_catas:
