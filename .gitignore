@@ -8,14 +8,15 @@ backend/media/
 frontend/test.json
 
 ### frontend
-
 .DS_Store
 node_modules
 /front/dist
 
 ### backend
-
 migrations/
+
+# oauth configurations
+oauth_settings.yml
 
 # local env files
 .env.local
@@ -34,8 +35,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
-
-### 
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

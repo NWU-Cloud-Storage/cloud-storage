@@ -27,8 +27,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# 跨域相关，仅用于开发
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+SESSION_COOKIE_SAMESITE = None
+CSRF_COOKIE_SAMESITE = None
 
 # Application definition
 
@@ -139,6 +142,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
 }

@@ -57,6 +57,7 @@ class MyFile(models.Model):
 #             )
 #         return self.create(name=name, parent=parent)
 
+
 class Catalogue(MPTTModel):
     """
     目录model类，个人的目录，群组的目录，分享的目录都会引用这个对象为外键。
@@ -157,6 +158,7 @@ class Catalogue(MPTTModel):
         for child in children:
             child.copy_to(new_cata)
 
+
 # dispatch_uid 的作用是防止多次调用，具体原理不清楚。要求是个unique hashable类型的就行，那我就写一些中文了。
 @receiver(post_save, sender=Catalogue, dispatch_uid="新建一个目录之后，文件引用数应该加1")
 def after_created_catalogue(instance, created, **kwargs):
@@ -164,6 +166,7 @@ def after_created_catalogue(instance, created, **kwargs):
         my_file = instance.my_file
         my_file.reference_count = F('reference_count') + 1
         my_file.save()
+
 
 @receiver(pre_delete, sender=Catalogue, dispatch_uid="删除一个目录前，文件引用数应该减1")
 def before_delete_catalogue(instance, **kwargs):
@@ -181,6 +184,7 @@ def before_delete_catalogue(instance, **kwargs):
 #     if instance.reference_count == 0:
 #         instance.delete()
 
+
 @receiver(post_save, sender=User, dispatch_uid="用户被创建后，自动为其创建仓库")
 def after_create_user(instance, created, **kwargs):
     if not created:
@@ -189,6 +193,7 @@ def after_create_user(instance, created, **kwargs):
         name='user '+str(instance.username)+' root',
         user=instance
     )
+
 
 @receiver(post_save, sender=Group, dispatch_uid="群组被创建后，自动为其创建仓库")
 def after_create_group(instance, created, **kwargs):

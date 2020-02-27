@@ -91,15 +91,10 @@ export default {
         }
     },
     created() {
-        // console.log(this.$route.query.code);
-        if (localStorage.token) {
-            axios.defaults.headers.common["Authorization"] = localStorage.token;
-            axios.get("/user/").catch(() => {
+        // console.log(this.$route.query.code); //显示QueryString里的code字段
+        axios.get("/user/").catch(() => {
                 this.login();
-            });
-        } else {
-            this.login();
-        }
+        });
     },
     mounted() {
         axios.get("/user/").then(response => {
@@ -110,8 +105,7 @@ export default {
         login() {
             if (this.$route.query.code) {
                 let code = this.$route.query.code;
-                axios.post("/login/" + code + "/").then(response => {
-                    localStorage.token = response.data.token;
+                axios.post("/login/" + code + "/").then(() => {
                     location.reload();
                 });
             } else {
