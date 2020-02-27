@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf.urls import url
 
 from rest_framework.authtoken import views
-from user.views import token
+from user.views import login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,5 +30,5 @@ urlpatterns = [
 
 urlpatterns += [
     url(r'^api-token-auth/', views.obtain_auth_token),
-    url(r'^my-tmp-auth/', token.MyTmpAuthToken.as_view())
+    url(r'^my-tmp-auth/', login.MyTmpAuthToken.as_view())
 ]

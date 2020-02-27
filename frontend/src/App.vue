@@ -68,6 +68,7 @@
 // import Header from "@/components/Header.vue";
 import Header from "./views/Header";
 import axios from "axios";
+import router from "./router/index.js"
 
 export default {
     name: "app",
@@ -106,7 +107,8 @@ export default {
             if (this.$route.query.code) {
                 let code = this.$route.query.code;
                 axios.post("/login/" + code + "/").then(() => {
-                    location.reload();
+                    router.push('/')
+                    location.reload()
                 });
             } else {
                 window.location.href =

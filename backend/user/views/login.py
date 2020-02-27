@@ -2,7 +2,7 @@
 登入视图
 """
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
@@ -18,6 +18,7 @@ from user.models import User
 stream = open('oauth_settings.yml', 'r')
 settings = yaml.load(stream, yaml.SafeLoader)
 
+
 class MyTmpAuthToken(ObtainAuthToken):
     """
     临时账号密码登入
@@ -31,16 +32,17 @@ class MyTmpAuthToken(ObtainAuthToken):
         response.set_cookie('token', response.data['token'])
         return response
 
-class OAuthToken(APIView):
+
+class Login(APIView):
     """
-    code转token登入
+    登录类
     """
     permission_classes = ()
 
     @staticmethod
     def post(request, code):
         """
-        code转token登入
+        登录
         """
         params = {
             'grant_type': 'authorization_code',
@@ -64,4 +66,14 @@ class OAuthToken(APIView):
             password = User.objects.make_random_password()
             user = User.objects.create_user(username=username, nickname=nickname, password=password)
         login(request, user)
+        return Response(status=status.HTTP_200_OK)
+
+
+class Logout(APIView):
+    """
+    登出类
+    """
+    @staticmethod
+    def post(request):
+        logout(request)
         return Response(status=status.HTTP_200_OK)

@@ -52,12 +52,25 @@
     ```
 
 * Response
+  
   * Status Code: 200 OK
 
 ### **登入**
 
-?
+* Request
+  * Url: `/api/login/<str:code>/`
+  * Method: POST
+  * code 为 OAuth 返回的授权码
+
+* Response
+  * Status Code: 200 OK
+  * Set-Cookie: sessionid
 
 ### **退出**
 
-?
+* Request
+  * Url: `/api/logout`
+  * Method: POST
+
+* Response
+  * Status Code: 200 OK
