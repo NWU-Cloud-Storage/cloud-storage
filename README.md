@@ -1,2 +1,4 @@
 # cloud-storage
-test
+Yet another cloud storage.
+
+Powered by Vue.js and Django.
