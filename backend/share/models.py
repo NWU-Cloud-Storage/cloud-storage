@@ -4,7 +4,7 @@ Share models
 import math
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
-from storage.models import Catalogue
+from storage.models import Identifier
 from user.models import User
 from my_utils.utils import gen_url, after_n_days
 
@@ -48,7 +48,7 @@ class Share(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     is_unlimited = models.BooleanField(verbose_name='是否永久共享', default=True)
     expiration = models.DateTimeField(verbose_name='过期时间点', null=True, default=None)
-    catalogue = models.ForeignKey(Catalogue, on_delete=models.CASCADE)
+    catalogue = models.ForeignKey(Identifier, on_delete=models.CASCADE)
 
     objects = ShareManager()
 

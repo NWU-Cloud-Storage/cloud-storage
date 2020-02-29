@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from storage.models import Catalogue
+from storage.models import Identifier
 
 
 class CatalogueSerializer(serializers.ModelSerializer):
@@ -13,7 +13,7 @@ class CatalogueSerializer(serializers.ModelSerializer):
     size = serializers.ReadOnlyField(source="my_file.size")
 
     class Meta:
-        model = Catalogue
+        model = Identifier
         fields = (
             'id', 'name', 'is_file', 'is_shared',
             'date_modified', 'extension', 'size'
@@ -24,5 +24,5 @@ class BreadcrumbsSerializer(serializers.ModelSerializer):
     name = serializers.ReadOnlyField()
 
     class Meta:
-        model = Catalogue
+        model = Identifier
         fields = ('id', 'name')

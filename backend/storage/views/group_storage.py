@@ -12,7 +12,7 @@ from my_utils.checker import check_serializer_is_valid
 from group.checker import check_exist_group
 from group.checker import check_user_in_group
 
-from storage.models import Catalogue
+from storage.models import Identifier
 from storage.checker import check_exist_catalogue
 from storage.checker import check_not_root
 from storage.checker import check_are_siblings_and_in_root
@@ -68,7 +68,7 @@ class GroupStorage(APIView):
         cata_ids = check_all_int(cata_ids)
         check_are_siblings_and_in_root(cata_ids, group_root)
 
-        Catalogue.objects.filter(pk__in=cata_ids).delete()
+        Identifier.objects.filter(pk__in=cata_ids).delete()
         return Response()
 
     @staticmethod
@@ -87,7 +87,7 @@ class GroupStorage(APIView):
         else:
             name = '新建文件夹'
 
-        new_cata = Catalogue(name=name)
+        new_cata = Identifier(name=name)
         new_cata.insert_at(ancestor, 'first-child', save=True)
         serializer = CatalogueSerializer(new_cata)
         return Response(serializer.data)

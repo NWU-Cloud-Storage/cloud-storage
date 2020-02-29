@@ -13,7 +13,7 @@ from group.models import Group
 from user.models import User
 
 
-class MyFile(models.Model):
+class File(models.Model):
     """
     文件model类，存储文件所在的静态资源路径，文件大小，创建时间，是否被禁用，引用次数。
     文件和目录之间是一对多关系，因为同一个文件在两个人的目录下，或者在群组目录下是不同的。
@@ -58,7 +58,7 @@ class MyFile(models.Model):
 #         return self.create(name=name, parent=parent)
 
 
-class Catalogue(MPTTModel):
+class Identifier(MPTTModel):
     """
     目录model类，个人的目录，群组的目录，分享的目录都会引用这个对象为外键。
     一个人通过分享功能可以把文件（夹）分享给另一个人或者一个群组，
@@ -87,7 +87,7 @@ class Catalogue(MPTTModel):
         verbose_name="扩展名"
     )
     my_file = models.ForeignKey(
-        MyFile,
+        File,
         on_delete=models.CASCADE,
         null=True, blank=True, default=None,
         related_name='my_catalogue'
@@ -147,7 +147,7 @@ class Catalogue(MPTTModel):
         调用之前一定要做检查，防止死循环。
         可以使用check_des_not_src_children
         """
-        new_cata = Catalogue(
+        new_cata = Identifier(
             name=self.name,
             is_file=self.is_file,
             my_file=self.my_file,
@@ -160,7 +160,7 @@ class Catalogue(MPTTModel):
 
 
 # dispatch_uid 的作用是防止多次调用，具体原理不清楚。要求是个unique hashable类型的就行，那我就写一些中文了。
-@receiver(post_save, sender=Catalogue, dispatch_uid="新建一个目录之后，文件引用数应该加1")
+@receiver(post_save, sender=Identifier, dispatch_uid="新建一个目录之后，文件引用数应该加1")
 def after_created_catalogue(instance, created, **kwargs):
     if created and instance.is_file:
         my_file = instance.my_file
@@ -168,7 +168,7 @@ def after_created_catalogue(instance, created, **kwargs):
         my_file.save()
 
 
-@receiver(pre_delete, sender=Catalogue, dispatch_uid="删除一个目录前，文件引用数应该减1")
+@receiver(pre_delete, sender=Identifier, dispatch_uid="删除一个目录前，文件引用数应该减1")
 def before_delete_catalogue(instance, **kwargs):
     if instance.is_file:
         my_file = instance.my_file
@@ -176,20 +176,18 @@ def before_delete_catalogue(instance, **kwargs):
         my_file.save()
         instance.refresh_from_db()
 
-# @receiver(post_save, sender=MyFile, dispatch_uid="当文件引用数为0，文件自动被删除")
-# def after_save_file(instance, created, **kwargs):
-#     if created:
-#         return
-#     instance.refresh_from_db()
-#     if instance.reference_count == 0:
-#         instance.delete()
+@receiver(post_save, sender=File, dispatch_uid="当文件引用数为0，文件自动被删除")
+def after_save_file(instance, **kwargs):
+    instance.refresh_from_db()
+    if instance.reference_count == 0:
+        instance.delete()
 
 
 @receiver(post_save, sender=User, dispatch_uid="用户被创建后，自动为其创建仓库")
 def after_create_user(instance, created, **kwargs):
     if not created:
         return
-    Catalogue.objects.create(
+    Identifier.objects.create(
         name='user '+str(instance.username)+' root',
         user=instance
     )
@@ -199,7 +197,7 @@ def after_create_user(instance, created, **kwargs):
 def after_create_group(instance, created, **kwargs):
     if not created:
         return
-    Catalogue.objects.create(
+    Identifier.objects.create(
         name='group '+str(instance.id)+' root',
         group=instance
     )

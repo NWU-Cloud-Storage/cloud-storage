@@ -8,20 +8,20 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.exceptions import ParseError
 from rest_framework.exceptions import PermissionDenied
 
-from storage.models import Catalogue
+from storage.models import Identifier
 
 def check_exist_catalogue(cata_id):
     """
     检查应存在该目录。
     """
-    catalogue = get_object_or_404(Catalogue, id=cata_id)
+    catalogue = get_object_or_404(Identifier, id=cata_id)
     return catalogue
 
 def check_exist_catalogues(cata_ids):
     """
     检查存在这些目录。
     """
-    catalogues = get_list_or_404(Catalogue, id__in=cata_ids)
+    catalogues = get_list_or_404(Identifier, id__in=cata_ids)
     return catalogues
 
 def check_not_root(catalogue):

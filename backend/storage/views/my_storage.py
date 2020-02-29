@@ -9,7 +9,7 @@ from my_utils.checker import check_is_none
 from my_utils.checker import check_is_int, check_all_int
 from my_utils.checker import check_serializer_is_valid
 
-from storage.models import Catalogue, MyFile
+from storage.models import Identifier, File
 from storage.checker import check_exist_catalogue
 from storage.checker import check_not_root
 from storage.checker import check_are_siblings_and_in_root
@@ -58,7 +58,7 @@ class MyStorage(APIView):
         cata_ids = check_all_int(cata_ids)
         check_are_siblings_and_in_root(cata_ids, request.user.user.storage)
 
-        Catalogue.objects.filter(pk__in=cata_ids).delete()
+        Identifier.objects.filter(pk__in=cata_ids).delete()
 
         return Response()
 
@@ -77,7 +77,7 @@ class MyStorage(APIView):
             name = request.data['name']
         else:
             name = '新建文件夹'
-        new_cata = Catalogue(name=name)
+        new_cata = Identifier(name=name)
         new_cata.insert_at(ancestor, 'first-child', save=True)
         serializer = CatalogueSerializer(new_cata)
         return Response(serializer.data)
@@ -167,11 +167,11 @@ class MyStorageFiles(APIView):
             ancestor = check_exist_catalogue(src_cata_id)
             check_are_same(ancestor.get_root(), my_root)
         file = request.FILES['file']
-        new_file = MyFile(file=file, size=file.size)
+        new_file = File(file=file, size=file.size)
         new_file.save()
         myself.used_size += file.size
         myself.save()
-        new_cata = Catalogue(name=file.name, extension=file.content_type, my_file=new_file, is_file=True)
+        new_cata = Identifier(name=file.name, extension=file.content_type, my_file=new_file, is_file=True)
         new_cata.insert_at(ancestor, 'first-child', save=True)
         serializer = CatalogueSerializer(new_cata)
         return Response(serializer.data)

@@ -3,11 +3,11 @@ from django.utils.html import format_html
 
 from mptt.admin import DraggableMPTTAdmin
 
-from .models import MyFile, Catalogue
+from .models import File, Identifier
 
 # Register your models here.
 
-@admin.register(MyFile)
+@admin.register(File)
 class MyFile(admin.ModelAdmin):
     list_display = (
         'file',
@@ -17,7 +17,7 @@ class MyFile(admin.ModelAdmin):
         'is_legal'
     )
 
-@admin.register(Catalogue)
+@admin.register(Identifier)
 class Catalogue(DraggableMPTTAdmin):
     list_display = ('tree_actions', 'indented_title', 'id')
     list_display_links = ('indented_title', 'id')
