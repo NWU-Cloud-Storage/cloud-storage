@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Group, Membership, Intention
+from .models import Group, MembershipTmp, Intention
 
 
 # Register your models here.
@@ -9,7 +9,7 @@ class Group(admin.ModelAdmin):
     list_display = ('pk', 'name', 'num_of_members')
     fields = ('name',)
 
-@admin.register(Membership)
+@admin.register(MembershipTmp)
 class Membership(admin.ModelAdmin):
     list_display = ('group_name', 'user_name', 'permission')
     fields = ('group', 'user', 'permission')

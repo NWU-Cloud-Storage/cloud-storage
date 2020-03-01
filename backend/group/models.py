@@ -14,7 +14,7 @@ class Group(models.Model):
     )
     members = models.ManyToManyField(
         User,
-        through='Membership',
+        through='MembershipTmp',
         related_name='my_groups'
     )
     intentions = models.ManyToManyField(
@@ -32,7 +32,7 @@ class Group(models.Model):
         return self.name
 
 
-class Membership(models.Model):
+class MembershipTmp(models.Model):
     PERMISSIONS = [
         ('master', '创建人'),
         ('manager', '管理员'),
@@ -83,7 +83,7 @@ class Intention(models.Model):
         """
         同意申请
         """
-        membership, created = Membership.objects.get_or_create(group=self.group, user=self.user)
+        membership, created = MembershipTmp.objects.get_or_create(group=self.group, user=self.user)
         self.delete()
         return membership
 
@@ -93,7 +93,7 @@ class Intention(models.Model):
         """
         self.delete()
 
-@receiver(post_save, sender=Membership, dispatch_uid="加入群以后，群人数加1")
+@receiver(post_save, sender=MembershipTmp, dispatch_uid="加入群以后，群人数加1")
 def after_join_a_group(instance, created, **kwargs):
     if created:
         group = instance.group
@@ -101,7 +101,7 @@ def after_join_a_group(instance, created, **kwargs):
         group.save()
         group.refresh_from_db()
 
-@receiver(post_delete, sender=Membership, dispatch_uid="退出群以后，群人数减1")
+@receiver(post_delete, sender=MembershipTmp, dispatch_uid="退出群以后，群人数减1")
 def after_leave_a_group(instance, **kwargs):
     group = instance.group
     group.num_of_members = F('num_of_members') - 1

@@ -100,18 +100,7 @@ class Identifier(MPTTModel):
         auto_now=True,
         verbose_name="修改日期"
     )
-    group = models.OneToOneField(
-        Group,
-        on_delete=models.CASCADE,
-        null=True, blank=True, default=None,
-        related_name='storage'
-    )
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        null=True, blank=True, default=None,
-        related_name='storage'
-    )
+
 
     class Meta:
         verbose_name = verbose_name_plural = '目录'
@@ -157,6 +146,33 @@ class Identifier(MPTTModel):
         children = self.get_children()
         for child in children:
             child.copy_to(new_cata)
+
+
+class Storage(models.Model):
+    """
+    存储库类。
+    """
+    root_identifier = models.ForeignKey(Identifier, on_delete=models.CASCADE, null=True, default=None)
+    created_time = models.DateTimeField()
+    users = models.ManyToManyField(User, through='Membership')
+
+
+class Membership(models.Model):
+    """
+    存储库与用户的关系类
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    storage = models.ForeignKey(Storage, on_delete=models.CASCADE)
+    write_permission = models.BooleanField(verbose_name="写入权限", default=True)
+    is_personal_storage = models.BooleanField(verbose_name="是否为个人存储库", default=False)
+
+    class Meta:
+        permissions = [
+            ('write_file', '对存储库拥有写权限'),
+            ('add_user', '可以添加用户'),
+            ('remove_user', '可以删除用户'),
+            ('modify_user_permission', '可以修改其他用户权限')
+        ]
 
 
 # dispatch_uid 的作用是防止多次调用，具体原理不清楚。要求是个unique hashable类型的就行，那我就写一些中文了。

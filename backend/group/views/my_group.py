@@ -47,13 +47,13 @@ class MyGroup(APIView):
         """
         新建群组
         """
-        from group.models import Group, Membership
+        from group.models import Group, MembershipTmp
         check_is_none(group_id)
 
         myself = request.user.user
         name = request.data.get('name')
         my_group = Group.objects.create(name=name)
-        Membership.objects.create(group=my_group, user=myself, permission='master')
+        MembershipTmp.objects.create(group=my_group, user=myself, permission='master')
         serializer = GroupSerializer(my_group)
         return Response(serializer.data)
 

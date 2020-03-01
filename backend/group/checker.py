@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.exceptions import ParseError
 from rest_framework.exceptions import PermissionDenied
 
-from group.models import Group, Membership, Intention
+from group.models import Group, MembershipTmp, Intention
 
 def check_exist_group(group_id):
     """根据group_id查找group"""
@@ -16,13 +16,13 @@ def check_exist_group(group_id):
 
 def check_user_in_group(user, group):
     """检查user在group里面"""
-    membership = get_object_or_404(Membership, group=group, user=user)
+    membership = get_object_or_404(MembershipTmp, group=group, user=user)
     return membership
 
 def check_user_not_in_group(user, group):
     """检查user不再group里面"""
     try:
-        Membership.objects.get(user=user, group=group)
+        MembershipTmp.objects.get(user=user, group=group)
     except ObjectDoesNotExist:
         return
     raise ParseError()
