@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    #'guardian',
     'mptt',
     'rest_framework',
     'rest_framework.authtoken',
@@ -128,7 +129,8 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# 不使用时区以便数据库保存的即为当前时间
+# USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -143,6 +145,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
 }

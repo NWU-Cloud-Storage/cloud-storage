@@ -2,7 +2,7 @@
 存储功能app的models
 """
 from django.db import models
-from django.db.models import F
+from django.db.models import F, Q
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 
@@ -100,6 +100,7 @@ class Identifier(MPTTModel):
         auto_now=True,
         verbose_name="修改日期"
     )
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
     class Meta:
@@ -107,21 +108,15 @@ class Identifier(MPTTModel):
         constraints = [
             models.CheckConstraint(
                 check=(
-                    models.Q(is_file__exact=True)
-                    & models.Q(my_file__isnull=False)
-                    & models.Q(extension__isnull=False)
+                    Q(is_file__exact=True)
+                    & Q(my_file__isnull=False)
+                    & Q(extension__isnull=False)
                 ) | (
-                    models.Q(is_file__exact=False)
-                    & models.Q(my_file__isnull=True)
-                    & models.Q(extension__isnull=True)
+                    Q(is_file__exact=False)
+                    & Q(my_file__isnull=True)
+                    & Q(extension__isnull=True)
                 ),
                 name='file_or_directory'
-            ),
-            models.CheckConstraint(
-                check=(
-                    models.Q(user__isnull=True) | models.Q(group__isnull=True)
-                ),
-                name='user_or_group'
             )
         ]
 
@@ -153,8 +148,11 @@ class Storage(models.Model):
     存储库类。
     """
     root_identifier = models.ForeignKey(Identifier, on_delete=models.CASCADE, null=True, default=None)
-    created_time = models.DateTimeField()
+    created_time = models.DateTimeField(auto_now_add=True)
     users = models.ManyToManyField(User, through='Membership')
+
+    def __str__(self):
+        return self.root_identifier.name
 
 
 class Membership(models.Model):
@@ -166,13 +164,20 @@ class Membership(models.Model):
     write_permission = models.BooleanField(verbose_name="写入权限", default=True)
     is_personal_storage = models.BooleanField(verbose_name="是否为个人存储库", default=False)
 
-    class Meta:
-        permissions = [
-            ('write_file', '对存储库拥有写权限'),
-            ('add_user', '可以添加用户'),
-            ('remove_user', '可以删除用户'),
-            ('modify_user_permission', '可以修改其他用户权限')
-        ]
+    # class Meta:
+    #     constraints = [
+    #         models.CheckConstraint(check=(Q(is_personal_storage=True) & Q(user)),
+    #                                name='personal_or_group')
+    #     ]
+    # TODO 约束：个人存储库只允许一个用户
+
+    # class Meta:
+    #     permissions = [
+    #         ('write_file', '对存储库拥有写权限'),
+    #         ('add_user', '可以添加用户'),
+    #         ('remove_user', '可以删除用户'),
+    #         ('modify_user_permission', '可以修改其他用户权限')
+    #     ]
 
 
 # dispatch_uid 的作用是防止多次调用，具体原理不清楚。要求是个unique hashable类型的就行，那我就写一些中文了。
@@ -192,6 +197,7 @@ def before_delete_catalogue(instance, **kwargs):
         my_file.save()
         instance.refresh_from_db()
 
+
 @receiver(post_save, sender=File, dispatch_uid="当文件引用数为0，文件自动被删除")
 def after_save_file(instance, **kwargs):
     instance.refresh_from_db()
@@ -203,17 +209,16 @@ def after_save_file(instance, **kwargs):
 def after_create_user(instance, created, **kwargs):
     if not created:
         return
-    Identifier.objects.create(
-        name='user '+str(instance.username)+' root',
-        user=instance
-    )
+    from .utils import create_storage
+    create_storage(instance, is_personal_storage=True)
 
-
-@receiver(post_save, sender=Group, dispatch_uid="群组被创建后，自动为其创建仓库")
-def after_create_group(instance, created, **kwargs):
-    if not created:
-        return
-    Identifier.objects.create(
-        name='group '+str(instance.id)+' root',
-        group=instance
-    )
+#
+#
+# @receiver(post_save, sender=Group, dispatch_uid="群组被创建后，自动为其创建仓库")
+# def after_create_group(instance, created, **kwargs):
+#     if not created:
+#         return
+#     Identifier.objects.create(
+#         name='group '+str(instance.id)+' root',
+#         group=instance
+#     )

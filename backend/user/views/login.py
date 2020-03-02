@@ -33,7 +33,7 @@ class MyTmpAuthToken(ObtainAuthToken):
         return response
 
 
-class Login(APIView):
+class OAuthLogin(APIView):
     """
     登录类
     """
