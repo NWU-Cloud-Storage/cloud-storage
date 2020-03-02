@@ -217,6 +217,25 @@ AJAX下载有锅！！
 
 ## 个人存储仓库
 
-### 获取个人仓库内容
+### 获取个人仓库id
 
-在存储仓库基础上新增一个接口`/api/storage/0/`(`/api/storage/my/`? 待定)
+* Request
+
+  * Url: `/api/storage/`
+
+  * Method: GET
+
+* Response
+
+  * Status Code: 200OK
+
+  * Body:
+
+    ```json
+    {
+        'storage_id': 100
+    }
+    ```
+
+    
+

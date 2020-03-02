@@ -39,6 +39,8 @@
 
 ### 修改个人资料
 
+Deprecated!
+
 * Request
   * Url: `/api/user/`
   * Method: PUT

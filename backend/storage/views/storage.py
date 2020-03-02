@@ -9,29 +9,33 @@ from my_utils.checker import check_is_none
 from my_utils.checker import check_is_int, check_all_int
 from my_utils.checker import check_serializer_is_valid
 
-from storage.models import Identifier, File
+from storage.models import Identifier, File, Storage, Membership
 from storage.checker import check_exist_catalogue
 from storage.checker import check_not_root
 from storage.checker import check_are_siblings_and_in_root
 from storage.checker import check_des_not_src_children
 from storage.serializers import CatalogueSerializer, BreadcrumbsSerializer
 
-class MyStorage(APIView):
+class StorageAPI(APIView):
     """
-    my-storage相关接口的视图类
+    存储库相关接口的视图类
     """
     @staticmethod
-    def get(request, src_cata_id=None):
+    def get(request, storage_id=None):
         """
         获取个人仓库内容，
         src_cata_id为None时，获取根目录。
         """
-        myself = request.user.user
+        myself = request.user
+
+        if not storage_id:
+            storage = Membership.objects.get(user=myself, is_personal_storage=True).storage
+
         my_root = myself.storage
         src_cata = my_root
         ancestors = [my_root]
-        if src_cata_id:
-            src_cata = check_exist_catalogue(src_cata_id)
+        if storage_id:
+            src_cata = check_exist_catalogue(storage_id)
             ancestors = src_cata.get_ancestors(include_self=True)
             check_are_same(ancestors.first(), my_root)
 
