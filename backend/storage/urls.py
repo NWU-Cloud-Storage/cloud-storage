@@ -7,7 +7,8 @@ from storage.views.cross_storage import SaveToMe, UploadToGroup
 
 urlpatterns = [
     path("storage/", StorageAPI.as_view()),
-    path("storage/<int:src_cata_id>/", StorageAPI.as_view()),
+    path("storage/<int:storage_id>/", StorageAPI.as_view()),
+    path("storage/<int:storage_id>/<int:identifier_id>/", StorageAPI.as_view()),
     path("storage/move/", MyStorageMove.as_view()),
     path("storage/copy/", MyStorageCopy.as_view()),
     path("storage/upload/", MyStorageFiles.as_view()),

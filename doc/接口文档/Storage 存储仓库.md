@@ -2,6 +2,35 @@
 
 ## 存储仓库
 
+### 获取用户有访问权的所有仓库列表
+
+* Request
+
+  * Url: `/api/storage/`
+
+  * Method: GET
+
+* Response
+
+  * Status Code: 200OK
+
+  * Body:
+
+    ```json
+    [
+        {
+        	'storage_id': 100
+    	}
+    ]
+    ```
+
+### 获取仓库根目录内容
+
+* Request
+  * Url: `/api/storage/12[仓库id]/`
+  * Method: GET
+* Response：同下
+
 ### 获取仓库内容
 
 * Request
@@ -214,28 +243,3 @@ AJAX下载有锅！！
   * Status Code: 200OK
 
 目前取消了下载接口的授权验证。
-
-## 个人存储仓库
-
-### 获取个人仓库id
-
-* Request
-
-  * Url: `/api/storage/`
-
-  * Method: GET
-
-* Response
-
-  * Status Code: 200OK
-
-  * Body:
-
-    ```json
-    {
-        'storage_id': 100
-    }
-    ```
-
-    
-

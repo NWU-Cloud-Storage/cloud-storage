@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from storage.models import Identifier
+from storage.models import Identifier, Storage
 
 
 class CatalogueSerializer(serializers.ModelSerializer):
@@ -26,3 +26,10 @@ class BreadcrumbsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Identifier
         fields = ('id', 'name')
+
+
+class StorageSerializer(serializers.ModelSerializer):
+    storage_id = serializers.IntegerField(source='id')
+    class Meta:
+        model = Storage
+        fields = ('storage_id', 'created_time')

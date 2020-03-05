@@ -14,33 +14,43 @@ from storage.checker import check_exist_catalogue
 from storage.checker import check_not_root
 from storage.checker import check_are_siblings_and_in_root
 from storage.checker import check_des_not_src_children
-from storage.serializers import CatalogueSerializer, BreadcrumbsSerializer
+from storage.serializers import CatalogueSerializer, BreadcrumbsSerializer, StorageSerializer
+
+from django.shortcuts import get_object_or_404
+
+from rest_framework.exceptions import ValidationError
+
 
 class StorageAPI(APIView):
     """
     存储库相关接口的视图类
     """
     @staticmethod
-    def get(request, storage_id=None):
+    def get(request, storage_id=None, identifier_id=None):
         """
-        获取个人仓库内容，
-        src_cata_id为None时，获取根目录。
+        获取存储仓库内容，
         """
         myself = request.user
 
+        # storage_id为None时，获取用户所有仓库列表。
         if not storage_id:
-            storage = Membership.objects.get(user=myself, is_personal_storage=True).storage
+            storage_list = Storage.objects.filter(users=myself)
+            storage_serializer = StorageSerializer(storage_list, many=True)
+            return Response(storage_serializer.data)
 
-        my_root = myself.storage
-        src_cata = my_root
-        ancestors = [my_root]
-        if storage_id:
-            src_cata = check_exist_catalogue(storage_id)
-            ancestors = src_cata.get_ancestors(include_self=True)
-            check_are_same(ancestors.first(), my_root)
+        storage = get_object_or_404(Storage, id=storage_id)  # TODO 调用drf的404
+        root_identifier = storage.root_identifier
+
+        # identifier_id为None时，获取根目录的内容
+        if not identifier_id:
+            identifier_id = root_identifier.id
+
+        identifier = check_exist_catalogue(identifier_id)
+        ancestors = identifier.get_ancestors(include_self=True)
+        check_are_same(ancestors.first(), root_identifier)
 
         bread_serializer = BreadcrumbsSerializer(ancestors, many=True)
-        cata_serializer = CatalogueSerializer(src_cata.get_children(), many=True)
+        cata_serializer = CatalogueSerializer(identifier.get_children(), many=True)
         res = {'breadcrumbs': [], 'content': []}
         breadcrumbs = res['breadcrumbs']
         content = res['content']
@@ -51,58 +61,61 @@ class StorageAPI(APIView):
         return Response(res)
 
     @staticmethod
-    def delete(request, src_cata_id=None):
+    def delete(request, storage_id):
         """
         删除个人仓库某文件（夹）。
         """
-        check_is_none(src_cata_id)
+        # check_is_none(src_cata_id)
+        storage = get_object_or_404(Storage, id=storage_id)
         cata_ids = request.data.get('id', None)
         if not cata_ids:
-            return Response()
+            raise ValidationError()
         cata_ids = check_all_int(cata_ids)
-        check_are_siblings_and_in_root(cata_ids, request.user.user.storage)
+        check_are_siblings_and_in_root(cata_ids, storage.root_identifier)
 
         Identifier.objects.filter(pk__in=cata_ids).delete()
 
         return Response()
 
     @staticmethod
-    def post(request, src_cata_id=None):
+    def post(request, storage_id, src_cata_id=None):
         """
         新建个人仓库文件（夹）。
         """
-        myself = request.user.user
-        my_root = myself.storage
-        ancestor = my_root
+        myself = request.user
+        storage = get_object_or_404(Storage, id=storage_id)
+        root_identifier = storage.root_identifier
+        ancestor = root_identifier
         if src_cata_id:
             ancestor = check_exist_catalogue(src_cata_id)
-            check_are_same(ancestor.get_root(), my_root)
+            check_are_same(ancestor.get_root(), root_identifier)
         if request.data.get('name') is not None:
             name = request.data['name']
         else:
             name = '新建文件夹'
-        new_cata = Identifier(name=name)
+        new_cata = Identifier(name=name, owner=myself)
         new_cata.insert_at(ancestor, 'first-child', save=True)
         serializer = CatalogueSerializer(new_cata)
         return Response(serializer.data)
 
     @staticmethod
-    def put(request, src_cata_id):
+    def put(request, storage_id, identifier_id):
         """
         修改个人仓库文件（夹），主要是改名。
         """
-        myself = request.user.user
-        my_root = myself.storage
-        cata = check_exist_catalogue(src_cata_id)
+        myself = request.user
+        storage = get_object_or_404(Storage, id=storage_id)
+        root_identifier = storage.root_identifier
+        cata = check_exist_catalogue(identifier_id)
         check_not_root(cata)
-        check_are_same(my_root, cata.get_root())
+        check_are_same(root_identifier, cata.get_root())
         serializer = check_serializer_is_valid(CatalogueSerializer, cata, request.data)
 
         serializer.save()
         return Response(serializer.data)
 
-def _move_or_copy_check(request):
 
+def _move_or_copy_check(request):
     my_root = request.user.user.storage
 
     src_ids = request.data.get('source_id', None)
