@@ -16,6 +16,7 @@ from group.checker import check_user_is_master
 from group.checker import check_higher_permission
 from group.serializers import MyGroupSerializer
 
+
 class Membership(APIView):
     """
     membership相关接口的视图类
@@ -28,7 +29,7 @@ class Membership(APIView):
         """
         myself = request.user.user
         the_other = check_exist_user(username)
-        check_not_same(myself, the_other)   # 不可修改自己的权限
+        check_not_same(myself, the_other)  # 不可修改自己的权限
         group = check_exist_group(group_id)
         my_membership = check_user_in_group(myself, group)
         others_membership = check_user_in_group(the_other, group)
@@ -40,8 +41,6 @@ class Membership(APIView):
         serializer.save()
         return Response(serializer.data)
 
-
-
     @staticmethod
     def delete(request, group_id, username):
         """
@@ -49,7 +48,7 @@ class Membership(APIView):
         """
         myself = request.user.user
         the_other = check_exist_user(username)
-        check_not_same(myself, the_other)   # 不可移出自己
+        check_not_same(myself, the_other)  # 不可移出自己
         group = check_exist_group(group_id)
         my_membership = check_user_in_group(myself, group)
         others_membership = check_user_in_group(the_other, group)

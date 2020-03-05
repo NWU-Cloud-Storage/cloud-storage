@@ -9,6 +9,7 @@ from my_utils.utils import sub_dict, detail
 from .models import User as UserModel
 from .serializers import UserSerializer
 
+
 class User(APIView):
 
     def get(self, request, username=None):

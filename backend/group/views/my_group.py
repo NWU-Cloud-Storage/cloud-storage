@@ -14,10 +14,12 @@ from group.serializers import GroupSerializer
 from group.serializers import MyGroupSerializer
 from group.serializers import GroupMemberSerializer
 
+
 class MyGroup(APIView):
     """
     my-group相关接口的视图类
     """
+
     @staticmethod
     def get(request, group_id=None):
         """
@@ -66,9 +68,9 @@ class MyGroup(APIView):
         group = check_exist_group(group_id)
         membership = check_user_in_group(myself, group)
 
-        if membership.permission == 'master': # 解散群组
+        if membership.permission == 'master':  # 解散群组
             group.delete()
-        else: # 退出群组
+        else:  # 退出群组
             membership.delete()
 
         return Response()

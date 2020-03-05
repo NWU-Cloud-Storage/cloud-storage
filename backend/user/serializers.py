@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from .models import User
 
-class UserSerializer(serializers.ModelSerializer):
 
+class UserSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField()
     max_size = serializers.ReadOnlyField()
     used_size = serializers.ReadOnlyField()
@@ -12,6 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'nickname', 'max_size', 'used_size', 'date_last_opt')
+
 
 class TheOtherSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField()

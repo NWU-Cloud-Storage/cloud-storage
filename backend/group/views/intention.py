@@ -16,10 +16,12 @@ from group.checker import check_user_is_master_or_manager
 from group.checker import check_exist_intention
 from group.serializers import IntentionSerializer, GroupMemberSerializer
 
+
 class Intention(APIView):
     """
     intention相关接口的视图类
     """
+
     @staticmethod
     def get(request, group_id, username=None):
         """
@@ -44,7 +46,7 @@ class Intention(APIView):
         """
         myself = request.user.user
         group = check_exist_group(group_id)
-        if username: # 同意某人加入
+        if username:  # 同意某人加入
             return Intention._consent_intention(myself, group, username)
         return Intention._new_intention(myself, group)
 
@@ -57,7 +59,7 @@ class Intention(APIView):
 
         intention, created = IntentionModel.objects.get_or_create(group=group, user=myself)
         if not created:
-            intention.save() # 更新时间
+            intention.save()  # 更新时间
         serializer = IntentionSerializer(intention)
         return Response(serializer.data)
 

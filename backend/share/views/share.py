@@ -19,10 +19,12 @@ from share.checker import check_exist_share
 from share.checker import check_password
 from share.serializers import ShareSerializer
 
+
 class ShareToPublic(APIView):
     """
     share-to-public
     """
+
     @staticmethod
     def post(request, src_id):
         """
@@ -55,10 +57,12 @@ def _check_session(request, share):
         request.session[url] = url
     request.session.set_expiry(300)
 
+
 class Share(APIView):
     """
     share
     """
+
     @staticmethod
     def get(request, url, cata_id=None):
         """
@@ -87,10 +91,12 @@ class Share(APIView):
             breadcrumbs.append(dict(data))
         return Response(res)
 
+
 class ShareToMe(APIView):
     """
     share-to-me
     """
+
     @staticmethod
     def post(request, url, src_id, des_id=None):
         """

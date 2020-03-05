@@ -5,6 +5,7 @@ from mptt.admin import DraggableMPTTAdmin
 
 from .models import File, Identifier
 
+
 # Register your models here.
 
 @admin.register(File)
@@ -17,6 +18,7 @@ class MyFile(admin.ModelAdmin):
         'is_legal'
     )
 
+
 @admin.register(Identifier)
 class Catalogue(DraggableMPTTAdmin):
     list_display = ('tree_actions', 'indented_title', 'id')
@@ -28,4 +30,5 @@ class Catalogue(DraggableMPTTAdmin):
             instance._mpttfield('level') * self.mptt_level_indent,
             instance.name,  # Or whatever you want to put here
         )
+
     title.short_description = '文件（夹）名'

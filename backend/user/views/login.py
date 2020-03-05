@@ -23,12 +23,13 @@ class MyTmpAuthToken(ObtainAuthToken):
     """
     临时账号密码登入
     """
+
     def post(self, request, *args, **kwargs):
         """
         临时账号密码登入
         """
         response = super().post(request, *args, **kwargs)
-        response.data['token'] = 'Token '+response.data['token']
+        response.data['token'] = 'Token ' + response.data['token']
         response.set_cookie('token', response.data['token'])
         return response
 
@@ -73,6 +74,7 @@ class Logout(APIView):
     """
     登出类
     """
+
     @staticmethod
     def post(request):
         logout(request)

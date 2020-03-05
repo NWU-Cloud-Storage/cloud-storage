@@ -19,16 +19,19 @@ from storage.checker import check_are_siblings_and_in_root
 from storage.checker import check_des_not_src_children
 from storage.serializers import CatalogueSerializer, BreadcrumbsSerializer
 
+
 def _get_group_root(request, group_id):
     myself = request.user.user
     group = check_exist_group(group_id)
     check_user_in_group(myself, group)
     return group.storage
 
+
 class GroupStorage(APIView):
     """
     group-storage相关接口的视图类
     """
+
     @staticmethod
     def get(request, group_id, src_cata_id=None):
         """
@@ -106,8 +109,8 @@ class GroupStorage(APIView):
         serializer.save()
         return Response(serializer.data)
 
-def _move_or_copy_check(request, group_id):
 
+def _move_or_copy_check(request, group_id):
     src_ids = request.data.getlist('source_id', None)
     if not src_ids:
         return Response()
@@ -127,10 +130,12 @@ def _move_or_copy_check(request, group_id):
 
     return src_catas, des_cata
 
+
 class GroupStorageMove(APIView):
     """
     group-storage/move/ 相关接口的视图类
     """
+
     @staticmethod
     def put(request, group_id):
         """
@@ -148,10 +153,12 @@ class GroupStorageMove(APIView):
 
         return Response()
 
+
 class GroupStorageCopy(APIView):
     """
     group-storage/copy/ 相关接口的视图类
     """
+
     @staticmethod
     def put(request, group_id):
         """

@@ -10,6 +10,7 @@ class GroupSerializer(serializers.ModelSerializer):
         model = Group
         fields = ('id', 'name', 'num_of_members')
 
+
 class MyGroupSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='group.pk')
     num_of_members = serializers.ReadOnlyField(source='group.num_of_members')
@@ -29,8 +30,8 @@ class GroupMemberSerializer(serializers.ModelSerializer):
         model = MembershipTmp
         fields = ('username', 'nickname', 'permission')
 
-class IntentionSerializer(serializers.ModelSerializer):
 
+class IntentionSerializer(serializers.ModelSerializer):
     group_id = serializers.ReadOnlyField(source='group.pk')
     group_name = serializers.ReadOnlyField(source='group.name')
     username = serializers.ReadOnlyField(source='user.username')

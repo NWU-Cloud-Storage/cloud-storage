@@ -20,6 +20,7 @@ class CatalogueSerializer(serializers.ModelSerializer):
             'date_modified', 'extension', 'size', 'owner'
         )
 
+
 class BreadcrumbsSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='pk')
     name = serializers.ReadOnlyField()
@@ -32,6 +33,7 @@ class BreadcrumbsSerializer(serializers.ModelSerializer):
 class StorageSerializer(serializers.ModelSerializer):
     storage_id = serializers.IntegerField(source='id')
     root_folder_id = serializers.PrimaryKeyRelatedField(source='root_identifier', read_only=True)
+
     class Meta:
         model = Storage
         fields = ('storage_id', 'root_folder_id', 'created_time')

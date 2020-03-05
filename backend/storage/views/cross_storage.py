@@ -14,12 +14,13 @@ from group.checker import check_user_in_group
 from storage.checker import check_exist_catalogue
 from storage.checker import check_are_siblings_and_in_root
 
+
 def _check_src_ids(src_ids):
     check_not_none(src_ids)
     return check_all_int(src_ids)
 
-def _check_src_and_des(src_root, src_ids, des_root, des_id):
 
+def _check_src_and_des(src_root, src_ids, des_root, des_id):
     des_cata = des_root
     if des_id:
         des_cata = check_exist_catalogue(des_id)
@@ -29,10 +30,12 @@ def _check_src_and_des(src_root, src_ids, des_root, des_id):
 
     return src_catas, des_cata
 
+
 class SaveToMe(APIView):
     """
     save-to-me 相关接口的视图类
     """
+
     @staticmethod
     def put(request, group_id, des_id=None):
         """
@@ -51,10 +54,12 @@ class SaveToMe(APIView):
             cata.copy_to(des_cata)
         return Response()
 
+
 class UploadToGroup(APIView):
     """
     upload-to-group 相关接口的视图类
     """
+
     @staticmethod
     def put(request, group_id, des_id=None):
         """

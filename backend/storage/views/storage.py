@@ -27,6 +27,7 @@ class StorageAPI(APIView):
     """
     存储库相关接口的视图类
     """
+
     @staticmethod
     def get(request, storage_id=None, identifier_id=None):
         """
@@ -139,10 +140,12 @@ def _move_or_copy_check(request, storage_id):
 
     return src_catas, des_cata
 
+
 class MyStorageMove(APIView):
     """
     my-storage/move/ 相关接口的视图类
     """
+
     @staticmethod
     def put(request, storage_id):
         """
@@ -159,10 +162,12 @@ class MyStorageMove(APIView):
 
         return Response()
 
+
 class MyStorageCopy(APIView):
     """
     my-storage/copy/ 相关接口的视图类
     """
+
     @staticmethod
     def put(request, storage_id):
         """
@@ -174,11 +179,13 @@ class MyStorageCopy(APIView):
             cata.copy_to(des_cata)
         return Response()
 
+
 class MyStorageFiles(APIView):
     permission_classes = ()
     """
     上传文件
     """
+
     @staticmethod
     def post(request, src_cata_id=None):
         myself = request.user.user

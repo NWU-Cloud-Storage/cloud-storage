@@ -9,6 +9,7 @@ class Group(admin.ModelAdmin):
     list_display = ('pk', 'name', 'num_of_members')
     fields = ('name',)
 
+
 @admin.register(MembershipTmp)
 class Membership(admin.ModelAdmin):
     list_display = ('group_name', 'user_name', 'permission')
@@ -16,11 +17,14 @@ class Membership(admin.ModelAdmin):
 
     def group_name(self, obj):
         return obj.group
+
     group_name.short_description = '群组'
 
     def user_name(self, obj):
         return obj.user
+
     user_name.short_description = '用户'
+
 
 @admin.register(Intention)
 class Intention(admin.ModelAdmin):
@@ -29,8 +33,10 @@ class Intention(admin.ModelAdmin):
 
     def group_name(self, obj):
         return obj.group
+
     group_name.short_description = '群组'
 
     def user_name(self, obj):
         return obj.user
+
     user_name.short_description = '用户'

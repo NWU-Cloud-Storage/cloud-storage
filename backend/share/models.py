@@ -13,17 +13,18 @@ class ShareManager(models.Manager):
     """
     Share管理器
     """
+
     def create_by_user(self, user, cata, days=None, pwd=None):
         """
         由一位user生成的分享链接（不检查）
         """
-        length = int(math.log(self.count()+100000001, 10))
+        length = int(math.log(self.count() + 100000001, 10))
         url = gen_url(length)
         print(pwd)
         while True:
             try:
                 self.get(url=url)
-                length = length+1
+                length = length + 1
                 url = gen_url(length)
             except ObjectDoesNotExist:
                 break

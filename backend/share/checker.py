@@ -10,9 +10,11 @@ from rest_framework.exceptions import PermissionDenied
 
 from share.models import Share
 
+
 def check_exist_share(url):
     share = get_object_or_404(Share, url=url)
     return share
+
 
 def check_password(pwd, share):
     if not pwd == share.password:

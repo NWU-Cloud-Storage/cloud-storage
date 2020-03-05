@@ -1,6 +1,7 @@
 import pytest
 from user.models import User
 
+
 @pytest.fixture(scope='function')
 def user(db):
     user = User.objects.create(username="test", nickname="test_nickname",

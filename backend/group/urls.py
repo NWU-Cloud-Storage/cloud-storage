@@ -4,7 +4,6 @@ from group.views.my_group import MyGroup
 from group.views.membership import Membership
 from group.views.intention import Intention
 
-
 urlpatterns = [
     path("my-group/", MyGroup.as_view()),
     path("my-group/<int:group_id>/", MyGroup.as_view()),

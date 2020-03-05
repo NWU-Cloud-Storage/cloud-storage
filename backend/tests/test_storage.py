@@ -28,7 +28,7 @@ def test_storage_rest_api(c):
     r = c.put(f'/api/storage/{storage_id}/copy/',
               {'source_id': [folder_id],
                'destination_storage_id': storage_id,
-               'destination_directory_id' : root_folder_id},
+               'destination_directory_id': root_folder_id},
               content_type='application/json')
     assert r.status_code == 200
 

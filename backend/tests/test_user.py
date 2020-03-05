@@ -1,6 +1,7 @@
 from user.models import User
 from storage.models import Storage
 
+
 # @pytest.mark.django_db
 def test_user_create(user):
     assert user.username == "test"
@@ -22,4 +23,3 @@ def test_user_rest_api(c, user):
     response = c.get('/api/user/')
     assert username in response.json()['username']
     assert user.nickname in response.json()['nickname']
-

@@ -11,10 +11,12 @@ from my_utils.utils import sub_dict
 from my_utils.checker import check_serializer_is_valid
 from my_utils.checker import check_is_none
 
+
 class User(APIView):
     """
     user相关接口的视图类
     """
+
     @staticmethod
     def get(request, username=None):
         """

@@ -4,9 +4,10 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User as AuthUser
 from rest_framework.authtoken.models import Token
 
+
 class User(AuthUser):
     nickname = models.CharField(max_length=30, verbose_name='昵称')
-    max_size = models.BigIntegerField(verbose_name='最大容量', default=5*2**30)
+    max_size = models.BigIntegerField(verbose_name='最大容量', default=5 * 2 ** 30)
     used_size = models.BigIntegerField(verbose_name='已用容量', default=0)
     date_last_opt = models.DateTimeField(verbose_name='上次操作时间', auto_now=True)
 
@@ -24,6 +25,7 @@ def before_create_user(instance, **kwargs):
     if not instance.password:
         return
     instance.set_password(instance.password)
+
 
 @receiver(post_save, sender=User, dispatch_uid="创建之后要自动生成令牌")
 def create_auth_token(sender, instance=None, created=False, **kwargs):

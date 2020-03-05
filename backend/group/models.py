@@ -5,6 +5,7 @@ from django.db.models import F
 
 from user.models import User
 
+
 # Create your models here.
 
 class Group(models.Model):
@@ -54,16 +55,17 @@ class MembershipTmp(models.Model):
         ]
 
     def __str__(self):
-        return  '【' + self.permission + '】' + self.group.name + '.' + self.user.username
+        return '【' + self.permission + '】' + self.group.name + '.' + self.user.username
 
     def __gt__(self, other):
         my_permission = self.permission
         others_permission = other.permission
         if others_permission == 'master' \
-            or others_permission == my_permission == 'manager' \
-            or my_permission == 'member':
+                or others_permission == my_permission == 'manager' \
+                or my_permission == 'member':
             return False
         return True
+
 
 class Intention(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
@@ -93,6 +95,7 @@ class Intention(models.Model):
         """
         self.delete()
 
+
 @receiver(post_save, sender=MembershipTmp, dispatch_uid="加入群以后，群人数加1")
 def after_join_a_group(instance, created, **kwargs):
     if created:
@@ -100,6 +103,7 @@ def after_join_a_group(instance, created, **kwargs):
         group.num_of_members = F('num_of_members') + 1
         group.save()
         group.refresh_from_db()
+
 
 @receiver(post_delete, sender=MembershipTmp, dispatch_uid="退出群以后，群人数减1")
 def after_leave_a_group(instance, **kwargs):

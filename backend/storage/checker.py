@@ -10,12 +10,14 @@ from rest_framework.exceptions import PermissionDenied
 
 from storage.models import Identifier
 
+
 def check_exist_catalogue(cata_id):
     """
     检查应存在该目录。
     """
     catalogue = get_object_or_404(Identifier, id=cata_id)
     return catalogue
+
 
 def check_exist_catalogues(cata_ids):
     """
@@ -24,12 +26,14 @@ def check_exist_catalogues(cata_ids):
     catalogues = get_list_or_404(Identifier, id__in=cata_ids)
     return catalogues
 
+
 def check_not_root(catalogue):
     """
     检查目录非根。
     """
     if catalogue.is_root_node():
         raise ParseError()
+
 
 def check_are_siblings(catas):
     """
@@ -45,6 +49,7 @@ def check_are_siblings(catas):
                 raise ParseError()
         tmp_ancestor = ancestor
 
+
 def check_des_not_src_children(src_catas, des_cata):
     """
     检查目的结点不是源结点的后代。
@@ -52,6 +57,7 @@ def check_des_not_src_children(src_catas, des_cata):
     for ancestor in des_cata.get_ancestors():
         if ancestor in src_catas:
             raise ParseError()
+
 
 def check_are_siblings_and_in_root(cata_ids, root):
     """
@@ -62,6 +68,7 @@ def check_are_siblings_and_in_root(cata_ids, root):
         raise ParseError()
     check_are_siblings(catas)
     return catas
+
 
 def check_is_ancestor(ancestor, cata):
     """

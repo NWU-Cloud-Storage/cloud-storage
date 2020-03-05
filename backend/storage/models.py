@@ -6,7 +6,6 @@ from django.db.models import F, Q
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 
-
 from mptt.models import MPTTModel, TreeForeignKey
 
 from group.models import Group
@@ -31,6 +30,7 @@ class File(models.Model):
 
     def __str__(self):
         return self.file.name
+
 
 # class CatalogueManager(models.Manager):
 #     """
@@ -102,20 +102,19 @@ class Identifier(MPTTModel):
     )
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
-
     class Meta:
         verbose_name = verbose_name_plural = '目录'
         constraints = [
             models.CheckConstraint(
                 check=(
-                    Q(is_file__exact=True)
-                    & Q(my_file__isnull=False)
-                    & Q(extension__isnull=False)
-                ) | (
-                    Q(is_file__exact=False)
-                    & Q(my_file__isnull=True)
-                    & Q(extension__isnull=True)
-                ),
+                              Q(is_file__exact=True)
+                              & Q(my_file__isnull=False)
+                              & Q(extension__isnull=False)
+                      ) | (
+                              Q(is_file__exact=False)
+                              & Q(my_file__isnull=True)
+                              & Q(extension__isnull=True)
+                      ),
                 name='file_or_directory'
             )
         ]

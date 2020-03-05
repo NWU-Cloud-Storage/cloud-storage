@@ -4,7 +4,6 @@ from storage.views.storage import StorageAPI, MyStorageMove, MyStorageCopy, MySt
 from storage.views.group_storage import GroupStorage, GroupStorageMove, GroupStorageCopy
 from storage.views.cross_storage import SaveToMe, UploadToGroup
 
-
 urlpatterns = [
     path("storage/", StorageAPI.as_view()),
     path("storage/<int:storage_id>/", StorageAPI.as_view()),
