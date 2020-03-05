@@ -136,6 +136,7 @@ class Identifier(MPTTModel):
             is_file=self.is_file,
             my_file=self.my_file,
             extension=self.extension,
+            owner=self.owner
         )
         new_cata.insert_at(target, 'first-child', save=True)
         children = self.get_children()

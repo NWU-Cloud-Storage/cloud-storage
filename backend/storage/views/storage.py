@@ -10,6 +10,7 @@ from my_utils.checker import check_is_int, check_all_int
 from my_utils.checker import check_serializer_is_valid
 
 from storage.models import Identifier, File, Storage, Membership
+from user.models import User
 from storage.checker import check_exist_catalogue
 from storage.checker import check_not_root
 from storage.checker import check_are_siblings_and_in_root
@@ -17,6 +18,7 @@ from storage.checker import check_des_not_src_children
 from storage.serializers import CatalogueSerializer, BreadcrumbsSerializer, StorageSerializer
 
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user
 
 from rest_framework.exceptions import ValidationError
 
@@ -82,7 +84,7 @@ class StorageAPI(APIView):
         """
         新建个人仓库文件（夹）。
         """
-        myself = request.user
+        user = request.user.user
         storage = get_object_or_404(Storage, id=storage_id)
         root_identifier = storage.root_identifier
         ancestor = root_identifier
@@ -93,7 +95,7 @@ class StorageAPI(APIView):
             name = request.data['name']
         else:
             name = '新建文件夹'
-        new_cata = Identifier(name=name, owner=myself)
+        new_cata = Identifier(name=name, owner=user)
         new_cata.insert_at(ancestor, 'first-child', save=True)
         serializer = CatalogueSerializer(new_cata)
         return Response(serializer.data)
@@ -115,21 +117,23 @@ class StorageAPI(APIView):
         return Response(serializer.data)
 
 
-def _move_or_copy_check(request):
-    my_root = request.user.user.storage
+def _move_or_copy_check(request, storage_id):
+    user = request.user
+    storage = get_object_or_404(Storage, id=storage_id)
+    root_identifier = storage.root_identifier
 
     src_ids = request.data.get('source_id', None)
     if not src_ids:
-        return Response()
+        raise ValidationError()
     src_ids = check_all_int(src_ids)
-    src_catas = check_are_siblings_and_in_root(src_ids, my_root)
+    src_catas = check_are_siblings_and_in_root(src_ids, root_identifier)
 
     des_id = request.data.get('destination_id', None)
-    des_cata = my_root
+    des_cata = root_identifier
     if des_id:
         des_id = check_is_int(des_id)
         des_cata = check_exist_catalogue(des_id)
-    check_are_same(des_cata.get_root(), my_root)
+    check_are_same(des_cata.get_root(), root_identifier)
 
     check_des_not_src_children(src_catas, des_cata)
 
@@ -140,11 +144,11 @@ class MyStorageMove(APIView):
     my-storage/move/ 相关接口的视图类
     """
     @staticmethod
-    def put(request):
+    def put(request, storage_id):
         """
         移动个人仓库文件（夹）。
         """
-        src_catas, des_cata = _move_or_copy_check(request)
+        src_catas, des_cata = _move_or_copy_check(request, storage_id)
 
         # Catalogue.objects.filter(pk__in=src_ids).update(parent=des_cata)
         # 内部应该是有signal导致无法批量修改parent，也不能使用move_to方法。
@@ -160,11 +164,11 @@ class MyStorageCopy(APIView):
     my-storage/copy/ 相关接口的视图类
     """
     @staticmethod
-    def put(request):
+    def put(request, storage_id):
         """
         拷贝个人仓库文件（夹）。
         """
-        src_catas, des_cata = _move_or_copy_check(request)
+        src_catas, des_cata = _move_or_copy_check(request, storage_id)
 
         for cata in src_catas:
             cata.copy_to(des_cata)
