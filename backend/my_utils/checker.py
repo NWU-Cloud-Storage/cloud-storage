@@ -2,6 +2,7 @@
 通用检查器
 """
 from rest_framework.exceptions import ParseError
+from collections.abc import Iterable
 
 
 def check_are_same(arg1, arg2):
@@ -45,26 +46,20 @@ def check_serializer_is_valid(serializer_cls: type, instance, data):
     return serializer
 
 
-def check_is_int(num):
+def check_int(obj):
     """
-    检查参数是否可转化为整数\n
-    合格则返回转化后的整数\n
+    检查参数是否能被转化成整数
+    合格则返回转化后的整数或整数列表\n
     """
-    try:
-        return int(num)
-    except:
-        raise ParseError()
-
-
-def check_all_int(ls):
-    """
-    检查列表内是否全部都可转化为整数\n
-    合格则返回转化后的整数列表\n
-    """
-    ret = list()
-    for item in ls:
+    if isinstance(obj, Iterable):
+        res = list()
+        for item in obj:
+            try:
+                res.append(int(item))
+            except ValueError:
+                raise ParseError()
+    else:
         try:
-            ret.append(int(item))
-        except:
+            return int(obj)
+        except ValueError:
             raise ParseError()
-    return ret

@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from my_utils.checker import check_are_same
 from my_utils.checker import check_is_none
-from my_utils.checker import check_is_int, check_all_int
+from my_utils.checker import check_int
 from my_utils.checker import check_serializer_is_valid
 
 from storage.models import Identifier, File, Storage, Membership
@@ -15,7 +15,7 @@ from storage.checker import check_exist_catalogue
 from storage.checker import check_not_root
 from storage.checker import check_are_siblings_and_in_root
 from storage.checker import check_des_not_src_children
-from storage.checker import check_read_permission, check_write_permission
+from storage.checker import check_read_permission, check_write_permission, get_storage_or_403
 from storage.serializers import CatalogueSerializer, BreadcrumbsSerializer, StorageSerializer
 
 from django.shortcuts import get_object_or_404
@@ -42,7 +42,7 @@ class StorageAPI(APIView):
             storage_serializer = StorageSerializer(storage_list, many=True)
             return Response(storage_serializer.data)
 
-        storage = get_object_or_404(Storage, id=storage_id)  # TODO 调用drf的404
+        storage = get_storage_or_403(storage_id)
         check_read_permission(myself, storage)
         root_identifier = storage.root_identifier
 
@@ -71,13 +71,13 @@ class StorageAPI(APIView):
         删除个人仓库某文件（夹）。
         """
         user = request.user
-        storage = get_object_or_404(Storage, id=storage_id)
+        storage = get_storage_or_403(storage_id)
         check_write_permission(user, storage)
 
         cata_ids = request.data.get('id', None)
         if not cata_ids:
             raise ValidationError()
-        cata_ids = check_all_int(cata_ids)
+        cata_ids = check_int(cata_ids)
         check_are_siblings_and_in_root(cata_ids, storage.root_identifier)
 
         Identifier.objects.filter(pk__in=cata_ids).delete()
@@ -90,7 +90,7 @@ class StorageAPI(APIView):
         新建个人仓库文件（夹）。
         """
         user = request.user.user
-        storage = get_object_or_404(Storage, id=storage_id)
+        storage = get_storage_or_403(storage_id)
         check_write_permission(user, storage)
 
         root_identifier = storage.root_identifier
@@ -113,7 +113,7 @@ class StorageAPI(APIView):
         修改个人仓库文件（夹），主要是改名。
         """
         user = request.user
-        storage = get_object_or_404(Storage, id=storage_id)
+        storage = get_storage_or_403(storage_id)
         check_write_permission(user, storage)
         root_identifier = storage.root_identifier
 
@@ -128,26 +128,30 @@ class StorageAPI(APIView):
 
 def _move_or_copy_check(request, storage_id):
     user = request.user
-    storage = get_object_or_404(Storage, id=storage_id)
-    check_write_permission(user, storage)
+    storage = get_storage_or_403(storage_id)
+    check_read_permission(user, storage)
     root_identifier = storage.root_identifier
 
     src_ids = request.data.get('source_id', None)
     if not src_ids:
         raise ValidationError()
-    src_ids = check_all_int(src_ids)
+    src_ids = check_int(src_ids)
     src_catas = check_are_siblings_and_in_root(src_ids, root_identifier)
 
+    des_storage_id = request.data.get('destination_storage_id', None)
+    des_storage = get_storage_or_403(des_storage_id)
+    check_write_permission(user, des_storage)
+
     des_id = request.data.get('destination_id', None)
-    des_cata = root_identifier
+    des_root = des_storage.root_identifier
     if des_id:
-        des_id = check_is_int(des_id)
-        des_cata = check_exist_catalogue(des_id)
-    check_are_same(des_cata.get_root(), root_identifier)
+        des_id = check_int(des_id)
+        des_root = check_exist_catalogue(des_id)
+    check_are_same(des_root.get_root(), des_storage.root_identifier)
 
-    check_des_not_src_children(src_catas, des_cata)
+    check_des_not_src_children(src_catas, des_root)
 
-    return src_catas, des_cata
+    return src_catas, des_root
 
 
 class MyStorageMove(APIView):

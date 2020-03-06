@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from my_utils.checker import check_are_same, check_not_same
-from my_utils.checker import check_is_int
+from my_utils.checker import check_int
 
 from user.serializers import TheOtherSerializer
 
@@ -40,7 +40,7 @@ class ShareToPublic(APIView):
         if days == "infinite":
             days = None
         else:
-            days = check_is_int(days)
+            days = check_int(days)
 
         share = ShareModel.objects.create_by_user(user, cata, days, pwd)
         serializer = ShareSerializer(share)
