@@ -5,10 +5,25 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import get_list_or_404
 from django.core.exceptions import ObjectDoesNotExist
 
-from rest_framework.exceptions import ParseError
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import ParseError, PermissionDenied
 
 from storage.models import Identifier
+
+
+def check_read_permission(user, storage):
+    """
+    检查用户对存储库拥有读权限
+    """
+    if not user.has_perm('storage.read', storage):
+        raise PermissionDenied()
+
+
+def check_write_permission(user, storage):
+    """
+    检查用户对存储库拥有写权限
+    """
+    if not user.has_perm('storage.write', storage):
+        raise PermissionDenied()
 
 
 def check_exist_catalogue(cata_id):

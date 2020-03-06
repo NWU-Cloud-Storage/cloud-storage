@@ -1,5 +1,7 @@
 from storage.models import Storage
 from pprint import pprint
+import pytest
+from user.models import User
 
 
 def test_storage_rest_api(c):
@@ -37,3 +39,15 @@ def test_storage_rest_api(c):
 
     r = c.delete(f'/api/storage/{storage_id}/', {'id': [folder_id]}, content_type='application/json')
     assert r.status_code == 200
+
+
+@pytest.mark.django_db
+def test_permission(client):
+    user1 = User.objects.create(username="user1", nickname="test_nickname1",
+                                password='test')
+    user2 = User.objects.create(username="user2", nickname="test_nickname2",
+                                password='test')
+    user1_storage_id = Storage.objects.get(users=user1).id
+    client.login(username='user2', password='test')
+    r = client.get(f'/api/storage/{user1_storage_id}/')
+    assert r.status_code == 403

@@ -150,6 +150,13 @@ class Storage(models.Model):
     root_identifier = models.ForeignKey(Identifier, on_delete=models.CASCADE, null=True, default=None)
     created_time = models.DateTimeField(auto_now_add=True)
     users = models.ManyToManyField(User, through='Membership')
+    is_personal_storage = models.BooleanField(verbose_name="是否为个人存储库", default=False)
+
+    class Meta:
+        permissions = [
+            ('read', '读权限'),
+            ('write', '写权限')
+        ]
 
     def __str__(self):
         return self.root_identifier.name
@@ -161,8 +168,7 @@ class Membership(models.Model):
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     storage = models.ForeignKey(Storage, on_delete=models.CASCADE)
-    write_permission = models.BooleanField(verbose_name="写入权限", default=True)
-    is_personal_storage = models.BooleanField(verbose_name="是否为个人存储库", default=False)
+    joined_time = models.DateTimeField(auto_now_add=True)
 
     # class Meta:
     #     constraints = [

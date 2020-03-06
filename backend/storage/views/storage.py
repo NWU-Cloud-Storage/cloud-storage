@@ -1,5 +1,5 @@
 """
-my-storage相关接口的视图
+storage相关接口的视图
 """
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -15,6 +15,7 @@ from storage.checker import check_exist_catalogue
 from storage.checker import check_not_root
 from storage.checker import check_are_siblings_and_in_root
 from storage.checker import check_des_not_src_children
+from storage.checker import check_read_permission, check_write_permission
 from storage.serializers import CatalogueSerializer, BreadcrumbsSerializer, StorageSerializer
 
 from django.shortcuts import get_object_or_404
@@ -42,6 +43,7 @@ class StorageAPI(APIView):
             return Response(storage_serializer.data)
 
         storage = get_object_or_404(Storage, id=storage_id)  # TODO 调用drf的404
+        check_read_permission(myself, storage)
         root_identifier = storage.root_identifier
 
         # identifier_id为None时，获取根目录的内容
@@ -68,8 +70,10 @@ class StorageAPI(APIView):
         """
         删除个人仓库某文件（夹）。
         """
-        # check_is_none(src_cata_id)
+        user = request.user
         storage = get_object_or_404(Storage, id=storage_id)
+        check_write_permission(user, storage)
+
         cata_ids = request.data.get('id', None)
         if not cata_ids:
             raise ValidationError()
@@ -87,6 +91,8 @@ class StorageAPI(APIView):
         """
         user = request.user.user
         storage = get_object_or_404(Storage, id=storage_id)
+        check_write_permission(user, storage)
+
         root_identifier = storage.root_identifier
         ancestor = root_identifier
         if src_cata_id:
@@ -106,9 +112,11 @@ class StorageAPI(APIView):
         """
         修改个人仓库文件（夹），主要是改名。
         """
-        myself = request.user
+        user = request.user
         storage = get_object_or_404(Storage, id=storage_id)
+        check_write_permission(user, storage)
         root_identifier = storage.root_identifier
+
         cata = check_exist_catalogue(identifier_id)
         check_not_root(cata)
         check_are_same(root_identifier, cata.get_root())
@@ -121,6 +129,7 @@ class StorageAPI(APIView):
 def _move_or_copy_check(request, storage_id):
     user = request.user
     storage = get_object_or_404(Storage, id=storage_id)
+    check_write_permission(user, storage)
     root_identifier = storage.root_identifier
 
     src_ids = request.data.get('source_id', None)
