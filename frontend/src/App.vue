@@ -82,7 +82,8 @@ export default {
                 nickname: undefined,
                 max_size: 5368709120,
                 used_size: 0,
-                date_last_opt: undefined
+                date_last_opt: undefined,
+                first_login: true
             }
         };
     },
@@ -100,6 +101,18 @@ export default {
     mounted() {
         axios.get("/user/").then(response => {
             this.user_info = response.data;
+            if (this.user_info.first_login == true) {
+                this.$confirm('当您开始使用本云盘时，您的身份信息将被记录在案，您对您上传的一切内容负法律责任。', '请知悉', {
+                    confirmButtonText: '开始使用',
+                    cancelButtonText: '退出'
+                }).then(() => {
+                    axios.post('/user-agreement/', {
+                        'agreed': true
+                    })
+                }).catch(() => {
+                    // TODO logout
+                })
+            }
         });
     },
     methods: {

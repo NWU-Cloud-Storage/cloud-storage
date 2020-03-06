@@ -62,7 +62,7 @@ export default {
                 this.$alert("登出成功。", {
                     callback: () => {
                         router.push('/')
-                        location.reload()
+                        location.href = "http://authserver.nwu.edu.cn/authserver/logout"
                     }
                 });
             });

@@ -33,9 +33,28 @@
         "nickname": "zjb",
         "max_size": 123123123,
         "used_size": 123123,
-        "date_last_opt": "2019-11-30T15:34:42.257461+08:00"
+        "date_last_opt": "2019-11-30T15:34:42.257461+08:00"，
+        "first_login": true
     }
     ```
+
+### 同意用户协议
+
+* Request
+  * Url: `/api/user-agreement/`
+  * Method: POST
+  * Content-Type: application/json
+  * Body:
+
+    ```json
+    {
+        "agreed": true
+    }
+    ```
+* Response
+  
+  * Status Code: 200 OK    
+    
 
 ### 修改个人资料
 
