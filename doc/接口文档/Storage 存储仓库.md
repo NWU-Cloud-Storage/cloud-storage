@@ -211,7 +211,7 @@
 
 * Request
 
-  * Url: `/api/storage/upload/[id]/`
+  * Url: `/api/storage/upload/[仓库id]/[文件夹id]/`
 
   * Method: POST
 

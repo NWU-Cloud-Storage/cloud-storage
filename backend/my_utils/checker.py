@@ -46,7 +46,7 @@ def check_serializer_is_valid(serializer_cls: type, instance, data):
     return serializer
 
 
-def check_int(obj):
+def get_int(obj):
     """
     检查参数是否能被转化成整数
     合格则返回转化后的整数或整数列表\n

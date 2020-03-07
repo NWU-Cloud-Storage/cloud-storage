@@ -8,9 +8,7 @@ urlpatterns = [
     path("storage/<int:storage_id>/<int:identifier_id>/", StorageAPI.as_view()),
     path("storage/<int:storage_id>/move/", MyStorageMove.as_view()),
     path("storage/<int:storage_id>/copy/", MyStorageCopy.as_view()),
-    path("storage/upload/", MyStorageFiles.as_view()),
-    path("storage/upload/<int:src_cata_id>/", MyStorageFiles.as_view()),
+    path("storage/upload/<int:storage_id>/<int:identifier_id>/", MyStorageFiles.as_view()),
+    path("storage/upload/<int:storage_id>/", MyStorageFiles.as_view()),
     path("storage/download/<int:src_cata_id>/", MyStorageFiles.as_view()),
-    path("group-storage/<int:group_id>/download/<int:src_cata_id>/", MyStorageFiles.as_view()),
-
 ]

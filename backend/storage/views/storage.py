@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from my_utils.checker import check_are_same
 from my_utils.checker import check_is_none
-from my_utils.checker import check_int
+from my_utils.checker import get_int
 from my_utils.checker import check_serializer_is_valid
 
 from storage.models import Identifier, File, Storage, Membership
@@ -77,7 +77,7 @@ class StorageAPI(APIView):
         cata_ids = request.data.get('id', None)
         if not cata_ids:
             raise ValidationError()
-        cata_ids = check_int(cata_ids)
+        cata_ids = get_int(cata_ids)
         check_are_siblings_and_in_root(cata_ids, storage.root_identifier)
 
         Identifier.objects.filter(pk__in=cata_ids).delete()
@@ -135,7 +135,7 @@ def _move_or_copy_check(request, storage_id):
     src_ids = request.data.get('source_id', None)
     if not src_ids:
         raise ValidationError()
-    src_ids = check_int(src_ids)
+    src_ids = get_int(src_ids)
     src_catas = check_are_siblings_and_in_root(src_ids, root_identifier)
 
     des_storage_id = request.data.get('destination_storage_id', None)
@@ -145,7 +145,7 @@ def _move_or_copy_check(request, storage_id):
     des_id = request.data.get('destination_id', None)
     des_root = des_storage.root_identifier
     if des_id:
-        des_id = check_int(des_id)
+        des_id = get_int(des_id)
         des_root = check_exist_catalogue(des_id)
     check_are_same(des_root.get_root(), des_storage.root_identifier)
 
@@ -200,18 +200,20 @@ class MyStorageFiles(APIView):
     """
 
     @staticmethod
-    def post(request, src_cata_id=None):
-        myself = request.user.user
-        my_root = myself.storage
-        ancestor = my_root
-        if src_cata_id:
-            ancestor = check_exist_catalogue(src_cata_id)
-            check_are_same(ancestor.get_root(), my_root)
+    def post(request, storage_id, identifier_id=None):
+        user = request.user
+        storage = get_storage_or_403(storage_id)
+        check_write_permission(user, storage)
+        root_identifier = storage.root_identifier
+        ancestor = root_identifier
+        if identifier_id:
+            ancestor = check_exist_catalogue(identifier_id)
+            check_are_same(ancestor.get_root(), root_identifier)
         file = request.FILES['file']
         new_file = File(file=file, size=file.size)
         new_file.save()
-        myself.used_size += file.size
-        myself.save()
+        user.used_size += file.size
+        user.save()
         new_cata = Identifier(name=file.name, extension=file.content_type, my_file=new_file, is_file=True)
         new_cata.insert_at(ancestor, 'first-child', save=True)
         serializer = CatalogueSerializer(new_cata)
