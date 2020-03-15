@@ -51,15 +51,11 @@ def get_int(obj):
     检查参数是否能被转化成整数
     合格则返回转化后的整数或整数列表\n
     """
-    if isinstance(obj, Iterable):
-        res = list()
-        for item in obj:
-            try:
-                res.append(int(item))
-            except ValueError:
-                raise ParseError()
-    else:
-        try:
-            return int(obj)
-        except ValueError:
-            raise ParseError()
+    try:
+        if isinstance(obj, Iterable):
+            res = [int(i) for i in obj]
+        else:
+            res = int(obj)
+    except ValueError:
+        raise ParseError()
+    return res
