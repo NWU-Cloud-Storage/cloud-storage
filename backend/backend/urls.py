@@ -25,7 +25,8 @@ urlpatterns = [
     path('api/', include('user.urls')),
     path('api/', include('group.urls')),
     path('api/', include('storage.urls')),
-    path('api/', include('share.urls'))
+    path('api/', include('share.urls')),
+    path('/', include('webdav.urls'))
 ]
 
 urlpatterns += [
