@@ -11,7 +11,7 @@ ENV NODE_ENV=production
 RUN npm run build
 
 # stage 1
-FROM nginx:alpine AS production-dev
+FROM nginx:alpine AS production-env
 
 # copy product
 RUN mkdir /app
