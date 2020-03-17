@@ -1,10 +1,10 @@
 # Frontend
 
-## Development Environment
+## 开发环境
 
 - @vue/cli 4.0.5
 
-Others see in package.json
+其余依赖见`package.json`。
 
 ## 目录结构
 
