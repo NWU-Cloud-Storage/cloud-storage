@@ -7,7 +7,7 @@ WORKDIR /app
 RUN npm install --registry=https://registry.npm.taobao.org
 
 # build
-ENV NODE_ENV=production
+ENV BUILD_ENV=production
 RUN npm run build
 
 # stage 1
