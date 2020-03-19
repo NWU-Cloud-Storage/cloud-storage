@@ -8,7 +8,7 @@ import global from './utils/Global'
 import axios from 'axios'
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
+axios.defaults.baseURL = process.env.NODE_ENV === 'production' ? '/api' : 'http://127.0.0.1:8000/api';
 axios.defaults.xsrfCookieName = 'csrftoken'; // default
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // default
 
