@@ -1,0 +1,5 @@
+.git
+doc
+*/.idea
+backend/media
+frontend/node_modules
