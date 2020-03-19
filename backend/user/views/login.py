@@ -15,9 +15,6 @@ from my_utils.checker import check_are_same
 
 from user.models import User
 
-stream = open('oauth_settings.yml', 'r')
-settings = yaml.load(stream, yaml.SafeLoader)
-
 
 class MyTmpAuthToken(ObtainAuthToken):
     """
@@ -45,6 +42,8 @@ class OAuthLogin(APIView):
         """
         登录
         """
+        stream = open('oauth_settings.yml', 'r')
+        settings = yaml.load(stream, yaml.SafeLoader)
         params = {
             'grant_type': 'authorization_code',
             'client_id': settings['client_id'],
