@@ -42,9 +42,20 @@ src 为源代码：入口点 main.js
 - 数据双向绑定，实时响应用户的操作
 - 界面简洁易用
 
-## 容器化构建
+## 构建
 
-### 构建
+### npm 本地构建
+
+本地构建时，使用`BUILD_ENV=production`标志生产环境构建，此时 eslint 将更加严格。
+
+```sh
+npm run build
+```
+
+### 容器化构建
+
+容器化构建时，默认采用生产环境模式构建。
+要忽略不必要的警告，请注释掉[dockerfile](../../frontend/dockerfile)第十行。
 
 ```sh
 cd frontend
