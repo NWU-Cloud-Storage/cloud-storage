@@ -2,7 +2,7 @@
 
 # build to latest by default
 # TODO look for an image host
-docker build . -t cloud-storage-front
+docker build . -t cloud-storage
 echo 'built to image cloud-storage:latest.'
 
 # push image to 
