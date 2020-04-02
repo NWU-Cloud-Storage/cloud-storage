@@ -12,7 +12,8 @@ RUN npm install --registry=https://registry.npm.taobao.org && \
 FROM python:3.8-alpine3.10
 
 COPY --from=0 /app/dist /app/dist
-COPY . /app
+COPY ./backend /app
+COPY ./deploy /app
 WORKDIR /app/backend
 
 RUN sed -i "s/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g" /etc/apk/repositories && \   

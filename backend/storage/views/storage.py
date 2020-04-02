@@ -246,3 +246,11 @@ class MyStorageFiles(APIView):
         response['Content-Length'] = cata.my_file.size
 
         return response
+
+
+class StorageMetadataAPI(APIView):
+    pass
+
+
+class StorageUserManageAPI(APIView):
+    pass

@@ -3,6 +3,7 @@
 """
 from django.db import models
 from django.db.models import F, Q
+from django.db.models import Count
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 
@@ -155,8 +156,16 @@ class Storage(models.Model):
     class Meta:
         permissions = [
             ('read', '读权限'),
-            ('write', '写权限')
+            ('write', '写权限'),
+            ('add_user', '可以添加用户'),
+            ('remove_user', '可以删除用户'),
+            ('modify_user_permission', '可以修改其他用户权限')
         ]
+        # constraints = [
+        #     models.CheckConstraint(check=(Q(is_personal_storage=True) & Q()),
+        #                            name='personal_or_group')
+        # ]
+        # TODO 约束：个人存储库只允许一个用户
 
     def __str__(self):
         return self.root_identifier.name
@@ -170,20 +179,12 @@ class Membership(models.Model):
     storage = models.ForeignKey(Storage, on_delete=models.CASCADE)
     joined_time = models.DateTimeField(auto_now_add=True)
 
-    # class Meta:
-    #     constraints = [
-    #         models.CheckConstraint(check=(Q(is_personal_storage=True) & Q(user)),
-    #                                name='personal_or_group')
-    #     ]
-    # TODO 约束：个人存储库只允许一个用户
-
-    # class Meta:
-    #     permissions = [
-    #         ('write_file', '对存储库拥有写权限'),
-    #         ('add_user', '可以添加用户'),
-    #         ('remove_user', '可以删除用户'),
-    #         ('modify_user_permission', '可以修改其他用户权限')
-    #     ]
+    class Meta:
+        permissions = [
+            ('add_user', '可以添加用户'),
+            ('remove_user', '可以删除用户'),
+            ('modify_user_permission', '可以修改其他用户权限')
+        ]
 
 
 # dispatch_uid 的作用是防止多次调用，具体原理不清楚。要求是个unique hashable类型的就行，那我就写一些中文了。
