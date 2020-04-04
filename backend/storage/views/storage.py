@@ -248,8 +248,25 @@ class MyStorageFiles(APIView):
         return response
 
 
-class StorageMetadataAPI(APIView):
-    pass
+from rest_framework import viewsets
+from ..utils import create_storage
+
+
+class StorageManageViewSet(viewsets.GenericViewSet):
+    serializer_class = StorageSerializer
+    queryset = Storage.objects.all()
+
+    def list(self, request):
+        user = request.user
+        storage_list = Storage.objects.filter(users=request.user)  # reverse relationship
+        serializer = StorageSerializer(storage_list, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        user = User.objects.get(pk=request.user.id)
+        storage = create_storage(user, name=request.data['name'])
+        serializer = StorageSerializer(storage)
+        return Response(serializer.data)
 
 
 class StorageUserManageAPI(APIView):

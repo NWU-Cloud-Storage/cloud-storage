@@ -157,9 +157,7 @@ class Storage(models.Model):
         permissions = [
             ('read', '读权限'),
             ('write', '写权限'),
-            ('add_user', '可以添加用户'),
-            ('remove_user', '可以删除用户'),
-            ('modify_user_permission', '可以修改其他用户权限')
+            ('owner', '存储库的所有者权限，可以添加、删除成员，修改他人的权限'),
         ]
         # constraints = [
         #     models.CheckConstraint(check=(Q(is_personal_storage=True) & Q()),
