@@ -1,8 +1,8 @@
 # Storage 存储仓库
 
-## 存储仓库
+## 存储仓库的管理
 
-### 获取用户有访问权的所有仓库列表
+### 获取个人的所有仓库列表
 
 * Request
 
@@ -24,14 +24,93 @@
     ]
     ```
 
-### 获取仓库根目录内容
+### 获取仓库的详细信息
 
 * Request
   * Url: `/api/storage/12[仓库id]/`
   * Method: GET
-* Response：同下
+  
+* Response：
 
-### 获取仓库内容
+  * Body:
+
+    ```json
+    {
+        "id": 12,
+        "name": "123",
+        "root_id": 80
+    }
+```
+    
+    
+
+### 创建存储库
+
+* Request
+
+  * Url: `/api/storage/`
+
+  * Method: POST
+
+  * Body:
+
+    ```json
+    {
+        "name": "测试群"
+    }
+    ```
+
+* Response
+
+  * Status Code: 200OK
+
+  * Body:
+
+    ```json
+    [
+        {
+        	'storage_id': 100
+    	}
+    ]
+    ```
+
+### 修改某存储库信息
+
+- Request
+  - Url: `/api/storage/12/`
+
+  - Method: POST
+
+  - Body:
+
+  ```json
+  {
+      "name": "测试群"
+  }
+  ```
+
+
+### 删除（退出）一个存储库
+
+- Request
+  - Url: `/api/storage/12/`
+  - Method: DELETE
+- Response
+  - 若用户为该存储库的唯一 owner，则不可执行该操作
+
+## 仓库成员管理
+
+### 获取成员列表
+
+### 添加一个成员
+
+### 修改成员的权限
+
+### 移除一个成员
+
+## 仓库内容管理
+
+### 获取某文件夹内容
 
 * Request
   * Url: `/api/storage/12[仓库id]/71[目录id]/`
@@ -183,7 +262,7 @@
 ### 复制仓库文件(夹)
 
 * Request
-  * Url: `/api/storage/12[仓库id]/copy/`
+  * Url: `/api/storage/12[仓库id]/80[目录id]/copy/`
   * Method: PUT
   * Content-Type: application/json
   * Body:
@@ -211,7 +290,7 @@
 
 * Request
 
-  * Url: `/api/storage/upload/[仓库id]/[文件夹id]/`
+  * Url: `/api/storage/upload/[仓库id]/80[目录id]/[文件夹id]/`
 
   * Method: POST
 
