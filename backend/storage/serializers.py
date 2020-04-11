@@ -31,9 +31,12 @@ class BreadcrumbsSerializer(serializers.ModelSerializer):
 
 
 class StorageSerializer(serializers.ModelSerializer):
-    storage_id = serializers.IntegerField(source='id')
+    name = serializers.PrimaryKeyRelatedField(source='root_identifier.name')
+    storage_id = serializers.ReadOnlyField(source='id')
     root_folder_id = serializers.PrimaryKeyRelatedField(source='root_identifier', read_only=True)
+    created_time = serializers.ReadOnlyField()
+    is_personal_storage = serializers.ReadOnlyField()
 
     class Meta:
         model = Storage
-        fields = ('storage_id', 'root_folder_id', 'created_time')
+        fields = ('name', 'storage_id', 'root_folder_id', 'created_time', 'is_personal_storage')

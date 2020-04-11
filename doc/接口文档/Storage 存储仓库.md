@@ -40,8 +40,7 @@
         "name": "123",
         "root_id": 80
     }
-```
-    
+    ```
     
 
 ### 创建存储库
@@ -60,6 +59,7 @@
     }
     ```
 
+
 * Response
 
   * Status Code: 200OK
@@ -74,12 +74,13 @@
     ]
     ```
 
+
 ### 修改某存储库信息
 
 - Request
   - Url: `/api/storage/12/`
 
-  - Method: POST
+  - Method: PUT
 
   - Body:
 
@@ -90,6 +91,7 @@
   ```
 
 
+
 ### 删除（退出）一个存储库
 
 - Request
@@ -97,12 +99,40 @@
   - Method: DELETE
 - Response
   - 若用户为该存储库的唯一 owner，则不可执行该操作
+  
+    
 
 ## 仓库成员管理
 
 ### 获取成员列表
 
+- Request
+
+  - Url: `/api/storage/12/member/`
+  - Method: GET
+
+- Response
+
+  - Body:
+
+    ```json
+    [
+            {
+                "username": "2017110048",
+                "nickname": "zjb",
+                "permission": "member"
+            },
+            {
+                "username": "9017123456",
+                "nickname": "老司机",
+                "permission": "master"
+            }
+    ]
+    ```
+
 ### 添加一个成员
+
+应该要有两种方式，通过链接进入和直接通过学号添加。
 
 ### 修改成员的权限
 
@@ -156,6 +186,7 @@
         ]
     }
     ```
+```
 
 ### 删除仓库某文件(夹)
 
@@ -174,7 +205,7 @@
             14
         ]
     }
-    ```
+```
 
 * Response
   
@@ -233,7 +264,7 @@
 ### 移动仓库文件(夹)
 
 * Request
-  * Url: `/api/storage/12[仓库id]/move/`
+  * Url: `/api/storage/12[仓库id]/80[目录id]/move/`
   * Method: PUT
   * Content-Type: application/json
   * Body:

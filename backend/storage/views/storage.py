@@ -250,15 +250,16 @@ class MyStorageFiles(APIView):
 
 from rest_framework import viewsets
 from ..utils import create_storage
+from rest_framework.exceptions import ParseError
 
 
 class StorageManageViewSet(viewsets.GenericViewSet):
     serializer_class = StorageSerializer
     queryset = Storage.objects.all()
+    lookup_url_kwarg = "storage_id"
 
     def list(self, request):
-        user = request.user
-        storage_list = Storage.objects.filter(users=request.user)  # reverse relationship
+        storage_list = self.get_queryset().filter(users=request.user)  # reverse relationship
         serializer = StorageSerializer(storage_list, many=True)
         return Response(serializer.data)
 
@@ -267,6 +268,22 @@ class StorageManageViewSet(viewsets.GenericViewSet):
         storage = create_storage(user, name=request.data['name'])
         serializer = StorageSerializer(storage)
         return Response(serializer.data)
+
+    def retrieve(self, request, storage_id):
+        storage = self.get_object()
+        serializer = self.get_serializer(storage)
+        return Response(serializer.data)
+
+    def put(self, request):
+        storage = self.get_object()
+        serializer = self.get_serializer(storage, data=request.data)
+        if not serializer.is_valid():
+            raise ParseError()
+        return Response()
+
+    def delete(self, request):
+        # check_permission()
+        self.get_object().delete()
 
 
 class StorageUserManageAPI(APIView):
