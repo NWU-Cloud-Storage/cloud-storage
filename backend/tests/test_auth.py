@@ -1,7 +1,7 @@
 import base64
 
 
-def test_basic_auth(client, user):
+def test_basic_auth(client):
     c = client
     r = c.get('/api/storage/')
     assert r.status_code == 401

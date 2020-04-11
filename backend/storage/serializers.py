@@ -31,7 +31,7 @@ class BreadcrumbsSerializer(serializers.ModelSerializer):
 
 
 class StorageSerializer(serializers.ModelSerializer):
-    name = serializers.PrimaryKeyRelatedField(source='root_identifier.name')
+    name = serializers.PrimaryKeyRelatedField(source='root_identifier.name', read_only=True)
     storage_id = serializers.ReadOnlyField(source='id')
     root_folder_id = serializers.PrimaryKeyRelatedField(source='root_identifier', read_only=True)
     created_time = serializers.ReadOnlyField()
