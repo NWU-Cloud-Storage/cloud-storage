@@ -152,6 +152,7 @@ class Storage(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
     users = models.ManyToManyField(User, through='Membership')
     is_personal_storage = models.BooleanField(verbose_name="是否为个人存储库", default=False)
+    invite_link = models.URLField(verbose_name='邀请链接')
 
     class Meta:
         permissions = [

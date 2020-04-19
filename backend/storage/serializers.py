@@ -31,11 +31,18 @@ class BreadcrumbsSerializer(serializers.ModelSerializer):
 
 
 class StorageSerializer(serializers.ModelSerializer):
-    name = serializers.PrimaryKeyRelatedField(source='root_identifier.name', read_only=True)
+    name = serializers.CharField(source='root_identifier.name')
     storage_id = serializers.ReadOnlyField(source='id')
     root_folder_id = serializers.PrimaryKeyRelatedField(source='root_identifier', read_only=True)
     created_time = serializers.ReadOnlyField()
     is_personal_storage = serializers.ReadOnlyField()
+
+    def update(self, instance, validated_data):
+        identifier = instance.root_identifier
+        identifier.name = validated_data['root_identifier']['name']
+        identifier.save()
+        print(validated_data)
+        return instance
 
     class Meta:
         model = Storage

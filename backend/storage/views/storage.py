@@ -274,11 +274,12 @@ class StorageManageViewSet(viewsets.GenericViewSet):
         serializer = self.get_serializer(storage)
         return Response(serializer.data)
 
-    def put(self, request):
+    def put(self, request, storage_id):
         storage = self.get_object()
         serializer = self.get_serializer(storage, data=request.data)
         if not serializer.is_valid():
             raise ParseError()
+        serializer.save()
         return Response()
 
     def delete(self, request):

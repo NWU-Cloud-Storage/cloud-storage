@@ -4,7 +4,7 @@ import pytest
 from user.models import User
 
 
-def test_storage_rest_api(c):
+def test_storage_manage(c):
     r = c.get('/api/storage/')
     print(r.json())
     res = r.json()
@@ -14,13 +14,35 @@ def test_storage_rest_api(c):
     root_folder_id = res[0]['root_folder_id']
     r = c.get(f'/api/storage/{storage_id}/')
     print(r.json())
+    assert (r.json()['name'] == '文件')
 
-    r = c.post(f'/api/storage/{storage_id}/', {'name': 'new_folder'}, content_type='application/json')
+    # default content_type is multipart/form-data
+    r = c.post('/api/storage/', {'name': '测试群'}, content_type='application/json')
+    assert r.status_code == 200
+    assert r.json()['storage_id']
+
+    storage_id = r.json()['storage_id']
+    r = c.put(f'/api/storage/{storage_id}/', {'name': '新名字'}, content_type='application/json')
+    assert r.status_code == 200
+    r = c.get(f'/api/storage/{storage_id}/')
+    assert (r.json()['name'] == '新名字')
+
+
+def test_storage_rest_api(c):
+    r = c.get('/api/storage/')
+    res = r.json()
+
+    storage_id = res[0]['storage_id']
+    root_folder_id = res[0]['root_folder_id']
+
+    r = c.post(f'/api/storage/{storage_id}/',
+               {'name': 'new_folder'}, content_type='application/json')
     assert r.status_code == 200
     assert r.json()['name'] == 'new_folder'
     folder_id = r.json()['id']
 
-    r = c.put(f'/api/storage/{storage_id}/{folder_id}/', {'name': 'name_changed'}, content_type='application/json')
+    r = c.put(f'/api/storage/{storage_id}/{folder_id}/',
+              {'name': 'name_changed'}, content_type='application/json')
     assert r.status_code == 200
 
     r = c.get(f'/api/storage/{storage_id}/')
@@ -41,7 +63,6 @@ def test_storage_rest_api(c):
     assert r.status_code == 200
 
 
-@pytest.mark.django_db
 def test_permission(client):
     user1 = User.objects.create(username="user1", nickname="test_nickname1",
                                 password='test')
