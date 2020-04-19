@@ -282,9 +282,10 @@ class StorageManageViewSet(viewsets.GenericViewSet):
         serializer.save()
         return Response()
 
-    def delete(self, request):
+    def delete(self, request, storage_id):
         # check_permission()
         self.get_object().delete()
+        return Response()
 
 
 class StorageUserManageAPI(APIView):

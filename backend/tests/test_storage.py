@@ -4,28 +4,41 @@ import pytest
 from user.models import User
 
 
-def test_storage_manage(c):
-    r = c.get('/api/storage/')
-    print(r.json())
-    res = r.json()
-    assert len(res) > 0
+class TestStorageManage:
+    def test_get_all_storage(self, c):
+        r = c.get('/api/storage/')
+        print(r.json())
+        res = r.json()
+        assert len(res) > 0
 
-    storage_id = res[0]['storage_id']
-    root_folder_id = res[0]['root_folder_id']
-    r = c.get(f'/api/storage/{storage_id}/')
-    print(r.json())
-    assert (r.json()['name'] == '文件')
+    def test_storage_detail(self, c):
+        res = c.get('/api/storage/').json()
+        storage_id = res[0]['storage_id']
+        r = c.get(f'/api/storage/{storage_id}/')
+        print(r.json())
+        assert (r.json()['name'] == '文件')
 
-    # default content_type is multipart/form-data
-    r = c.post('/api/storage/', {'name': '测试群'}, content_type='application/json')
-    assert r.status_code == 200
-    assert r.json()['storage_id']
+    def test_create(self, c):
+        # default content_type is multipart/form-data
+        r = c.post('/api/storage/', {'name': '测试群'}, content_type='application/json')
+        assert r.status_code == 200
+        assert r.json()['storage_id']
 
-    storage_id = r.json()['storage_id']
-    r = c.put(f'/api/storage/{storage_id}/', {'name': '新名字'}, content_type='application/json')
-    assert r.status_code == 200
-    r = c.get(f'/api/storage/{storage_id}/')
-    assert (r.json()['name'] == '新名字')
+    def test_modify_name(self, c):
+        r = c.post('/api/storage/', {'name': '测试群'}, content_type='application/json')
+        storage_id = r.json()['storage_id']
+        r = c.put(f'/api/storage/{storage_id}/', {'name': '新名字'}, content_type='application/json')
+        assert r.status_code == 200
+        r = c.get(f'/api/storage/{storage_id}/')
+        assert (r.json()['name'] == '新名字')
+
+    def test_delete(self, c):
+        r = c.post('/api/storage/', {'name': '测试群'}, content_type='application/json')
+        storage_id = r.json()['storage_id']
+        r = c.delete(f'/api/storage/{storage_id}/')
+        assert r.status_code == 200
+        res = c.get('/api/storage/').json()
+        assert storage_id not in [i['storage_id'] for i in res]
 
 
 def test_storage_rest_api(c):
