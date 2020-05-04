@@ -98,7 +98,7 @@
   - Url: `/api/storage/12/`
   - Method: DELETE
 - Response
-  - 若用户为该存储库的唯一 owner，则不可执行该操作
+  - 若用户为该存储库的唯一 owner，或为个人存储库，则不可执行该操作
   
     
 
@@ -134,9 +134,44 @@
 
 应该要有两种方式，通过链接进入和直接通过学号添加。
 
+#### 通过学号添加
+
+- Request
+
+  - Url: `/api/storage/12/member/`
+
+  - Method: POST
+
+  - Body:
+
+    ```json
+    {
+        "username": "2017118273"
+    }
+    ```
+
 ### 修改成员的权限
 
+- Request
+
+  - Url: `/api/storage/12/member/20171162172[username]/`
+
+  - Method: POST
+
+  - Body:
+
+    ```json
+    {
+        "username": "2017118273"
+    }
+    ```
+
 ### 移除一个成员
+
+- Request
+  - Url: `/api/storage/12/member/20171162172[username]/`
+
+  - Method: DELETE
 
 ## 仓库内容管理
 
