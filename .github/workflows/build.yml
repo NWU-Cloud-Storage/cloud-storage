@@ -20,7 +20,7 @@ jobs:
               run: |
                 pip install flake8
                 cd backend
-                flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+                flake8 . --statistics --exclude .env,migrations --max-line-length 127
             - name: test
               run: |
                 cd backend

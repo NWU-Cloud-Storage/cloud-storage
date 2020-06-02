@@ -3,17 +3,6 @@
 ## 依赖
 见`requirements.txt`
 
-## 命令行
-
-提前安装好sqlite3和Python
-
-```cmd
-pip install Django==2.2.2
-pip install django-mptt
-pip install djangorestframework
-pip install requests
-```
-
 后端初始化
 
 ```bash
