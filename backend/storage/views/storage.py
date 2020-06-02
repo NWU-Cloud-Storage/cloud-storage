@@ -288,5 +288,5 @@ class StorageManageViewSet(viewsets.GenericViewSet):
         return Response()
 
 
-class StorageUserManageAPI(APIView):
+class StorageMemberManageAPI(APIView):
     pass
