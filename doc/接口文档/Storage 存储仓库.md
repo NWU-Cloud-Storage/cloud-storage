@@ -222,11 +222,12 @@
     }
     ```
 
-
 ### 删除仓库某文件(夹)
 
+只能够删除当前目录下的文件.
+
 * Request
-  * Url: `/api/storage/12[仓库id]/`
+  * Url: `/api/storage/12[仓库id]/71/`
   * Method: DELETE
   * Content-Type: application/json
   * Body:

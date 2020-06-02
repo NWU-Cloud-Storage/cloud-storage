@@ -47,58 +47,64 @@ def storage(user):
 
 
 @pytest.fixture
+def api_base(storage):
+    return f'/api/storage/{storage.id}/'
+
+
+@pytest.fixture
+def api_url(storage, api_base):
+    return  f'{api_base}{storage.root_identifier.id}/'
+
+
+@pytest.fixture
 def new_folder(storage):
-    return Identifier.objects.create(name="new_folder", parent=storage.root_identifier)
+    return Identifier.objects.create(name="new_folder", parent=storage.root_identifier, owner=storage.users.get())
+
+
+@pytest.fixture
+def new_folder2(storage):
+    return Identifier.objects.create(name="new_folder2", parent=storage.root_identifier, owner=storage.users.get())
 
 
 class TestStorageContentManage:
-    def __init__(self, storage):
-        self.storage_id = storage.id
-        self.root_folder_id = storage.root_identifier.id
-        self.api_base = f'/api/storage/{self.storage_id}/'
-        self.api_url = f'{self.api_base}{self.root_folder_id}/'
-
-    def test_get_folder_content(self, c, new_folder):
-        r = c.get(self.api_url)
+    def test_get_folder_content(self, c, new_folder, api_url):
+        r = c.get(api_url)
+        print(r.json())
         assert r.json()['content'][0]['name'] == 'new_folder'
 
-    def test_create_folder(self, c):
-        r = c.post(self.api_url, {'name': 'new_folder'}, content_type='application/json')
+    def test_create_folder(self, c, api_url):
+        r = c.post(api_url, {'name': 'new_folder'}, content_type='application/json')
         assert r.status_code == 200
         assert r.json()['name'] == 'new_folder'
 
-    def test_delete_folder(self, c, new_folder):
-        r = c.delete(self.api_base, {"id": [new_folder.id]}, content_type='application/json')
+    def test_delete_folder(self, c, new_folder, api_base, api_url):
+        r = c.delete(api_url, {"id": [new_folder.id]}, content_type='application/json')
         assert r.status_code == 200
-        r = c.get(self.api_url)
+        r = c.get(api_url)
+        print(r.json())
         assert r.json()['content'] == []
 
-    def test_modify_folder(self, c, new_folder):
-        r = c.put(f'{self.api_base}{new_folder.id}/', {'name': 'name_changed'}, content_type='application/json')
+    def test_modify_folder(self, c, new_folder, api_base, api_url):
+        r = c.put(f'{api_base}{new_folder.id}/', {'name': 'name_changed'}, content_type='application/json')
         assert r.status_code == 200
-        r = c.get(self.api_url)
+        r = c.get(api_url)
         assert r.json()['content'][0]['name'] == 'name_changed'
 
-    def test_copy_folder(self, c, new_folder):
-        r = c.put(f'{self.api_base}copy/',
+    @pytest.mark.parametrize("action", ('move', 'copy'))
+    def test_copy_folder(self, c, new_folder, new_folder2, api_url, storage, api_base, action):
+        r = c.put(f'{api_url}{action}/',
                   {'source_id': [new_folder.id],
-                   'destination_storage_id': self.storage_id,
-                   'destination_directory_id': self.root_folder_id},
-                  content_type='application/json')
-        assert r.status_code == 200
-        r = c.get(self.api_url)
-        assert len(r.json()['content']) == 2
-
-    def test_move_folder(self, c, new_folder, storage):
-        new_folder2 = Identifier.objects.create(name="new_folder2", parent=storage.root_identifier)
-        r = c.put(f'{self.api_base}move/',
-                  {'source_id': [new_folder.id],
-                   'destination_storage_id': self.storage_id,
+                   'destination_storage_id': storage.id,
                    'destination_directory_id': new_folder2.id},
                   content_type='application/json')
         assert r.status_code == 200
-        r = c.get(f'{self.api_base}{new_folder2.id}/')
+        r = c.get(f'{api_base}{new_folder2.id}/')
         assert len(r.json()['content']) == 1
+        r = c.get(api_url)
+        if action == 'move':
+            assert len(r.json()['content']) == 1
+        else:
+            assert len(r.json()['content']) == 2
 
 
 def test_permission(client):

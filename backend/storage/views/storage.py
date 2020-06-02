@@ -22,6 +22,9 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user
 
 from rest_framework.exceptions import ValidationError
+from rest_framework import viewsets
+from ..utils import create_storage
+from rest_framework.exceptions import ParseError
 
 
 class StorageAPI(APIView):
@@ -66,7 +69,7 @@ class StorageAPI(APIView):
         return Response(res)
 
     @staticmethod
-    def delete(request, storage_id):
+    def delete(request, storage_id, identifier_id):
         """
         删除个人仓库某文件（夹）。
         """
@@ -85,7 +88,7 @@ class StorageAPI(APIView):
         return Response()
 
     @staticmethod
-    def post(request, storage_id, src_cata_id=None):
+    def post(request, storage_id, identifier_id=None):
         """
         新建个人仓库文件（夹）。
         """
@@ -95,8 +98,8 @@ class StorageAPI(APIView):
 
         root_identifier = storage.root_identifier
         ancestor = root_identifier
-        if src_cata_id:
-            ancestor = check_exist_catalogue(src_cata_id)
+        if identifier_id:
+            ancestor = check_exist_catalogue(identifier_id)
             check_are_same(ancestor.get_root(), root_identifier)
         if request.data.get('name') is not None:
             name = request.data['name']
@@ -142,7 +145,7 @@ def _move_or_copy_check(request, storage_id):
     des_storage = get_storage_or_403(des_storage_id)
     check_write_permission(user, des_storage)
 
-    des_id = request.data.get('destination_id', None)
+    des_id = request.data.get('destination_directory_id', None)
     des_root = des_storage.root_identifier
     if des_id:
         des_id = get_int(des_id)
@@ -160,7 +163,7 @@ class MyStorageMove(APIView):
     """
 
     @staticmethod
-    def put(request, storage_id):
+    def put(request, storage_id, identifier_id):
         """
         移动个人仓库文件（夹）。
         """
@@ -170,8 +173,7 @@ class MyStorageMove(APIView):
         # 内部应该是有signal导致无法批量修改parent，也不能使用move_to方法。
         # 可优化
         for cata in src_catas:
-            cata.copy_to(des_cata)
-            cata.delete()
+            cata.move_to(des_cata)
 
         return Response()
 
@@ -182,7 +184,7 @@ class MyStorageCopy(APIView):
     """
 
     @staticmethod
-    def put(request, storage_id):
+    def put(request, storage_id, identifier_id):
         """
         拷贝个人仓库文件（夹）。
         """
@@ -248,11 +250,6 @@ class MyStorageFiles(APIView):
         return response
 
 
-from rest_framework import viewsets
-from ..utils import create_storage
-from rest_framework.exceptions import ParseError
-
-
 class StorageManageViewSet(viewsets.GenericViewSet):
     serializer_class = StorageSerializer
     queryset = Storage.objects.all()
@@ -271,11 +268,13 @@ class StorageManageViewSet(viewsets.GenericViewSet):
 
     def retrieve(self, request, storage_id):
         storage = self.get_object()
+        check_read_permission(request.user, storage)
         serializer = self.get_serializer(storage)
         return Response(serializer.data)
 
     def put(self, request, storage_id):
         storage = self.get_object()
+        check_write_permission(request.user, storage)
         serializer = self.get_serializer(storage, data=request.data)
         if not serializer.is_valid():
             raise ParseError()
@@ -283,7 +282,7 @@ class StorageManageViewSet(viewsets.GenericViewSet):
         return Response()
 
     def delete(self, request, storage_id):
-        # check_permission()
+        check_write_permission(request.user, self.get_object())
         self.get_object().delete()
         return Response()
 
