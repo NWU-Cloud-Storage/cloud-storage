@@ -3,28 +3,32 @@
 ## 依赖
 见`requirements.txt`
 
-后端初始化
+## 初始化
 
-```bash
-cd backend
-python3 manage.py makemigrations user
-python3 manage.py makemigrations group
-python3 manage.py makemigrations storage
-python3 manage.py makemigrations share
-python3 manage.py migrate
-python3 manage.py createsuperuser # 创建超级管理员（自己）
-```
+- makemigrations
+- migrate
+- createsuperuser
 
-启动服务
+## 权限管理
 
-```cmd
-python3 manage.py runserver
-```
+两种权限模型:
 
-在浏览器输入http://127.0.0.1:8000/admin/进入管理员页面
+### 按角色分
 
-## 清华大学镜像
+- 读
+- 读写
+- 所有者
 
-```cmd
-pip install xxx -i https://pypi.tuna.tsinghua.edu.cn/simple
-```
+### 按权限细分
+
+- 查看文件
+- 创建文件
+- 修改文件
+- 删除文件
+- 添加成员
+- 删除成员
+- 修改他人权限
+
+Keep It Simple and Stupid? (误)
+
+那就采用第一种吧

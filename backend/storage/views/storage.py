@@ -15,7 +15,7 @@ from storage.checker import check_exist_catalogue
 from storage.checker import check_not_root
 from storage.checker import check_are_siblings_and_in_root
 from storage.checker import check_des_not_src_children
-from storage.checker import check_read_permission, check_write_permission, get_storage_or_403
+from storage.checker import check_read_permission, check_read_write_permission, get_storage_or_403
 from storage.serializers import CatalogueSerializer, BreadcrumbsSerializer, StorageSerializer
 
 from django.shortcuts import get_object_or_404
@@ -75,7 +75,7 @@ class StorageAPI(APIView):
         """
         user = request.user
         storage = get_storage_or_403(storage_id)
-        check_write_permission(user, storage)
+        check_read_write_permission(user, storage)
 
         cata_ids = request.data.get('id', None)
         if not cata_ids:
@@ -94,7 +94,7 @@ class StorageAPI(APIView):
         """
         user = request.user.user
         storage = get_storage_or_403(storage_id)
-        check_write_permission(user, storage)
+        check_read_write_permission(user, storage)
 
         root_identifier = storage.root_identifier
         ancestor = root_identifier
@@ -117,7 +117,7 @@ class StorageAPI(APIView):
         """
         user = request.user
         storage = get_storage_or_403(storage_id)
-        check_write_permission(user, storage)
+        check_read_write_permission(user, storage)
         root_identifier = storage.root_identifier
 
         cata = check_exist_catalogue(identifier_id)
@@ -143,7 +143,7 @@ def _move_or_copy_check(request, storage_id):
 
     des_storage_id = request.data.get('destination_storage_id', None)
     des_storage = get_storage_or_403(des_storage_id)
-    check_write_permission(user, des_storage)
+    check_read_write_permission(user, des_storage)
 
     des_id = request.data.get('destination_directory_id', None)
     des_root = des_storage.root_identifier
@@ -205,7 +205,7 @@ class MyStorageFiles(APIView):
     def post(request, storage_id, identifier_id=None):
         user = request.user
         storage = get_storage_or_403(storage_id)
-        check_write_permission(user, storage)
+        check_read_write_permission(user, storage)
         root_identifier = storage.root_identifier
         ancestor = root_identifier
         if identifier_id:
@@ -274,7 +274,7 @@ class StorageManageViewSet(viewsets.GenericViewSet):
 
     def put(self, request, storage_id):
         storage = self.get_object()
-        check_write_permission(request.user, storage)
+        check_read_write_permission(request.user, storage)
         serializer = self.get_serializer(storage, data=request.data)
         if not serializer.is_valid():
             raise ParseError()
@@ -282,10 +282,6 @@ class StorageManageViewSet(viewsets.GenericViewSet):
         return Response()
 
     def delete(self, request, storage_id):
-        check_write_permission(request.user, self.get_object())
+        check_read_write_permission(request.user, self.get_object())
         self.get_object().delete()
         return Response()
-
-
-class StorageMemberManageAPI(APIView):
-    pass

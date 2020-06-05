@@ -155,11 +155,7 @@ class Storage(models.Model):
     invite_link = models.URLField(verbose_name='邀请链接')
 
     class Meta:
-        permissions = [
-            ('read', '读权限'),
-            ('write', '写权限'),
-            ('owner', '存储库的所有者权限，可以添加、删除成员，修改他人的权限'),
-        ]
+        ...
         # constraints = [
         #     models.CheckConstraint(check=(Q(is_personal_storage=True) & Q()),
         #                            name='personal_or_group')
@@ -174,16 +170,15 @@ class Membership(models.Model):
     """
     存储库与用户的关系类
     """
+    PERMISSIONS = [
+        ('read', '读'),
+        ('read_write', '读写'),
+        ('owner', '存储库的所有者权限，可以添加、删除成员，修改他人的权限')
+    ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     storage = models.ForeignKey(Storage, on_delete=models.CASCADE)
     joined_time = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        permissions = [
-            ('add_user', '可以添加用户'),
-            ('remove_user', '可以删除用户'),
-            ('modify_user_permission', '可以修改其他用户权限')
-        ]
+    permission = models.CharField(max_length=10, choices=PERMISSIONS)
 
 
 # dispatch_uid 的作用是防止多次调用，具体原理不清楚。要求是个unique hashable类型的就行，那我就写一些中文了。

@@ -7,22 +7,29 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.exceptions import ParseError, PermissionDenied
 
-from storage.models import Identifier, Storage
+from storage.models import Identifier, Storage, Membership
+from user.models import User
 
 
-def check_read_permission(user, storage):
+def check_read_permission(user: User, storage: Storage):
     """
     检查用户对存储库拥有读权限
     """
-    if not user.has_perm('storage.read', storage):
+    try:
+        Membership.objects.get(user=user, storage=storage)
+    except ObjectDoesNotExist:
         raise PermissionDenied()
 
 
-def check_write_permission(user, storage):
+def check_read_write_permission(user, storage):
     """
-    检查用户对存储库拥有写权限
+    检查用户对存储库拥有读写权限
     """
-    if not user.has_perm('storage.write', storage):
+    try:
+        m = Membership.objects.get(user=user, storage=storage)
+        if m.permission == 'read':
+            raise PermissionDenied()
+    except ObjectDoesNotExist:
         raise PermissionDenied()
 
 
