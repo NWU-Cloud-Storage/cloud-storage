@@ -36,9 +36,11 @@
 
     ```json
     {
-        "id": 12,
+        "storage_id": 12,
         "name": "123",
-        "root_id": 80
+        "root_folder_id": 80,
+        "is_personal_storage": false,
+        
     }
     ```
     
@@ -140,7 +142,7 @@
 
   - Url: `/api/storage/12/member/`
 
-  - Method: POST
+  - Method: PUT
 
   - Body:
 
@@ -149,6 +151,73 @@
         "username": "2017118273"
     }
     ```
+  
+- Response
+
+  - 用户不存在
+
+    - Status Code: 404
+
+    - Body:
+
+      ```json
+      {
+          "msg": "用户不存在."
+      }
+      ```
+
+      
+
+#### 通过邀请链接进入
+
+* Request
+
+  * Url: `/api/storage/join/`
+
+  * Method: PUT
+
+  * Body:
+
+    ```json
+    {
+        "token": "kalsdjf203jfidkfldsn"
+    }
+    ```
+
+* Response
+
+  * token 无效
+    * Status Code: 404 Not Found
+
+### 查看可用权限列表
+
+- Request
+
+  - Url: `/api/storage/permissions/`
+  - Method: GET
+
+- Response
+
+  - Body:
+
+    ```json
+    [
+        {
+            "name": "读",
+            "value": "read"
+        },
+        {
+            "name": "读写",
+            "value": "read_write"
+        },
+        {
+            "name": "所有者",
+            "value": "owner"
+        },
+    ]
+    ```
+
+    
 
 ### 修改成员的权限
 
@@ -156,13 +225,13 @@
 
   - Url: `/api/storage/12/member/20171162172[username]/`
 
-  - Method: POST
+  - Method: PUT
 
   - Body:
 
     ```json
     {
-        "username": "2017118273"
+        "permission": "owner"
     }
     ```
 

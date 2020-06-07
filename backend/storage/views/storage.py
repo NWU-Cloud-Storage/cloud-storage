@@ -33,20 +33,12 @@ class StorageAPI(APIView):
     """
 
     @staticmethod
-    def get(request, storage_id=None, identifier_id=None):
+    def get(request, storage_id, identifier_id=None):
         """
         获取存储仓库内容，
         """
-        myself = request.user
-
-        # storage_id为None时，获取用户所有仓库列表。
-        if not storage_id:
-            storage_list = Storage.objects.filter(users=myself)
-            storage_serializer = StorageSerializer(storage_list, many=True)
-            return Response(storage_serializer.data)
-
         storage = get_storage_or_403(storage_id)
-        check_read_permission(myself, storage)
+        check_read_permission(request.user, storage)
         root_identifier = storage.root_identifier
 
         # identifier_id为None时，获取根目录的内容
@@ -261,6 +253,7 @@ class StorageManageViewSet(viewsets.GenericViewSet):
         return Response(serializer.data)
 
     def create(self, request):
+        # seems that request.user is AuthUser, so we need explicitly query a user
         user = User.objects.get(pk=request.user.id)
         storage = create_storage(user, name=request.data['name'])
         serializer = StorageSerializer(storage)
@@ -275,9 +268,8 @@ class StorageManageViewSet(viewsets.GenericViewSet):
     def put(self, request, storage_id):
         storage = self.get_object()
         check_read_write_permission(request.user, storage)
-        serializer = self.get_serializer(storage, data=request.data)
-        if not serializer.is_valid():
-            raise ParseError()
+        serializer = self.get_serializer(storage, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response()
 

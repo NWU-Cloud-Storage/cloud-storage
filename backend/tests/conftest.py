@@ -78,7 +78,7 @@ def django_db_setup(
 
 
 @pytest.fixture(scope='function')
-def user(db):
+def user():
     # user = User.objects.create(username="test", nickname="test_nickname",
     #                            password='test')
     user = User.objects.get(username="test")

@@ -20,7 +20,7 @@ class TestStorageManage:
         r = c.get('/api/storage/')
         pprint(r.json())
         res = r.json()
-        assert len(res) > 0
+        assert len(res) == 1
         assert res[0]['storage_id'] == storage.id
 
     def test_storage_detail(self, c):
@@ -31,10 +31,11 @@ class TestStorageManage:
         assert (r.json()['name'] == '文件')
 
     def test_create(self, c):
-        # default content_type is multipart/form-data
         r = c.post('/api/storage/', {'name': '测试群'})
         assert r.status_code == 200
         assert r.json()['storage_id']
+        r = c.get('/api/storage/')
+        assert len(r.json()) == 2
 
     def test_modify_name(self, c, new_storage):
         r = c.put(f'/api/storage/{new_storage.id}/', {'name': '新名字'})
@@ -43,7 +44,7 @@ class TestStorageManage:
         assert (r.json()['name'] == '新名字')
 
     def test_modify_name_with_invalid_data(self, c, new_storage):
-        r = c.put(f'/api/storage/{new_storage.id}/', {'nme': '新名字'})
+        r = c.put(f'/api/storage/{new_storage.id}/', {'malformed_name': '新名字'})
         assert r.status_code == 400
 
     def test_delete(self, c, new_storage):
@@ -113,12 +114,23 @@ class TestStorageContentManage:
             assert len(r.json()['content']) == 2
 
 
-def test_permission(client):
-    user1 = User.objects.create(username="user1", nickname="test_nickname1",
-                                password='test')
-    user2 = User.objects.create(username="user2", nickname="test_nickname2",
-                                password='test')
-    user1_storage_id = Storage.objects.get(users=user1).id
-    client.login(username='user2', password='test')
-    r = client.get(f'/api/storage/{user1_storage_id}/')
+@pytest.fixture
+def user2():
+    return User.objects.get(username="test2")
+
+
+def test_permission(client, user2):
+    user2_storage_id = Storage.objects.get(users=user2).id
+    r = client.get(f'/api/storage/{user2_storage_id}/')
     assert r.status_code == 403
+
+
+class TestStorageMemberManage:
+    def test_get_members(self, c, new_storage):
+        r = c.get(f'/api/storage/{new_storage.id}/member/')
+        assert r.json()[0] == {'nickname': 'test_nickname', 'permission': 'owner', 'username': 'test'}
+
+    def test_add_members(self, c, new_storage, user2):
+        r = c.put(f'/api/storage/{new_storage.id}/member/', {"username": user2.username})
+        membership = Membership.objects.filter(storage=new_storage)
+        assert len(membership) == 2

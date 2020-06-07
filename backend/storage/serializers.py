@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from storage.models import Identifier, Storage
+from storage.models import Identifier, Storage, Membership
 
 
 class CatalogueSerializer(serializers.ModelSerializer):
@@ -36,14 +36,31 @@ class StorageSerializer(serializers.ModelSerializer):
     root_folder_id = serializers.PrimaryKeyRelatedField(source='root_identifier', read_only=True)
     created_time = serializers.ReadOnlyField()
     is_personal_storage = serializers.ReadOnlyField()
+    default_permission = serializers.CharField()
+
+    def validate(self, data):
+        if data.get('default_permission') is None and \
+                data.get('root_identifier') is None:
+            raise serializers.ValidationError("must fill name or default_permission")
+        return data
 
     def update(self, instance, validated_data):
         identifier = instance.root_identifier
         identifier.name = validated_data['root_identifier']['name']
         identifier.save()
-        print(validated_data)
         return instance
 
     class Meta:
         model = Storage
-        fields = ('name', 'storage_id', 'root_folder_id', 'created_time', 'is_personal_storage')
+        fields = ('name', 'storage_id', 'root_folder_id', 'created_time',
+                  'is_personal_storage', 'default_permission')
+
+
+class StorageMemberSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
+    nickname = serializers.ReadOnlyField(source='user.nickname')
+    permission = serializers.CharField()
+
+    class Meta:
+        model = Membership
+        fields = ('username', 'nickname', 'permission')
