@@ -1,5 +1,27 @@
 import pytest
 from user.models import User
+from django.test.client import Client
+
+
+class ClientWithJsonDefault(Client):
+    """
+    魔改 Django 自带的 Test Client 使其默认请求类型为 json
+    肯定还有更优雅的实现方式
+    """
+    def post(self, *args, **kwargs):
+        return super().post(*args, **kwargs, content_type='application/json')
+
+    def options(self, *args, **kwargs):
+        return super().options(*args, **kwargs, content_type='application/json')
+
+    def put(self, *args, **kwargs):
+        return super().put(*args, **kwargs, content_type='application/json')
+
+    def patch(self, *args, **kwargs):
+        return super().patch(*args, **kwargs, content_type='application/json')
+
+    def delete(self, *args, **kwargs):
+        return super().delete(*args, **kwargs, content_type='application/json')
 
 
 @pytest.fixture(autouse=True)
@@ -64,6 +86,7 @@ def user(db):
 
 
 @pytest.fixture(scope='function')
-def c(client):
+def c():
+    client = ClientWithJsonDefault()
     client.login(username='test', password='test')
     return client
