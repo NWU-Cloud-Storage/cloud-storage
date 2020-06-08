@@ -9,7 +9,6 @@ from django.dispatch import receiver
 
 from mptt.models import MPTTModel, TreeForeignKey
 
-from group.models import Group
 from user.models import User
 
 

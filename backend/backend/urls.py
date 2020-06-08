@@ -23,7 +23,6 @@ from user.views import login
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('user.urls')),
-    path('api/', include('group.urls')),
     path('api/', include('storage.urls')),
     path('api/', include('share.urls'))
 ]
