@@ -9,13 +9,14 @@ from my_utils.checker import check_is_none
 from my_utils.checker import get_int
 from my_utils.checker import check_serializer_is_valid
 
-from storage.models import Identifier, File, Storage, Membership
+from storage.models import Identifier, File, Storage, Membership, PERMISSIONS
 from user.models import User
 from storage.checker import check_exist_catalogue
 from storage.checker import check_not_root
 from storage.checker import check_are_siblings_and_in_root
 from storage.checker import check_des_not_src_children
-from storage.checker import check_read_permission, check_read_write_permission, get_storage_or_403
+from storage.checker import check_permission, get_storage_or_403
+from storage.checker import READ, READ_WRITE, OWNER
 from storage.serializers import CatalogueSerializer, BreadcrumbsSerializer, StorageSerializer
 
 from django.shortcuts import get_object_or_404
@@ -38,7 +39,7 @@ class StorageAPI(APIView):
         获取存储仓库内容，
         """
         storage = get_storage_or_403(storage_id)
-        check_read_permission(request.user, storage)
+        check_permission(request.user, storage, READ)
         root_identifier = storage.root_identifier
 
         # identifier_id为None时，获取根目录的内容
@@ -67,7 +68,7 @@ class StorageAPI(APIView):
         """
         user = request.user
         storage = get_storage_or_403(storage_id)
-        check_read_write_permission(user, storage)
+        check_permission(user, storage, READ_WRITE)
 
         cata_ids = request.data.get('id', None)
         if not cata_ids:
@@ -86,7 +87,7 @@ class StorageAPI(APIView):
         """
         user = request.user.user
         storage = get_storage_or_403(storage_id)
-        check_read_write_permission(user, storage)
+        check_permission(user, storage, READ_WRITE)
 
         root_identifier = storage.root_identifier
         ancestor = root_identifier
@@ -109,7 +110,7 @@ class StorageAPI(APIView):
         """
         user = request.user
         storage = get_storage_or_403(storage_id)
-        check_read_write_permission(user, storage)
+        check_permission(user, storage, READ_WRITE)
         root_identifier = storage.root_identifier
 
         cata = check_exist_catalogue(identifier_id)
@@ -121,10 +122,10 @@ class StorageAPI(APIView):
         return Response(serializer.data)
 
 
-def _move_or_copy_check(request, storage_id):
+def _move_or_copy_check(request, storage_id, identifier_id):
     user = request.user
     storage = get_storage_or_403(storage_id)
-    check_read_permission(user, storage)
+    check_permission(user, storage, READ)
     root_identifier = storage.root_identifier
 
     src_ids = request.data.get('source_id', None)
@@ -135,7 +136,7 @@ def _move_or_copy_check(request, storage_id):
 
     des_storage_id = request.data.get('destination_storage_id', None)
     des_storage = get_storage_or_403(des_storage_id)
-    check_read_write_permission(user, des_storage)
+    check_permission(user, des_storage, READ_WRITE)
 
     des_id = request.data.get('destination_directory_id', None)
     des_root = des_storage.root_identifier
@@ -159,11 +160,12 @@ class MyStorageMove(APIView):
         """
         移动个人仓库文件（夹）。
         """
-        src_catas, des_cata = _move_or_copy_check(request, storage_id)
+        src_catas, des_cata = _move_or_copy_check(request, storage_id, identifier_id)
 
         # Catalogue.objects.filter(pk__in=src_ids).update(parent=des_cata)
         # 内部应该是有signal导致无法批量修改parent，也不能使用move_to方法。
-        # 可优化
+        # 可优化 --from zjb
+        # 可能这个 bug 修好了? --from cjc
         for cata in src_catas:
             cata.move_to(des_cata)
 
@@ -180,7 +182,7 @@ class MyStorageCopy(APIView):
         """
         拷贝个人仓库文件（夹）。
         """
-        src_catas, des_cata = _move_or_copy_check(request, storage_id)
+        src_catas, des_cata = _move_or_copy_check(request, storage_id, identifier_id)
 
         for cata in src_catas:
             cata.copy_to(des_cata)
@@ -197,7 +199,7 @@ class MyStorageFiles(APIView):
     def post(request, storage_id, identifier_id=None):
         user = request.user
         storage = get_storage_or_403(storage_id)
-        check_read_write_permission(user, storage)
+        check_permission(user, storage, READ_WRITE)
         root_identifier = storage.root_identifier
         ancestor = root_identifier
         if identifier_id:
@@ -261,19 +263,27 @@ class StorageManageViewSet(viewsets.GenericViewSet):
 
     def retrieve(self, request, storage_id):
         storage = self.get_object()
-        check_read_permission(request.user, storage)
+        check_permission(request.user, storage, READ)
         serializer = self.get_serializer(storage)
         return Response(serializer.data)
 
     def put(self, request, storage_id):
         storage = self.get_object()
-        check_read_write_permission(request.user, storage)
+        check_permission(request.user, storage, READ_WRITE)
         serializer = self.get_serializer(storage, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response()
 
     def delete(self, request, storage_id):
-        check_read_write_permission(request.user, self.get_object())
+        check_permission(request.user, self.get_object(), READ_WRITE)
         self.get_object().delete()
         return Response()
+
+
+class GetPermissionsAPI(APIView):
+    def get(self, request):
+        rtn = []
+        for permission in PERMISSIONS:
+            rtn.append({"name": permission[1], "value": permission[0]})
+        return Response(rtn)

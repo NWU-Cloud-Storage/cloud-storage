@@ -11,23 +11,20 @@ from storage.models import Identifier, Storage, Membership
 from user.models import User
 
 
-def check_read_permission(user: User, storage: Storage):
-    """
-    检查用户对存储库拥有读权限
-    """
-    try:
-        Membership.objects.get(user=user, storage=storage)
-    except ObjectDoesNotExist:
-        raise PermissionDenied()
+READ = 'read'
+READ_WRITE = 'read_write'
+OWNER = 'owner'
+PERMISSIONS = {READ: 1, READ_WRITE: 2, OWNER: 3}
 
 
-def check_read_write_permission(user, storage):
+def check_permission(user: User, storage: Storage, permission):
     """
-    检查用户对存储库拥有读写权限
+    检查用户的存储库权限
     """
+    assert permission in PERMISSIONS
     try:
         m = Membership.objects.get(user=user, storage=storage)
-        if m.permission == 'read':
+        if PERMISSIONS[permission] > PERMISSIONS[m.permission]:
             raise PermissionDenied()
     except ObjectDoesNotExist:
         raise PermissionDenied()

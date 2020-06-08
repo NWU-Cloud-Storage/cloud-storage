@@ -145,9 +145,9 @@ class Identifier(MPTTModel):
 
 
 PERMISSIONS = [
-    ('read', '读'),
+    ('read', '只读'),
     ('read_write', '读写'),
-    ('owner', '存储库的所有者权限，可以添加、删除成员，修改他人的权限')
+    ('owner', '所有者')  # 所有者可以添加、删除成员，修改他人的权限
 ]
 
 
@@ -155,11 +155,11 @@ class Storage(models.Model):
     """
     存储库类。
     """
-    root_identifier = models.ForeignKey(Identifier, on_delete=models.CASCADE, null=True, default=None)
+    root_identifier = models.ForeignKey(Identifier, on_delete=models.CASCADE)
     created_time = models.DateTimeField(auto_now_add=True)
     users = models.ManyToManyField(User, through='Membership')
     is_personal_storage = models.BooleanField(verbose_name="是否为个人存储库", default=False)
-    invite_link = models.URLField(verbose_name='邀请链接')
+    invite_link = models.URLField(verbose_name='邀请链接', null=True)
     default_permission = models.CharField(max_length=10, choices=PERMISSIONS, default='read_write')
 
     class Meta:

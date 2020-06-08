@@ -45,7 +45,7 @@
     ```
     
 
-### 创建存储库
+### 创建存储库 
 
 * Request
 
@@ -166,9 +166,27 @@
       }
       ```
 
-      
+#### 创建一个邀请链接 TODO
 
-#### 通过邀请链接进入
+- Request
+
+  - Url: `/api/storage/12/invite_link/`
+
+  - Method: POST
+
+- Response
+
+  - Body:
+
+    ```json
+    {
+        "invite_link": ""
+    }
+    ```
+
+    
+
+#### 通过邀请链接进入 TODO
 
 * Request
 
