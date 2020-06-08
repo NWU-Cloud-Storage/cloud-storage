@@ -5,10 +5,11 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import get_list_or_404
 from django.core.exceptions import ObjectDoesNotExist
 
-from rest_framework.exceptions import ParseError, PermissionDenied
+from rest_framework.exceptions import ParseError, PermissionDenied, ValidationError
 
 from storage.models import Identifier, Storage, Membership
 from user.models import User
+from typing import List
 
 
 READ = 'read'
@@ -31,6 +32,10 @@ def check_permission(user: User, storage: Storage, permission):
 
 
 def get_storage_or_403(storage_id):
+    """
+    根据 id 获取存储库
+    出于安全性上的考虑, 将无权访问和无此存储库统一返回 403
+    """
     try:
         return Storage.objects.get(id=storage_id)
     except ObjectDoesNotExist:
@@ -61,6 +66,12 @@ def check_not_root(catalogue):
         raise ParseError()
 
 
+def check_identifier_belong_to_storage(storage: Storage, identifier: Identifier):
+    """检查目录属于该存储库"""
+    if not identifier.get_root() == storage.root_identifier:
+        raise ValidationError()
+
+
 def check_are_siblings(catas):
     """
     检查这些目录是兄弟结点。
@@ -83,6 +94,12 @@ def check_des_not_src_children(src_catas, des_cata):
     for ancestor in des_cata.get_ancestors():
         if ancestor in src_catas:
             raise ParseError()
+
+
+def check_are_children(identifiers: List[Identifier], parent_identifier: Identifier):
+    for i in identifiers:
+        if not i.parent == parent_identifier:
+            raise ValidationError()
 
 
 def check_are_siblings_and_in_root(cata_ids, root):

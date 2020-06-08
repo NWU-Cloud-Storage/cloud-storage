@@ -11,7 +11,7 @@ from my_utils.checker import check_serializer_is_valid
 
 from storage.models import Identifier, File, Storage, Membership, PERMISSIONS
 from user.models import User
-from storage.checker import check_exist_catalogue
+from storage.checker import check_exist_catalogue, check_identifier_belong_to_storage, check_are_children
 from storage.checker import check_not_root
 from storage.checker import check_are_siblings_and_in_root
 from storage.checker import check_des_not_src_children
@@ -19,13 +19,12 @@ from storage.checker import check_permission, get_storage_or_403
 from storage.checker import READ, READ_WRITE, OWNER
 from storage.serializers import CatalogueSerializer, BreadcrumbsSerializer, StorageSerializer
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from django.contrib.auth import get_user
 
 from rest_framework.exceptions import ValidationError
 from rest_framework import viewsets
 from ..utils import create_storage
-from rest_framework.exceptions import ParseError
 
 
 class StorageAPI(APIView):
@@ -124,15 +123,19 @@ class StorageAPI(APIView):
 
 def _move_or_copy_check(request, storage_id, identifier_id):
     user = request.user
-    storage = get_storage_or_403(storage_id)
-    check_permission(user, storage, READ)
-    root_identifier = storage.root_identifier
+    src_storage = get_storage_or_403(storage_id)
+    check_permission(user, src_storage, READ)
+    root_identifier = src_storage.root_identifier
+
+    parent_identifier = Identifier.objects.get(id=identifier_id)
+    check_identifier_belong_to_storage(src_storage, parent_identifier)
 
     src_ids = request.data.get('source_id', None)
     if not src_ids:
         raise ValidationError()
     src_ids = get_int(src_ids)
-    src_catas = check_are_siblings_and_in_root(src_ids, root_identifier)
+    src_identifiers = get_list_or_404(Identifier, id__in=src_ids)
+    check_are_children(src_identifiers, parent_identifier)
 
     des_storage_id = request.data.get('destination_storage_id', None)
     des_storage = get_storage_or_403(des_storage_id)
@@ -145,9 +148,9 @@ def _move_or_copy_check(request, storage_id, identifier_id):
         des_root = check_exist_catalogue(des_id)
     check_are_same(des_root.get_root(), des_storage.root_identifier)
 
-    check_des_not_src_children(src_catas, des_root)
+    check_des_not_src_children(src_identifiers, des_root)
 
-    return src_catas, des_root
+    return src_identifiers, des_root
 
 
 class MyStorageMove(APIView):

@@ -86,7 +86,7 @@ class TestStorageContentManage:
         assert r.status_code == 200
         assert r.json()['name'] == 'new_folder'
 
-    def test_delete_folder(self, c, new_folder, api_base, api_url):
+    def test_delete_folder(self, c, new_folder, api_url):
         r = c.delete(api_url, {"id": [new_folder.id]})
         assert r.status_code == 200
         r = c.get(api_url)
@@ -139,6 +139,7 @@ class TestStorageMemberManage:
 
     def test_add_member(self, c, new_storage, user2):
         r = c.put(f'/api/storage/{new_storage.id}/member/', {"username": user2.username})
+        assert r.status_code == 200
         membership = Membership.objects.filter(storage=new_storage)
         assert len(membership) == 2
 
@@ -155,5 +156,3 @@ class TestStorageMemberManage:
         assert r.status_code == 200
         with pytest.raises(ObjectDoesNotExist):
             Membership.objects.get(user=user2, storage=new_storage)
-
-
