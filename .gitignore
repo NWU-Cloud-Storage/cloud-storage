@@ -1,5 +1,4 @@
-# zhangjunbo
-zjb/
+old_frontend/
 
 # static files
 backend/media/
@@ -17,6 +16,8 @@ migrations/
 
 # oauth configurations
 oauth_settings.yml
+
+# Below are auto generated
 
 # local env files
 .env.local
