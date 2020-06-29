@@ -25,7 +25,7 @@ class BreadcrumbsSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='pk')
     name = serializers.ReadOnlyField()
 
-    class Meta:
+    class Meta: 
         model = Identifier
         fields = ('id', 'name')
 
@@ -34,14 +34,11 @@ class StorageSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='root_identifier.name')
     storage_id = serializers.ReadOnlyField(source='id')
     root_folder_id = serializers.PrimaryKeyRelatedField(source='root_identifier', read_only=True)
-    created_time = serializers.ReadOnlyField()
-    is_personal_storage = serializers.ReadOnlyField()
-    default_permission = serializers.CharField()
 
     def validate(self, data):
         if data.get('default_permission') is None and \
                 data.get('root_identifier') is None:
-            raise serializers.ValidationError("must fill name or default_permission")
+            raise serializers.ValidationError("must fill in name or default_permission")
         return data
 
     def update(self, instance, validated_data):
@@ -54,13 +51,19 @@ class StorageSerializer(serializers.ModelSerializer):
         model = Storage
         fields = ('name', 'storage_id', 'root_folder_id', 'created_time',
                   'is_personal_storage', 'default_permission')
+        read_only_fields = ('created_time', 'is_personal_storage')
 
 
 class StorageMemberSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='user.username')
     nickname = serializers.ReadOnlyField(source='user.nickname')
-    permission = serializers.CharField()
 
     class Meta:
         model = Membership
         fields = ('username', 'nickname', 'permission')
+
+
+class MembershipSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Membership
+        fields = ('user', 'storage', 'permission')

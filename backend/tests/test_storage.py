@@ -29,7 +29,9 @@ class TestStorageManage:
         storage_id = res[0]['storage_id']
         r = c.get(f'/api/storage/{storage_id}/')
         print(r.json())
-        assert (r.json()['name'] == '文件')
+        assert r.json()['name'] == '文件'
+        assert tuple(r.json().keys()) == ('name', 'storage_id', 'root_folder_id', 'created_time',
+                                          'is_personal_storage', 'default_permission')
 
     def test_create(self, c):
         r = c.post('/api/storage/', {'name': '测试群'})

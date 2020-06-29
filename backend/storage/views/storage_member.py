@@ -1,10 +1,11 @@
 from rest_framework import viewsets
 from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 from storage.models import Identifier, File, Storage, Membership, User
 from storage.checker import check_permission
 from storage.checker import READ, READ_WRITE, OWNER
-from storage.serializers import StorageMemberSerializer
-from rest_framework.response import Response
+from storage.serializers import StorageMemberSerializer, MembershipSerializer
 
 
 class StorageMemberManageAPI(APIView):
@@ -24,9 +25,12 @@ class StorageMemberManageAPI(APIView):
         check_permission(request.user, storage, OWNER)
         if username is None:
             username = request.data['username']
-            user = User.objects.get(username=username)
-            Membership.objects.create(user=user, storage=storage,
-                                      permission=storage.default_permission)
+            user = get_object_or_404(User, username=username)
+            request.data.update({'user': user, 'storage': storage.id,
+                                 'permission': storage.default_permission})
+            serializer = MembershipSerializer(data=request.data)
+            serializer.is_valid()
+            serializer.save()
         else:
             permission = request.data['permission']
             membership = Membership.objects.get(user__username=username, storage=storage)
