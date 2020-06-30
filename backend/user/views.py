@@ -19,13 +19,13 @@ class User(APIView):
         if username:
             return self.get_someone(username)
 
-        return self.get_myself(request.user.user)
+        return self.get_myself(request.user)
 
     def put(self, request):
         """
         修改个人资料
         """
-        user = request.user.user
+        user = request.user
         serializer = UserSerializer(user, data=request.data)
         if not serializer.is_valid():
             return Response(detail("数据不合法。", serializer.errors), status=status.HTTP_400_BAD_REQUEST)

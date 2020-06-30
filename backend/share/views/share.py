@@ -30,7 +30,7 @@ class ShareToPublic(APIView):
         """
         新建一个分享
         """
-        user = request.user.user
+        user = request.user
         cata = check_exist_catalogue(src_id)
         my_root = user.storage
         check_not_same(my_root, cata)
@@ -107,7 +107,7 @@ class ShareToMe(APIView):
         share_cata = check_exist_catalogue(src_id)
         check_is_ancestor(share.catalogue, share_cata)
 
-        my_root = request.user.user.storage
+        my_root = request.user.storage
         my_cata = my_root
         if des_id is not None:
             my_cata = check_exist_catalogue(des_id)

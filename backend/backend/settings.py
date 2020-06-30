@@ -150,3 +150,5 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # this is default
 )
+
+AUTH_USER_MODEL = 'user.User'

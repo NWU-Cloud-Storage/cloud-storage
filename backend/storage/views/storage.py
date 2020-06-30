@@ -84,7 +84,7 @@ class StorageAPI(APIView):
         """
         新建个人仓库文件（夹）。
         """
-        user = request.user.user
+        user = request.user
         storage = get_storage_or_403(storage_id)
         check_permission(user, storage, READ_WRITE)
 
@@ -222,7 +222,7 @@ class MyStorageFiles(APIView):
     def get(request, src_cata_id, group_id=None):
         from django.http import StreamingHttpResponse
 
-        # myself = request.user.user
+        # myself = request.user
         # my_root = myself.storage
         # cata = check_exist_catalogue(src_cata_id)
         # check_are_same(cata.get_root(), my_root)

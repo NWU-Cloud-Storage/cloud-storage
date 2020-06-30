@@ -25,7 +25,7 @@ class User(APIView):
         if username:
             return User._get_someone(username)
 
-        return User._get_myself(request.user.user)
+        return User._get_myself(request.user)
 
     @staticmethod
     def put(request, username=None):
@@ -33,7 +33,7 @@ class User(APIView):
         修改个人资料
         """
         check_is_none(username)
-        serializer = check_serializer_is_valid(UserSerializer, request.user.user, request.data)
+        serializer = check_serializer_is_valid(UserSerializer, request.user, request.data)
 
         serializer.save()
         return Response(serializer.data)

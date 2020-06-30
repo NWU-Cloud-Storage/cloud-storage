@@ -1,11 +1,11 @@
 from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User as AuthUser
+from django.contrib.auth.models import AbstractUser
 from rest_framework.authtoken.models import Token
 
 
-class User(AuthUser):
+class User(AbstractUser):
     nickname = models.CharField(max_length=30, verbose_name='昵称')
     max_size = models.BigIntegerField(verbose_name='最大容量', default=5 * 2 ** 30)
     used_size = models.BigIntegerField(verbose_name='已用容量', default=0)
